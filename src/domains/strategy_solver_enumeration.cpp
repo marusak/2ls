@@ -1,33 +1,8 @@
-/*******************************************************************\
-
-Module: Synthesis by enumeration of counterexamples
-
-Author: Peter Schrammel
-
-\*******************************************************************/
-
-#ifdef DEBUG
-#include <iostream>
-#endif
-
 #include <util/simplify_expr.h>
 #include <util/find_symbols.h>
 
 #include "strategy_solver_enumeration.h"
 #include "util.h"
-
-/*******************************************************************\
-
-Function: strategy_solver_enumerationt::iterate
-
-  Inputs:
-
- Outputs:
-
- Purpose:
-
-\*******************************************************************/
-
 bool strategy_solver_enumerationt::iterate(invariantt &_inv)
 {
   tpolyhedra_domaint::templ_valuet &inv=
@@ -38,10 +13,6 @@ bool strategy_solver_enumerationt::iterate(invariantt &_inv)
   solver.new_context();
 
   exprt preinv_expr=tpolyhedra_domain.to_pre_constraints(inv);
-#ifdef DEBUG_OUTPUT
-  debug() << "pre-inv: " << from_expr(ns, "", preinv_expr) << eom;
-#endif
-
   solver << preinv_expr;
 
   exprt::operandst strategy_cond_exprs;
@@ -51,29 +22,12 @@ bool strategy_solver_enumerationt::iterate(invariantt &_inv)
   strategy_cond_literals.resize(strategy_cond_exprs.size());
 
   exprt postinv_expr=disjunction(strategy_cond_exprs);
-
-#ifdef DEBUG_OUTPUT
-  debug() << "post-inv: ";
-#endif
   for(std::size_t i=0; i<strategy_cond_exprs.size(); ++i)
   {
-#ifdef DEBUG_OUTPUT
-    debug() << (i>0 ? " || " : "") << from_expr(ns, "", strategy_cond_exprs[i]);
-#endif
-
     strategy_cond_literals[i]=solver.convert(strategy_cond_exprs[i]);
     strategy_cond_exprs[i]=literal_exprt(strategy_cond_literals[i]);
   }
-#ifdef DEBUG_OUTPUT
-  debug() << eom;
-#endif
-
   solver << disjunction(strategy_cond_exprs);
-
-#ifdef DEBUG_OUTPUT
-  debug() << "solve(): ";
-#endif
-
   if(solver()==decision_proceduret::D_SATISFIABLE)
   {
 #ifdef DEBUG_OUTPUT

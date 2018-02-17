@@ -198,10 +198,12 @@ public:
   // Value -> constraints
   exprt to_pre_constraints(const heap_valuet &value) const;
 
-  void make_not_post_constraints(
+  exprt to_post_not_equ_constraints(
     const heap_valuet &value,
     exprt::operandst &cond_exprs,
-    exprt::operandst &value_exprs);
+    exprt::operandst &value_exprs,
+    literalt (incremental_solvert::*convert)(const exprt& expr),
+    bvt &cond_literals);
 
   // Row -> constraints
   exprt get_row_pre_constraint(

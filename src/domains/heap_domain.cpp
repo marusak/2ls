@@ -165,10 +165,12 @@ Function: heap_domaint::make_not_post_constraints
 
 \*******************************************************************/
 
-void heap_domaint::make_not_post_constraints(
+exprt heap_domaint::to_post_not_equ_constraints(
   const heap_valuet &value,
   exprt::operandst &cond_exprs,
-  exprt::operandst &value_exprs)
+  exprt::operandst &value_exprs,
+  literalt (incremental_solvert::*convert)(const exprt& expr),
+  bvt &cond_literals)
 {
   assert(value.size()==templ.size());
   cond_exprs.resize(templ.size());
@@ -181,6 +183,15 @@ void heap_domaint::make_not_post_constraints(
     const exprt row_expr=not_exprt(get_row_post_constraint(row, value[row]));
     cond_exprs[row]=and_exprt(templ[row].aux_expr, row_expr);
   }
+
+  cond_literals.resize(cond_exprs.size());
+
+  for(unsigned i=0; i<cond_exprs.size(); ++i)
+  {
+    cond_literals[i]=(*convert)(cond_exprs[i]);
+    cond_exprs[i]=literal_exprt(cond_literals[i]);
+  }
+  return disjunction(cond_exprs);
 }
 
 /*******************************************************************\
