@@ -1,27 +1,8 @@
-/*******************************************************************\
-
-Module: Abstract domain for representing heap
-
-Author: Viktor Malik
-
-\*******************************************************************/
-
 #include "heap_domain.h"
 #include <algorithm>
+#include <ostream>
+#include <ssa/ssa_inliner.h>
 #include <ssa/address_canonizer.h>
-
-/*******************************************************************\
-
-Function: heap_domaint::initialize
-
-  Inputs:
-
- Outputs:
-
- Purpose: Initialize abstract value.
-          Clears value with empty value rows corresponding to template.
-
-\*******************************************************************/
 
 void heap_domaint::initialize(domaint::valuet &value)
 {
@@ -42,19 +23,6 @@ void heap_domaint::initialize(domaint::valuet &value)
   }
 }
 
-/*******************************************************************\
-
-Function: heap_domaint::make_template
-
-  Inputs:
-
- Outputs:
-
- Purpose: Create domain template for given set of variables.
-          Template contains a row for each pointer-typed variable and 
-          field of a dynamic object.
-
-\*******************************************************************/
 
 void heap_domaint::make_template(
   const domaint::var_specst &var_specs,
@@ -77,6 +45,214 @@ void heap_domaint::make_template(
       add_template_row(v, pointed_type);
     }
   }
+}
+
+
+/*******************************************************************\
+
+Function: heap_domaint::initialize_solver
+
+  Inputs:
+
+ Outputs:
+
+ Purpose:
+
+\*******************************************************************/
+const exprt heap_domaint::initialize_solver(const local_SSAt &SSA,
+                                     const exprt &precondition,
+                                     template_generator_baset &template_generator)
+{
+  initialize_domain(SSA, precondition, template_generator);
+
+  const exprt input_bindings=get_input_bindings();
+  if(!input_bindings.is_true())
+    return input_bindings;
+  return nil_exprt();
+}
+
+/*******************************************************************\
+
+Function: heap_domaint::edit_row
+
+  Inputs:
+
+ Outputs:
+
+ Purpose:
+
+\*******************************************************************/
+bool heap_domaint::edit_row(const rowt &row, exprt &value, heap_valuet &inv, bool improved){
+    const template_rowt &templ_row=templ[row];
+
+    int actual_loc=get_symbol_loc(templ_row.expr);
+
+    // Value from the solver must be converted into an expression
+    exprt ptr_value=value_to_ptr_exprt(value);
+
+    if((ptr_value.id()==ID_constant &&
+        to_constant_expr(ptr_value).get_value()==ID_NULL) ||
+       ptr_value.id()==ID_symbol)
+    {
+      // Add equality p == NULL or p == symbol
+      if(add_points_to(row, inv, ptr_value))
+        improved=true;
+    }
+    else if(ptr_value.id()==ID_address_of)
+    {
+      // Template row pointer points to the heap (p = &obj)
+      assert(ptr_value.id()==ID_address_of);
+      if(to_address_of_expr(ptr_value).object().id()!=ID_symbol)
+      {
+        // If solver did not return address of a symbol, it is considered
+        // as nondet value.
+        if(set_nondet(row, inv))
+          improved=true;
+        return improved;
+      }
+
+      symbol_exprt obj=to_symbol_expr(
+        to_address_of_expr(ptr_value).object());
+
+      if(obj.type()!=templ_row.expr.type() &&
+         ns.follow(templ_row.expr.type().subtype())!=ns.follow(obj.type()))
+      {
+        // If types disagree, it's a nondet (solver assigned random value)
+        if(set_nondet(row, inv))
+          improved=true;
+        return improved;
+      }
+
+      // Add equality p == &obj
+      if(add_points_to(row, inv, obj))
+      {
+        improved=true;
+      }
+
+      // If the template row is of heap kind, we need to ensure the
+      // transitive closure over the set of all paths
+      if(templ_row.mem_kind==heap_domaint::HEAP &&
+         obj.type().get_bool("#dynamic") &&
+         id2string(obj.get_identifier()).find("$unknown")==
+         std::string::npos)
+      {
+        // Find row with corresponding member field of the pointed object
+        // (obj.member)
+        int member_val_index;
+        member_val_index=
+          find_member_row(
+            obj,
+            templ_row.member,
+            actual_loc,
+            templ_row.kind);
+        if(member_val_index>=0 && !inv[member_val_index].nondet)
+        {
+          // Add all paths from obj.next to p
+          if(add_transitivity(row,
+                                          static_cast<unsigned>(member_val_index),
+                                          inv))
+            improved=true;
+        }
+      }
+    }
+    else
+    {
+      if(set_nondet(row, inv))
+        improved=true;
+    }
+
+    // Recursively update all rows that are dependent on this row
+    if(templ_row.mem_kind==heap_domaint::HEAP)
+    {
+      updated_rows.clear();
+      if(!inv[row].nondet)
+        update_rows_rec(row, inv);
+    }
+    return improved;
+}
+
+/*******************************************************************\
+
+Function: heap_domaint::find_member_row
+
+  Inputs:
+
+ Outputs:
+
+ Purpose:
+
+\*******************************************************************/
+
+int heap_domaint::find_member_row(
+  const exprt &obj,
+  const irep_idt &member,
+  int actual_loc,
+  const domaint::kindt &kind)
+{
+  assert(obj.id()==ID_symbol);
+  std::string obj_id=id2string(
+    ssa_inlinert::get_original_identifier(to_symbol_expr(obj)));
+
+  int result=-1;
+  int max_loc=-1;
+  for(unsigned i=0; i<templ.size(); ++i)
+  {
+    heap_domaint::template_rowt &templ_row=templ[i];
+    if(templ_row.kind==kind && templ_row.member==member &&
+       templ_row.mem_kind==heap_domaint::HEAP)
+    {
+      std::string id=id2string(to_symbol_expr(templ_row.expr).get_identifier());
+      if(id.find(obj_id)!=std::string::npos)
+      {
+        int loc=get_symbol_loc(templ_row.expr);
+        if(loc>max_loc &&
+           (kind==domaint::OUT || kind==domaint::OUTHEAP || loc<=actual_loc))
+        {
+          max_loc=loc;
+          result=i;
+        }
+      }
+    }
+  }
+  return result;
+}
+
+
+/*******************************************************************\
+
+Function: heap_domaint::update_rows_rec
+
+  Inputs:
+
+ Outputs:
+
+ Purpose:
+
+\*******************************************************************/
+bool heap_domaint::update_rows_rec(
+  const heap_domaint::rowt &row,
+  heap_domaint::heap_valuet &value)
+{
+  heap_domaint::heap_row_valuet &row_value=
+    static_cast<heap_domaint::heap_row_valuet &>(value[row]);
+  const heap_domaint::template_rowt &templ_row=templ[row];
+
+  updated_rows.insert(row);
+  bool result=false;
+  for(const heap_domaint::rowt &ptr : row_value.pointed_by)
+  {
+    if(templ[ptr].mem_kind==heap_domaint::HEAP &&
+       templ[ptr].member==templ_row.member)
+    {
+      if(add_transitivity(ptr, row, value))
+        result=true;
+
+      // Recursive update is called for each row only once
+      if(updated_rows.find(ptr)==updated_rows.end())
+        result=update_rows_rec(ptr, value) || result;
+    }
+  }
+  return result;
 }
 
 /*******************************************************************\
@@ -127,19 +303,6 @@ void heap_domaint::add_template_row(
   }
 }
 
-/*******************************************************************\
-
-Function: heap_domaint::to_pre_constraints
-
-  Inputs:
-
- Outputs: Entry constraints expression for a value.
-
- Purpose: Create entry constraints as a conjuction of entry
- expressions for each template row.
-
-\*******************************************************************/
-
 exprt heap_domaint::to_pre_constraints(const heap_valuet &value) const
 {
   assert(value.size()==templ.size());
@@ -150,20 +313,6 @@ exprt heap_domaint::to_pre_constraints(const heap_valuet &value) const
   }
   return conjunction(c);
 }
-
-/*******************************************************************\
-
-Function: heap_domaint::make_not_post_constraints
-
-  Inputs:
-
- Outputs: Exit constraint expression for each row.
-
- Purpose: Create exit constraints for each value row.
-          Each expression is a negation of a row expression
-          (for solving the "exists forall" problem).
-
-\*******************************************************************/
 
 void heap_domaint::make_not_post_constraints(
   const heap_valuet &value,

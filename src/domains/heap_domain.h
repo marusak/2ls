@@ -195,6 +195,8 @@ public:
     const exprt &precondition,
     template_generator_baset &template_generator);
 
+  bool edit_row(const rowt &row, exprt &value, heap_valuet &inv, bool improved);
+
   // Value -> constraints
   exprt to_pre_constraints(const heap_valuet &value) const;
 
@@ -256,6 +258,8 @@ protected:
   exprt::operandst iterator_bindings;
   exprt::operandst aux_bindings;
 
+  std::set<unsigned> updated_rows;
+
   /*******************************************************************\
   Specification of a new heap row that is added dynamically
   at the beginning of the analysis, after binding of iterators to the actual
@@ -298,11 +302,25 @@ protected:
 
   void add_template_row(const var_spect &var_spec, const typet &pointed_type);
 
+  int find_member_row(const exprt &obj,
+                      const irep_idt &member,
+                      int actual_loc,
+                      const domaint::kindt &kind);
+
+  bool update_rows_rec(const heap_domaint::rowt &row,
+                       heap_domaint::heap_valuet &value);
+
   // Initializing functions
   void bind_iterators(
     const local_SSAt &SSA,
     const exprt &precondition,
     template_generator_baset &template_generator);
+
+  const exprt initialize_solver(
+    const local_SSAt &SSA,
+    const exprt &precondition,
+    template_generator_baset &template_generator);
+
 
   void create_precondition(const symbol_exprt &var, const exprt &precondition);
 

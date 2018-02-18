@@ -26,32 +26,13 @@ public:
     strategy_solver_baset(_solver, SSA.ns), heap_domain(_heap_domain)
   {
     set_message_handler(message_handler);
-    initialize(SSA, precondition, template_generator);
+    solver << heap_domain.initialize_solver(SSA, precondition, template_generator);
   }
 
   virtual bool iterate(invariantt &_inv) override;
 
-  void initialize(
-    const local_SSAt &SSA,
-    const exprt &precondition,
-    template_generator_baset &template_generator);
-
 protected:
   heap_domaint &heap_domain;
-  std::set<unsigned> updated_rows;
-
-  int find_member_row(
-    const exprt &obj,
-    const irep_idt &member,
-    int actual_loc,
-    const domaint::kindt &kind);
-
-  bool update_rows_rec(
-    const heap_domaint::rowt &row,
-    heap_domaint::heap_valuet &value);
-
-  void print_solver_expr(const exprt &expr);
 };
-
 
 #endif // CPROVER_2LS_DOMAINS_STRATEGY_SOLVER_HEAP_H
