@@ -54,6 +54,22 @@ void tpolyhedra_domaint::initialize(valuet &value)
 
 /*******************************************************************\
 
+Function: tpolyhedra_domaint::edit_row
+
+  Inputs:
+
+ Outputs:
+
+ Purpose:
+
+\*******************************************************************/
+
+void tpolyhedra_domaint::edit_row(const rowt &row, exprt &value, templ_valuet &inv){
+    set_row_value(row, simplify_const(value), inv);
+}
+
+/*******************************************************************\
+
 Function: tpolyhedra_domaint::join
 
   Inputs:

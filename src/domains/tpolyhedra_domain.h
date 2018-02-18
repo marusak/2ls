@@ -50,6 +50,8 @@ public:
   // initialize value
   virtual void initialize(valuet &value);
 
+  void edit_row(const rowt &row, exprt &value, templ_valuet &inv);
+
   virtual void join(valuet &value1, const valuet &value2);
 
   // value -> constraints
