@@ -4,10 +4,8 @@
 #include "strategy_solver_enumeration.h"
 #include "util.h"
 
-bool strategy_solver_enumerationt::iterate(invariantt &_inv)
+bool strategy_solver_enumerationt::iterate(invariantt &inv)
 {
-  tpolyhedra_domaint::templ_valuet &inv=static_cast<tpolyhedra_domaint::templ_valuet &>(_inv);
-
   bool improved=false;
 
   solver.new_context();
@@ -36,7 +34,7 @@ bool strategy_solver_enumerationt::iterate(invariantt &_inv)
       if(solver.l_get(strategy_cond_literals[row]).is_true())
       {
         exprt value=solver.get(strategy_value_exprs[row]);
-        tpolyhedra_domain.edit_row(row, value, inv);
+        tpolyhedra_domain.edit_row(row, value, inv, improved);
       }
     }
     improved=true;

@@ -53,6 +53,21 @@ equality_domaint(
 
   virtual void initialize(valuet &value);
 
+  const exprt initialize_solver(
+    const local_SSAt &SSA,
+    const exprt &precondition,
+    template_generator_baset &template_generator);
+
+  bool edit_row(const rowt &row, exprt &value, valuet &inv, bool improved);
+
+  exprt to_pre_constraints(valuet &_value);
+
+  void make_not_post_constraints(
+    valuet &_value,
+    exprt::operandst &cond_exprs,
+    exprt::operandst &value_exprs);
+
+
   exprt get_pre_equ_constraint(unsigned index);
   exprt get_post_not_equ_constraint(unsigned index);
   exprt get_pre_disequ_constraint(unsigned index);

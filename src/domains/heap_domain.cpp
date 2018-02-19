@@ -82,9 +82,10 @@ Function: heap_domaint::edit_row
  Purpose:
 
 \*******************************************************************/
-bool heap_domaint::edit_row(const rowt &row, exprt &value, heap_valuet &inv, bool improved){
-    const template_rowt &templ_row=templ[row];
+bool heap_domaint::edit_row(const rowt &row, exprt &value, valuet &_inv, bool improved){
+    heap_domaint::heap_valuet &inv=static_cast<heap_domaint::heap_valuet &>(_inv);
 
+    const template_rowt &templ_row=templ[row];
     int actual_loc=get_symbol_loc(templ_row.expr);
 
     // Value from the solver must be converted into an expression
@@ -303,8 +304,9 @@ void heap_domaint::add_template_row(
   }
 }
 
-exprt heap_domaint::to_pre_constraints(const heap_valuet &value) const
+exprt heap_domaint::to_pre_constraints(valuet &_value)
 {
+  heap_domaint::heap_valuet &value=static_cast<heap_domaint::heap_valuet &>(_value);
   assert(value.size()==templ.size());
   exprt::operandst c;
   for(rowt row=0; row<templ.size(); ++row)
@@ -315,10 +317,11 @@ exprt heap_domaint::to_pre_constraints(const heap_valuet &value) const
 }
 
 void heap_domaint::make_not_post_constraints(
-  const heap_valuet &value,
+  valuet &_value,
   exprt::operandst &cond_exprs,
   exprt::operandst &value_exprs)
 {
+  heap_domaint::heap_valuet &value=static_cast<heap_domaint::heap_valuet &>(_value);
   assert(value.size()==templ.size());
   cond_exprs.resize(templ.size());
   value_exprs.resize(templ.size());

@@ -26,11 +26,8 @@ Function: strategy_solver_predabst::iterate
 
 \*******************************************************************/
 
-bool strategy_solver_predabst::iterate(invariantt &_inv)
+bool strategy_solver_predabst::iterate(invariantt &inv)
 {
-  predabs_domaint::templ_valuet &inv=
-    static_cast<predabs_domaint::templ_valuet &>(_inv);
-
   worklistt::iterator e_it=todo_preds.begin();
   if(e_it!=todo_preds.end()) // check positive preds
   {

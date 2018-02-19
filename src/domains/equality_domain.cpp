@@ -1,16 +1,3 @@
-/*******************************************************************\
-
-Module: Equalities/Disequalities domain
-
-Author: Peter Schrammel
-
-\*******************************************************************/
-
-#ifdef DEBUG
-#include <iostream>
-#include <langapi/languages.h>
-#endif
-
 #include <util/find_symbols.h>
 #include <util/arith_tools.h>
 #include <util/ieee_float.h>
@@ -18,42 +5,37 @@ Author: Peter Schrammel
 
 #include "equality_domain.h"
 #include "util.h"
-
-/*******************************************************************\
-
-Function: equality_domaint::initialize
-
-  Inputs:
-
- Outputs:
-
- Purpose:
-
-\*******************************************************************/
-
 void equality_domaint::initialize(valuet &value)
 {
-#if 0
-  if(templ.size()==0)
-    return domaint::initialize(value);
-#endif
-
   equ_valuet &v=static_cast<equ_valuet &>(value);
   v.equs.clear();
   v.disequs.clear();
 }
 
-/*******************************************************************\
+const exprt equality_domaint::initialize_solver(
+    const local_SSAt &SSA,
+    const exprt &precondition,
+    template_generator_baset &template_generator)
+{
+    return nil_exprt();
+}
 
-Function: equality_domaint::get_pre_equ_constraint
+bool equality_domaint::edit_row(const rowt &row, exprt &value, valuet &inv, bool improved)
+{
+    return true;
+}
 
-  Inputs:
+exprt equality_domaint::to_pre_constraints(valuet &_value)
+{
+    return nil_exprt();
+}
 
- Outputs:
-
- Purpose:
-
-\*******************************************************************/
+void equality_domaint::make_not_post_constraints(
+    valuet &_value,
+    exprt::operandst &cond_exprs,
+    exprt::operandst &value_exprs)
+{
+}
 
 exprt equality_domaint::get_pre_equ_constraint(unsigned index)
 {
@@ -65,18 +47,6 @@ exprt equality_domaint::get_pre_equ_constraint(unsigned index)
   const var_pairt &vv=templ_row.var_pair;
   return implies_exprt(templ_row.pre_guard, equal_exprt(vv.first, vv.second));
 }
-
-/*******************************************************************\
-
-Function: equality_domaint::get_post_not_equ_constraint
-
-  Inputs:
-
- Outputs:
-
- Purpose:
-
-\*******************************************************************/
 
 exprt equality_domaint::get_post_not_equ_constraint(unsigned index)
 {

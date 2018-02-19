@@ -17,6 +17,11 @@ Author: Peter Schrammel
 #include <langapi/language_util.h>
 #include <util/replace_expr.h>
 #include <util/namespace.h>
+//#include <ssa/local_ssa.h>
+
+// Forward declaration - real is in template_generator_base.h
+class template_generator_baset;
+class local_SSAt;
 
 class domaint
 {
@@ -42,6 +47,7 @@ public:
   typedef enum {LOOP, IN, OUT, OUTL, OUTHEAP} kindt;
 
   typedef exprt guardt;
+  typedef unsigned rowt;
 
   typedef struct
   {
@@ -65,6 +71,20 @@ public:
   };
 
   virtual void initialize(valuet &value) { value.basic_value=valuet::BOTTOM; }
+
+  virtual const exprt initialize_solver(
+    const local_SSAt &SSA,
+    const exprt &precondition,
+    template_generator_baset &template_generator) = 0;
+
+  virtual bool edit_row(const rowt &row, exprt &value, valuet &inv, bool improved) = 0;
+
+  virtual exprt to_pre_constraints(valuet &value) = 0;
+
+  virtual void make_not_post_constraints(
+    valuet &value,
+    exprt::operandst &cond_exprs,
+    exprt::operandst &value_exprs) = 0;
 
   // returns true as long as further refinements are possible
   virtual void reset_refinements() { }

@@ -54,6 +54,24 @@ void tpolyhedra_domaint::initialize(valuet &value)
 
 /*******************************************************************\
 
+Function: tpolyhedra_domaint::initialize_solver
+
+  Inputs:
+
+ Outputs:
+
+ Purpose:
+
+\*******************************************************************/
+const exprt tpolyhedra_domaint::initialize_solver(const local_SSAt &SSA,
+                                                  const exprt &precondition,
+                                                  template_generator_baset &template_generator)
+{
+  return nil_exprt();
+}
+
+/*******************************************************************\
+
 Function: tpolyhedra_domaint::edit_row
 
   Inputs:
@@ -64,8 +82,10 @@ Function: tpolyhedra_domaint::edit_row
 
 \*******************************************************************/
 
-void tpolyhedra_domaint::edit_row(const rowt &row, exprt &value, templ_valuet &inv){
+bool tpolyhedra_domaint::edit_row(const rowt &row, exprt &value, valuet &_inv, bool improved){
+    tpolyhedra_domaint::templ_valuet &inv=static_cast<tpolyhedra_domaint::templ_valuet &>(_inv);
     set_row_value(row, simplify_const(value), inv);
+    return true;
 }
 
 /*******************************************************************\
@@ -402,8 +422,9 @@ exprt tpolyhedra_domaint::get_row_post_constraint(
 
 \*******************************************************************/
 
-exprt tpolyhedra_domaint::to_pre_constraints(const templ_valuet &value)
+exprt tpolyhedra_domaint::to_pre_constraints(valuet &_value)
 {
+  tpolyhedra_domaint::templ_valuet &value=static_cast<tpolyhedra_domaint::templ_valuet &>(_value);
   assert(value.size()==templ.size());
   exprt::operandst c;
   for(std::size_t row=0; row<templ.size(); ++row)
@@ -427,10 +448,11 @@ exprt tpolyhedra_domaint::to_pre_constraints(const templ_valuet &value)
 \*******************************************************************/
 
 void tpolyhedra_domaint::make_not_post_constraints(
-  const templ_valuet &value,
+  valuet &_value,
   exprt::operandst &cond_exprs,
   exprt::operandst &value_exprs)
 {
+  tpolyhedra_domaint::templ_valuet &value=static_cast<tpolyhedra_domaint::templ_valuet &>(_value);
   assert(value.size()==templ.size());
   cond_exprs.resize(templ.size());
   value_exprs.resize(templ.size());

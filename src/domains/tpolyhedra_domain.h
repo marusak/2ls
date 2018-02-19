@@ -20,7 +20,6 @@ Author: Peter Schrammel
 class tpolyhedra_domaint:public domaint
 {
 public:
-  typedef unsigned rowt;
   typedef exprt row_exprt;
   typedef constant_exprt row_valuet; // "bound"
 
@@ -50,7 +49,19 @@ public:
   // initialize value
   virtual void initialize(valuet &value);
 
-  void edit_row(const rowt &row, exprt &value, templ_valuet &inv);
+  const exprt initialize_solver(
+    const local_SSAt &SSA,
+    const exprt &precondition,
+    template_generator_baset &template_generator);
+
+  bool edit_row(const rowt &row, exprt &value, valuet &inv, bool improved);
+
+  exprt to_pre_constraints(valuet &_value);
+
+  void make_not_post_constraints(
+    valuet &_value,
+    exprt::operandst &cond_exprs,
+    exprt::operandst &value_exprs);
 
   virtual void join(valuet &value1, const valuet &value2);
 
@@ -60,12 +71,6 @@ public:
   exprt get_row_post_constraint(const rowt &row, const row_valuet &row_value);
   exprt get_row_pre_constraint(const rowt &row, const templ_valuet &value);
   exprt get_row_post_constraint(const rowt &row, const templ_valuet &value);
-
-  exprt to_pre_constraints(const templ_valuet &value);
-  void make_not_post_constraints(
-    const templ_valuet &value,
-    exprt::operandst &cond_exprs,
-    exprt::operandst &value_exprs);
 
   // value -> symbolic bound constraints (for optimization)
   exprt to_symb_pre_constraints(const templ_valuet &value);

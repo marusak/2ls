@@ -1,21 +1,19 @@
 #include <ssa/ssa_inliner.h>
 #include "strategy_solver_heap.h"
 
-bool strategy_solver_heapt::iterate(invariantt &_inv)
+bool strategy_solver_heapt::iterate(invariantt &inv)
 {
-  heap_domaint::heap_valuet &inv=static_cast<heap_domaint::heap_valuet &>(_inv);
-
   bool improved=false;
 
   solver.new_context();
 
   // Entry value constraints
-  exprt pre_expr=heap_domain.to_pre_constraints(inv);
+  exprt pre_expr=domain.to_pre_constraints(inv);
   solver << pre_expr;
 
   // Exit value constraints
   exprt::operandst strategy_cond_exprs;
-  heap_domain.make_not_post_constraints(inv,
+  domain.make_not_post_constraints(inv,
                                         strategy_cond_exprs,
                                         strategy_value_exprs);
 
@@ -35,7 +33,7 @@ bool strategy_solver_heapt::iterate(invariantt &_inv)
       if(solver.l_get(strategy_cond_literals[row]).is_true())
       {
         exprt value=solver.get(strategy_value_exprs[row]);
-        improved = heap_domain.edit_row(row, value, inv, improved);
+        improved = domain.edit_row(row, value, inv, improved);
       }
     }
   }

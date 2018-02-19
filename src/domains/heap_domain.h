@@ -21,7 +21,6 @@ Author: Viktor Malik
 class heap_domaint:public domaint
 {
 public:
-  typedef unsigned rowt;
   // Field of a dynamic object (a variable)
   typedef vart member_fieldt;
   // We represent dynamic object by the object itself and its member field
@@ -195,13 +194,13 @@ public:
     const exprt &precondition,
     template_generator_baset &template_generator);
 
-  bool edit_row(const rowt &row, exprt &value, heap_valuet &inv, bool improved);
+  bool edit_row(const rowt &row, exprt &value, valuet &inv, bool improved);
 
   // Value -> constraints
-  exprt to_pre_constraints(const heap_valuet &value) const;
+  exprt to_pre_constraints(valuet &value);
 
   void make_not_post_constraints(
-    const heap_valuet &value,
+    valuet &value,
     exprt::operandst &cond_exprs,
     exprt::operandst &value_exprs);
 

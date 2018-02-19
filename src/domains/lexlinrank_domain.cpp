@@ -51,6 +51,31 @@ void lexlinrank_domaint::initialize(valuet &value)
   }
 }
 
+const exprt lexlinrank_domaint::initialize_solver(
+    const local_SSAt &SSA,
+    const exprt &precondition,
+    template_generator_baset &template_generator)
+{
+    return nil_exprt();
+}
+
+bool lexlinrank_domaint::edit_row(const rowt &row, exprt &value, valuet &inv, bool improved)
+{
+    return true;
+}
+
+exprt lexlinrank_domaint::to_pre_constraints(valuet &_value)
+{
+    return nil_exprt();
+}
+
+void lexlinrank_domaint::make_not_post_constraints(
+    valuet &_value,
+    exprt::operandst &cond_exprs,
+    exprt::operandst &value_exprs)
+{
+}
+
 /*******************************************************************\
 
 Function: lexlinrank_domaint::refine
