@@ -68,7 +68,7 @@ const exprt heap_domaint::initialize_solver(const local_SSAt &SSA,
   const exprt input_bindings=get_input_bindings();
   if(!input_bindings.is_true())
     return input_bindings;
-  return nil_exprt();
+  return true_exprt();
 }
 
 /*******************************************************************\

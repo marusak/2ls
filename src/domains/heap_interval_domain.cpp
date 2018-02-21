@@ -32,7 +32,7 @@ const exprt heap_interval_domaint::initialize_solver(const local_SSAt &SSA,
                                                      const exprt &precondition,
                                                      template_generator_baset &template_generator)
 {
-    return nil_exprt();
+    return true_exprt();
 }
 
 bool heap_interval_domaint::edit_row(const rowt &row, exprt &value, valuet &inv, bool improved)
@@ -42,7 +42,7 @@ bool heap_interval_domaint::edit_row(const rowt &row, exprt &value, valuet &inv,
 
 exprt heap_interval_domaint::to_pre_constraints(valuet &_value)
 {
-    return nil_exprt();
+    return true_exprt();
 }
 
 void heap_interval_domaint::make_not_post_constraints(valuet &_value,

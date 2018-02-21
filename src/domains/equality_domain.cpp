@@ -17,7 +17,7 @@ const exprt equality_domaint::initialize_solver(
     const exprt &precondition,
     template_generator_baset &template_generator)
 {
-    return nil_exprt();
+    return true_exprt();
 }
 
 bool equality_domaint::edit_row(const rowt &row, exprt &value, valuet &inv, bool improved)
@@ -27,7 +27,7 @@ bool equality_domaint::edit_row(const rowt &row, exprt &value, valuet &inv, bool
 
 exprt equality_domaint::to_pre_constraints(valuet &_value)
 {
-    return nil_exprt();
+    return true_exprt();
 }
 
 void equality_domaint::make_not_post_constraints(

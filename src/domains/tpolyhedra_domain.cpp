@@ -67,7 +67,7 @@ const exprt tpolyhedra_domaint::initialize_solver(const local_SSAt &SSA,
                                                   const exprt &precondition,
                                                   template_generator_baset &template_generator)
 {
-  return nil_exprt();
+  return true_exprt();
 }
 
 /*******************************************************************\

@@ -56,7 +56,7 @@ const exprt lexlinrank_domaint::initialize_solver(
     const exprt &precondition,
     template_generator_baset &template_generator)
 {
-    return nil_exprt();
+    return true_exprt();
 }
 
 bool lexlinrank_domaint::edit_row(const rowt &row, exprt &value, valuet &inv, bool improved)
@@ -66,7 +66,7 @@ bool lexlinrank_domaint::edit_row(const rowt &row, exprt &value, valuet &inv, bo
 
 exprt lexlinrank_domaint::to_pre_constraints(valuet &_value)
 {
-    return nil_exprt();
+    return true_exprt();
 }
 
 void lexlinrank_domaint::make_not_post_constraints(

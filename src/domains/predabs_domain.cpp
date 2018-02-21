@@ -50,7 +50,7 @@ const exprt predabs_domaint::initialize_solver(
     const exprt &precondition,
     template_generator_baset &template_generator)
 {
-    return nil_exprt();
+    return true_exprt();
 }
 
 bool predabs_domaint::edit_row(const rowt &row, exprt &value, valuet &inv, bool improved)
