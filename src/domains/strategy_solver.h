@@ -1,6 +1,6 @@
 /*******************************************************************\
 
-Module: Strategy solver for heap shape analysis
+Module: Generic strategy solver
 
 Author: Viktor Malik
 
@@ -13,10 +13,10 @@ Author: Viktor Malik
 #include "domain.h"
 #include "template_generator_base.h"
 
-class strategy_solver_heapt:public strategy_solver_baset
+class strategy_solver:public strategy_solver_baset
 {
 public:
-  strategy_solver_heapt(
+  strategy_solver(
     domaint &_domain,
     incremental_solvert &_solver,
     const local_SSAt &SSA,

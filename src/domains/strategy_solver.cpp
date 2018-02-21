@@ -1,7 +1,7 @@
 #include <ssa/ssa_inliner.h>
-#include "strategy_solver_heap.h"
+#include "strategy_solver.h"
 
-bool strategy_solver_heapt::iterate(invariantt &inv)
+bool strategy_solver::iterate(invariantt &inv)
 {
   bool improved=false;
 

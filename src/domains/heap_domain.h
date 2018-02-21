@@ -359,7 +359,7 @@ protected:
   // Utility functions
   static int get_symbol_loc(const exprt &expr);
 
-  friend class strategy_solver_heapt;
+  friend class strategy_solver;
 };
 
 #endif // CPROVER_2LS_DOMAINS_HEAP_DOMAIN_H
