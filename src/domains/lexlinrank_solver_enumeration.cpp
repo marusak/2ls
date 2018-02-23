@@ -1,103 +1,52 @@
-/*******************************************************************\
-
-Module: Enumeration-based solver for lexicographic linear ranking 
-        functions
-
-Author: Peter Schrammel
-
-\*******************************************************************/
-
-#ifdef DEBUG
-#include <iostream>
-#endif
-
 #include <util/simplify_expr.h>
 #include <util/cprover_prefix.h>
 
 #include "lexlinrank_solver_enumeration.h"
 #include "util.h"
-
-// #define DEBUG_OUTER_FORMULA
-// #define DEBUG_INNER_FORMULA
-
-/*******************************************************************\
-
-Function: lexlinrank_solver_enumerationt::iterate
-
-  Inputs:
-
- Outputs:
-
- Purpose:
-
-\*******************************************************************/
-
 bool lexlinrank_solver_enumerationt::iterate(invariantt &_rank)
 {
   lexlinrank_domaint::templ_valuet &rank=
     static_cast<lexlinrank_domaint::templ_valuet &>(_rank);
 
   bool improved=false;
+
+  //move to class? the resize should be in echa iteration differen??
   static std::vector<unsigned> number_elements_per_row;
   number_elements_per_row.resize(rank.size());
 
-  debug() << "(RANK) no rows=" << rank.size() << eom;
-
   solver.new_context();
 
+  // Entry value constraints
+  exprt pre_expr=domain.to_pre_constraints(_rank);
+  solver << pre_expr;
 
-  // choose round to even rounding mode for template computations
-  // not clear what its implications on soundness and
-  // termination of the synthesis are
-  exprt rounding_mode=
-    symbol_exprt(CPROVER_PREFIX "rounding_mode", signedbv_typet(32));
-  solver << equal_exprt(
-    rounding_mode, from_integer(mp_integer(0), signedbv_typet(32)));
+  exprt::operandst strategy_cond_exprs;
 
   // handles on values to retrieve from model
+  std::vector<exprt> strategy_value_exprs;
   std::vector<lexlinrank_domaint::pre_post_valuest> rank_value_exprs;
-  exprt::operandst rank_cond_exprs;
-  bvt rank_cond_literals;
 
   exprt rank_expr=
-    lexlinrank_domain.get_not_constraints(
+    domain.get_not_constraints(
       rank,
-      rank_cond_exprs,
+      strategy_cond_exprs,
       rank_value_exprs);
 
   solver << rank_expr;
 
-  rank_cond_literals.resize(rank_cond_exprs.size());
-  for(std::size_t i=0; i<rank_cond_exprs.size(); i++)
+  strategy_cond_literals.resize(strategy_cond_exprs.size());
+  for(std::size_t i=0; i<strategy_cond_exprs.size(); i++)
   {
-    rank_cond_literals[i]=solver.solver->convert(rank_cond_exprs[i]);
+    strategy_cond_literals[i]=solver.solver->convert(strategy_cond_exprs[i]);
   }
-
-  debug() << "Outer solve(): ";
-
-#if 0
-  // check whether the literal is UNSAT to start with
-  satcheck_minisat_no_simplifiert test_satcheck;
-  bv_pointerst test_solver=bv_pointerst(ns, test_satcheck);
-
-  test_solver << rank_expr;
-
-  if(test_solver()==decision_proceduret::D_SATISFIABLE)
-    debug() << "test solver: SAT" << eom;
-  else
-    debug() << "test solver: UNSAT" << eom;
-#endif
 
   if(solver()==decision_proceduret::D_SATISFIABLE)
   {
-    debug() << "Outer solver: SAT" << eom;
-
-    for(std::size_t row=0; row<rank_cond_literals.size(); row++)
+    for(std::size_t row=0; row<strategy_cond_literals.size(); row++)
     {
-      // retrieve values from the model x_i and x'_i
       lexlinrank_domaint::pre_post_valuest values;
 
-      if(solver.solver->l_get(rank_cond_literals[row]).is_true())
+      if(solver.solver->l_get(strategy_cond_literals[row]).is_true())
       {
         for(auto &row_expr : rank_value_exprs[row])
         {
@@ -124,7 +73,7 @@ bool lexlinrank_solver_enumerationt::iterate(invariantt &_rank)
         exprt refinement_constraint;
 
         // generate the new constraint
-        constraint=lexlinrank_domain.get_row_symb_constraint(
+        constraint=domain.get_row_symb_constraint(
           symb_values,
           row, values,
           refinement_constraint);
@@ -137,6 +86,7 @@ bool lexlinrank_solver_enumerationt::iterate(invariantt &_rank)
 
         *inner_solver << constraint;
 
+        exprt rounding_mode=symbol_exprt(CPROVER_PREFIX "rounding_mode", signedbv_typet(32));
         // set rounding mode
         *inner_solver << equal_exprt(
           rounding_mode, from_integer(mp_integer(0), signedbv_typet(32)));
@@ -193,7 +143,7 @@ bool lexlinrank_solver_enumerationt::iterate(invariantt &_rank)
           improved=true;
 
           // update the current template
-          lexlinrank_domain.set_row_value(row, new_row_values, rank);
+          domain.set_row_value(row, new_row_values, rank);
 
           if(!refinement_constraint.is_true())
             inner_solver->pop_context();
@@ -218,7 +168,7 @@ bool lexlinrank_solver_enumerationt::iterate(invariantt &_rank)
           }
 #endif
 
-          if(lexlinrank_domain.refine())
+          if(domain.refine())
           {
             debug() << "refining..." << eom;
             improved=true; // refinement possible
@@ -233,8 +183,8 @@ bool lexlinrank_solver_enumerationt::iterate(invariantt &_rank)
               debug() << "Reached the max no of lexicographic components "
                       << "and no ranking function was found" << eom;
               // no ranking function for the current template
-              lexlinrank_domain.set_row_value_to_true(row, rank);
-              lexlinrank_domain.reset_refinements();
+              domain.set_row_value_to_true(row, rank);
+              domain.reset_refinements();
             }
             else
             {
@@ -247,9 +197,9 @@ bool lexlinrank_solver_enumerationt::iterate(invariantt &_rank)
               delete inner_solver;
               inner_solver=incremental_solvert::allocate(ns);
               solver_instances++;
-              lexlinrank_domain.reset_refinements();
+              domain.reset_refinements();
 
-              lexlinrank_domain.add_element(row, rank);
+              domain.add_element(row, rank);
               number_inner_iterations=0;
               debug() << "Inner solver: "
                       << "the number of inner iterations for row " << row
@@ -264,19 +214,8 @@ bool lexlinrank_solver_enumerationt::iterate(invariantt &_rank)
   else
   {
     debug() << "Outer solver: UNSAT!!" << eom;
-    lexlinrank_domain.reset_refinements();
-
-#ifdef DEBUG_OUTER_FORMULA
-    for(std::size_t i=0; i<solver.formula.size(); i++)
-    {
-      if(solver.solver->is_in_conflict(solver.formula[i]))
-        debug() << "is_in_conflict: " << solver.formula[i] << eom;
-      else
-        debug() << "not_in_conflict: " << solver.formula[i] << eom;
-    }
-#endif
+    domain.reset_refinements();
   }
-
   solver.pop_context();
   return improved;
 }
