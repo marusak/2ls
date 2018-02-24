@@ -318,18 +318,17 @@ exprt heap_domaint::to_pre_constraints(valuet &_value)
 
 void heap_domaint::make_not_post_constraints(
   valuet &_value,
-  exprt::operandst &cond_exprs,
-  exprt::operandst &value_exprs)
+  exprt::operandst &cond_exprs)
 {
   heap_domaint::heap_valuet &value=static_cast<heap_domaint::heap_valuet &>(_value);
   assert(value.size()==templ.size());
   cond_exprs.resize(templ.size());
-  value_exprs.resize(templ.size());
+  strategy_value_exprs.resize(templ.size());
 
   for(rowt row=0; row<templ.size(); ++row)
   {
-    value_exprs[row]=templ[row].expr;
-    rename(value_exprs[row]);
+    strategy_value_exprs[row]=templ[row].expr;
+    rename(strategy_value_exprs[row]);
     const exprt row_expr=not_exprt(get_row_post_constraint(row, value[row]));
     cond_exprs[row]=and_exprt(templ[row].aux_expr, row_expr);
   }

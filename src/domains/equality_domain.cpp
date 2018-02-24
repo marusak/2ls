@@ -32,8 +32,7 @@ exprt equality_domaint::to_pre_constraints(valuet &_value)
 
 void equality_domaint::make_not_post_constraints(
     valuet &_value,
-    exprt::operandst &cond_exprs,
-    exprt::operandst &value_exprs)
+    exprt::operandst &cond_exprs)
 {
 }
 

@@ -13,26 +13,24 @@ bool strategy_solver::iterate(invariantt &inv)
 
   // Exit value constraints
   exprt::operandst strategy_cond_exprs;
-  domain.make_not_post_constraints(inv,
-                                        strategy_cond_exprs,
-                                        strategy_value_exprs);
+  domain.make_not_post_constraints(inv, strategy_cond_exprs);
 
-  strategy_cond_literals.resize(strategy_cond_exprs.size());
+  domain.strategy_cond_literals.resize(strategy_cond_exprs.size());
 
   for(std::size_t i=0; i<strategy_cond_exprs.size(); ++i)
   {
-    strategy_cond_literals[i]=solver.convert(strategy_cond_exprs[i]);
-    strategy_cond_exprs[i]=literal_exprt(strategy_cond_literals[i]);
+    domain.strategy_cond_literals[i]=solver.convert(strategy_cond_exprs[i]);
+    strategy_cond_exprs[i]=literal_exprt(domain.strategy_cond_literals[i]);
   }
   solver << disjunction(strategy_cond_exprs);
 
   if(solver()==decision_proceduret::D_SATISFIABLE)
   {
-    for(std::size_t row=0; row<strategy_cond_literals.size(); ++row)
+    for(std::size_t row=0; row<domain.strategy_cond_literals.size(); ++row)
     {
-      if(solver.l_get(strategy_cond_literals[row]).is_true())
+      if(solver.l_get(domain.strategy_cond_literals[row]).is_true())
       {
-        exprt value=solver.get(strategy_value_exprs[row]);
+        exprt value=solver.get(domain.strategy_value_exprs[row]);
         improved = domain.edit_row(row, value, inv, improved);
       }
     }

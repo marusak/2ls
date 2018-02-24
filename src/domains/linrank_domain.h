@@ -69,8 +69,7 @@ public:
 
   void make_not_post_constraints(
     valuet &_value,
-    exprt::operandst &cond_exprs,
-    exprt::operandst &value_exprs);
+    exprt::operandst &cond_exprs);
 
   virtual bool refine();
 

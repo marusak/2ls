@@ -62,8 +62,7 @@ public:
 
   void make_not_post_constraints(
     valuet &_value,
-    exprt::operandst &cond_exprs,
-    exprt::operandst &value_exprs);
+    exprt::operandst &cond_exprs);
 
   // value -> constraints
   exprt get_row_constraint(const rowt &row, const row_valuet &row_value);

@@ -212,8 +212,7 @@ Function: predabs_domaint::make_not_post_constraints
 \*******************************************************************/
 
 void predabs_domaint::make_not_post_constraints(valuet &_value,
-                               exprt::operandst &cond_exprs,
-                               exprt::operandst &value_exprs)
+                               exprt::operandst &cond_exprs)
 {
   predabs_domaint::templ_valuet &value=static_cast<predabs_domaint::templ_valuet &>(_value);
   assert(value.size()==templ.size());

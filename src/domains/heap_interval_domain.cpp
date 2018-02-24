@@ -46,8 +46,7 @@ exprt heap_interval_domaint::to_pre_constraints(valuet &_value)
 }
 
 void heap_interval_domaint::make_not_post_constraints(valuet &_value,
-                                                      exprt::operandst &cond_exprs,
-                                                      exprt::operandst &value_exprs)
+                                                      exprt::operandst &cond_exprs)
 {
 }
 /*******************************************************************\

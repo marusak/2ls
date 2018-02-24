@@ -449,19 +449,18 @@ exprt tpolyhedra_domaint::to_pre_constraints(valuet &_value)
 
 void tpolyhedra_domaint::make_not_post_constraints(
   valuet &_value,
-  exprt::operandst &cond_exprs,
-  exprt::operandst &value_exprs)
+  exprt::operandst &cond_exprs)
 {
   tpolyhedra_domaint::templ_valuet &value=static_cast<tpolyhedra_domaint::templ_valuet &>(_value);
   assert(value.size()==templ.size());
   cond_exprs.resize(templ.size());
-  value_exprs.resize(templ.size());
+  strategy_value_exprs.resize(templ.size());
 
   exprt::operandst c;
   for(std::size_t row=0; row<templ.size(); ++row)
   {
-    value_exprs[row]=templ[row].expr;
-    rename(value_exprs[row]);
+    strategy_value_exprs[row]=templ[row].expr;
+    rename(strategy_value_exprs[row]);
     cond_exprs[row]=
       and_exprt(
         templ[row].aux_expr,

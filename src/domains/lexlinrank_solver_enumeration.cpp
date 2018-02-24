@@ -34,19 +34,19 @@ bool lexlinrank_solver_enumerationt::iterate(invariantt &_rank)
 
   solver << rank_expr;
 
-  strategy_cond_literals.resize(strategy_cond_exprs.size());
+  domain.strategy_cond_literals.resize(strategy_cond_exprs.size());
   for(std::size_t i=0; i<strategy_cond_exprs.size(); i++)
   {
-    strategy_cond_literals[i]=solver.solver->convert(strategy_cond_exprs[i]);
+    domain.strategy_cond_literals[i]=solver.solver->convert(strategy_cond_exprs[i]);
   }
 
   if(solver()==decision_proceduret::D_SATISFIABLE)
   {
-    for(std::size_t row=0; row<strategy_cond_literals.size(); row++)
+    for(std::size_t row=0; row<domain.strategy_cond_literals.size(); row++)
     {
       lexlinrank_domaint::pre_post_valuest values;
 
-      if(solver.solver->l_get(strategy_cond_literals[row]).is_true())
+      if(solver.solver->l_get(domain.strategy_cond_literals[row]).is_true())
       {
         for(auto &row_expr : rank_value_exprs[row])
         {

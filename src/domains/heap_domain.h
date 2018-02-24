@@ -201,8 +201,7 @@ public:
 
   void make_not_post_constraints(
     valuet &value,
-    exprt::operandst &cond_exprs,
-    exprt::operandst &value_exprs);
+    exprt::operandst &cond_exprs);
 
   // Row -> constraints
   exprt get_row_pre_constraint(

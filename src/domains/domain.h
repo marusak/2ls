@@ -17,7 +17,7 @@ Author: Peter Schrammel
 #include <langapi/language_util.h>
 #include <util/replace_expr.h>
 #include <util/namespace.h>
-//#include <ssa/local_ssa.h>
+#include <solvers/refinement/bv_refinement.h>
 
 // Forward declaration - real is in template_generator_base.h
 class template_generator_baset;
@@ -60,6 +60,11 @@ public:
 
   typedef std::vector<var_spect> var_specst;
 
+  // handles on values to retrieve from model
+  bvt strategy_cond_literals;
+  exprt::operandst strategy_value_exprs;
+
+
   class valuet
   {
   public:
@@ -83,8 +88,7 @@ public:
 
   virtual void make_not_post_constraints(
     valuet &value,
-    exprt::operandst &cond_exprs,
-    exprt::operandst &value_exprs) = 0;
+    exprt::operandst &cond_exprs) = 0;
 
   // returns true as long as further refinements are possible
   virtual void reset_refinements() { }
