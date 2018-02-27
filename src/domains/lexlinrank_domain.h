@@ -119,6 +119,7 @@ public:
     const var_specst &var_specs,
     const namespacet &ns);
 
+
 protected:
   templatet templ;
   unsigned refinement_level;
@@ -129,6 +130,9 @@ protected:
     const row_value_elementt & row_value_element) const;
   bool is_row_element_value_true(
     const row_value_elementt & row_value_element) const;
+public:
+  // handles on values to retrieve from model
+  std::vector<pre_post_valuest> rank_value_exprs = {};
 };
 
 #endif // CPROVER_2LS_DOMAINS_LEXLINRANK_DOMAIN_H

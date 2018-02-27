@@ -5,6 +5,7 @@
 #include "util.h"
 bool lexlinrank_solver_enumerationt::iterate(invariantt &_rank)
 {
+
   lexlinrank_domaint::templ_valuet &rank=
     static_cast<lexlinrank_domaint::templ_valuet &>(_rank);
 
@@ -22,15 +23,11 @@ bool lexlinrank_solver_enumerationt::iterate(invariantt &_rank)
 
   exprt::operandst strategy_cond_exprs;
 
-  // handles on values to retrieve from model
-  std::vector<exprt> strategy_value_exprs;
-  std::vector<lexlinrank_domaint::pre_post_valuest> rank_value_exprs;
-
   exprt rank_expr=
     domain.get_not_constraints(
       rank,
       strategy_cond_exprs,
-      rank_value_exprs);
+      domain.rank_value_exprs);
 
   solver << rank_expr;
 
@@ -48,7 +45,7 @@ bool lexlinrank_solver_enumerationt::iterate(invariantt &_rank)
 
       if(solver.solver->l_get(domain.strategy_cond_literals[row]).is_true())
       {
-        for(auto &row_expr : rank_value_exprs[row])
+        for(auto &row_expr : (domain.rank_value_exprs)[row])
         {
           // model for x_i
           exprt value=solver.solver->get(row_expr.first);
