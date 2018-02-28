@@ -1,6 +1,7 @@
 #include <util/simplify_expr.h>
 #include <util/cprover_prefix.h>
 
+#include <goto-symex/adjust_float_expressions.h>
 #include "lexlinrank_solver_enumeration.h"
 #include "util.h"
 bool lexlinrank_solver_enumerationt::iterate(invariantt &_rank)
@@ -11,41 +12,42 @@ bool lexlinrank_solver_enumerationt::iterate(invariantt &_rank)
 
   bool improved=false;
 
+  solver.new_context();
+
   //move to class? the resize should be in echa iteration differen??
   static std::vector<unsigned> number_elements_per_row;
   number_elements_per_row.resize(rank.size());
 
-  solver.new_context();
 
   // Entry value constraints
   exprt pre_expr=domain.to_pre_constraints(_rank);
   solver << pre_expr;
 
   exprt::operandst strategy_cond_exprs;
-
-  exprt rank_expr=
-    domain.get_not_constraints(
-      rank,
-      strategy_cond_exprs,
-      domain.rank_value_exprs);
-
-  solver << rank_expr;
+  domain.make_not_post_constraints(_rank,strategy_cond_exprs);
 
   domain.strategy_cond_literals.resize(strategy_cond_exprs.size());
+
   for(std::size_t i=0; i<strategy_cond_exprs.size(); i++)
   {
     domain.strategy_cond_literals[i]=solver.solver->convert(strategy_cond_exprs[i]);
+    //strategy_cond_exprs[i]=literal_exprt(domain.strategy_cond_literals[i]);
   }
+
+  exprt cond=disjunction(strategy_cond_exprs);
+  adjust_float_expressions(cond, ns);//this is more than needed
+  solver << cond;
 
   if(solver()==decision_proceduret::D_SATISFIABLE)
   {
     for(std::size_t row=0; row<domain.strategy_cond_literals.size(); row++)
     {
-      lexlinrank_domaint::pre_post_valuest values;
+      lexlinrank_domaint::pre_post_valuest values;//this is more than needed
 
       if(solver.solver->l_get(domain.strategy_cond_literals[row]).is_true())
       {
-        for(auto &row_expr : (domain.rank_value_exprs)[row])
+        //get and edit_row from now on
+        for(auto &row_expr : domain.strategy_value_exprs[row])
         {
           // model for x_i
           exprt value=solver.solver->get(row_expr.first);
@@ -211,7 +213,7 @@ bool lexlinrank_solver_enumerationt::iterate(invariantt &_rank)
   else
   {
     debug() << "Outer solver: UNSAT!!" << eom;
-    domain.reset_refinements();
+    domain.reset_refinements(); // fucntion for not_satisfied...
   }
   solver.pop_context();
   return improved;

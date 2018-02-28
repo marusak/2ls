@@ -72,12 +72,6 @@ exprt lexlinrank_domaint::to_pre_constraints(valuet &_value)
 
 }
 
-void lexlinrank_domaint::make_not_post_constraints(
-    valuet &_value,
-    exprt::operandst &cond_exprs)
-{
-}
-
 /*******************************************************************\
 
 Function: lexlinrank_domaint::refine
@@ -117,7 +111,7 @@ void lexlinrank_domaint::reset_refinements()
 
 /*******************************************************************\
 
-Function: lexlinrank_domaint::get_not_constraints
+Function: lexlinrank_domaint::make_not_post_constraints
 
   Inputs:
 
@@ -127,17 +121,17 @@ Function: lexlinrank_domaint::get_not_constraints
 
 \*******************************************************************/
 
-exprt lexlinrank_domaint::get_not_constraints(
-  const lexlinrank_domaint::templ_valuet &value,
-  exprt::operandst &cond_exprs,
-  std::vector<pre_post_valuest> &value_exprs)
+void lexlinrank_domaint::make_not_post_constraints(
+  valuet &_value,
+  exprt::operandst &cond_exprs)
 {
+  lexlinrank_domaint::templ_valuet &value=static_cast<lexlinrank_domaint::templ_valuet &>(_value);
   cond_exprs.resize(value.size());
-  value_exprs.resize(value.size());
+  strategy_value_exprs.resize(value.size());
 
 for(std::size_t row=0; row<templ.size(); row++)
   {
-    value_exprs[row]=templ[row].expr;
+    strategy_value_exprs[row]=templ[row].expr;
 
     if(is_row_value_true(value[row]))
     {
@@ -269,10 +263,13 @@ for(std::size_t row=0; row<templ.size(); row++)
           disjunction(elmts)));
     }
   }
+  /*
+  for(std::size_t i=0; i<cond_exprs.size(); i++)
+  {
+    adjust_float_expressions(cond_exprs[i], ns);
+  }
+  */
 
-  exprt cond=disjunction(cond_exprs);
-  adjust_float_expressions(cond, ns);
-  return cond;
 }
 
 /*******************************************************************\
