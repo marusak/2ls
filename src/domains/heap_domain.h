@@ -194,6 +194,8 @@ public:
     const exprt &precondition,
     template_generator_baset &template_generator);
 
+  void pre_iterate_init(valuet &value);
+
   bool edit_row(const rowt &row, exprt &value, valuet &inv, bool improved);
 
   // Value -> constraints

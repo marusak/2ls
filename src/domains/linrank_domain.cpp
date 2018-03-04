@@ -50,6 +50,21 @@ void linrank_domaint::initialize(valuet &value)
   }
 }
 
+/*******************************************************************\
+
+Function: linrank_domaint::pre_iterate_init
+
+  Inputs:
+
+ Outputs:
+
+ Purpose:
+
+\*******************************************************************/
+
+void linrank_domaint::pre_iterate_init(valuet &value){
+}
+
 const exprt linrank_domaint::initialize_solver(
     const local_SSAt &SSA,
     const exprt &precondition,

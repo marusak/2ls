@@ -45,6 +45,21 @@ void predabs_domaint::initialize(valuet &value)
   }
 }
 
+/*******************************************************************\
+
+Function: predabs_domaint::pre_iterate_init
+
+  Inputs:
+
+ Outputs:
+
+ Purpose:
+
+\*******************************************************************/
+
+void predabs_domaint::pre_iterate_init(valuet &value){
+}
+
 const exprt predabs_domaint::initialize_solver(
     const local_SSAt &SSA,
     const exprt &precondition,

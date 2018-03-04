@@ -72,6 +72,12 @@ exprt lexlinrank_domaint::to_pre_constraints(valuet &_value)
 
 }
 
+void lexlinrank_domaint::pre_iterate_init(domaint::valuet &_rank)
+{
+  lexlinrank_domaint::templ_valuet &rank=
+    static_cast<lexlinrank_domaint::templ_valuet &>(_rank);
+  number_elements_per_row.resize(rank.size());
+}
 /*******************************************************************\
 
 Function: lexlinrank_domaint::refine

@@ -12,6 +12,21 @@ void equality_domaint::initialize(valuet &value)
   v.disequs.clear();
 }
 
+/*******************************************************************\
+
+Function: equality_domaint::pre_iterate_init
+
+  Inputs:
+
+ Outputs:
+
+ Purpose:
+
+\*******************************************************************/
+
+void equality_domaint::pre_iterate_init(valuet &value){
+}
+
 const exprt equality_domaint::initialize_solver(
     const local_SSAt &SSA,
     const exprt &precondition,

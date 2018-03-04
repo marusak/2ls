@@ -58,6 +58,8 @@ equality_domaint(
     const exprt &precondition,
     template_generator_baset &template_generator);
 
+  virtual void pre_iterate_init(valuet &value);
+
   bool edit_row(const rowt &row, exprt &value, valuet &inv, bool improved);
 
   exprt to_pre_constraints(valuet &_value);

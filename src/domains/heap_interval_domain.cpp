@@ -28,6 +28,21 @@ void heap_interval_domaint::initialize(domaint::valuet &value)
   interval_domain.initialize(v.interval_value);
 }
 
+/*******************************************************************\
+
+Function: heap_interval_domaint::pre_iterate_init
+
+  Inputs:
+
+ Outputs:
+
+ Purpose:
+
+\*******************************************************************/
+
+void heap_interval_domaint::pre_iterate_init(valuet &value){
+}
+
 const exprt heap_interval_domaint::initialize_solver(const local_SSAt &SSA,
                                                      const exprt &precondition,
                                                      template_generator_baset &template_generator)

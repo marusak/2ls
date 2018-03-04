@@ -14,10 +14,7 @@ bool lexlinrank_solver_enumerationt::iterate(invariantt &_rank)
 
   solver.new_context();
 
-  //move to class? the resize should be in echa iteration differen??
-  static std::vector<unsigned> number_elements_per_row;
-  number_elements_per_row.resize(rank.size());
-
+  domain.pre_iterate_init(_rank);
 
   // Entry value constraints
   exprt pre_expr=domain.to_pre_constraints(_rank);
@@ -114,7 +111,7 @@ bool lexlinrank_solver_enumerationt::iterate(invariantt &_rank)
                   << number_inner_iterations << eom;
           debug() << "Inner solver: "
                   << "Current number of components for row "
-                  << row << " is " << number_elements_per_row[row]+1 << eom;
+                  << row << " is " << domain.number_elements_per_row[row]+1 << eom;
 
           // new_row_values will contain the new values for c and d
           lexlinrank_domaint::row_valuet new_row_values;
@@ -177,7 +174,7 @@ bool lexlinrank_solver_enumerationt::iterate(invariantt &_rank)
           }
           else
           {
-            if(number_elements_per_row[row]==max_elements-1)
+            if(domain.number_elements_per_row[row]==max_elements-1)
             {
               debug() << "Reached the max no of lexicographic components "
                       << "and no ranking function was found" << eom;
@@ -187,10 +184,10 @@ bool lexlinrank_solver_enumerationt::iterate(invariantt &_rank)
             }
             else
             {
-              number_elements_per_row[row]++;
+              domain.number_elements_per_row[row]++;
               debug() << "Inner solver: increasing the number "
                       << "of lexicographic components for row " << row
-                      << " to " << number_elements_per_row[row]+1 << eom;
+                      << " to " << domain.number_elements_per_row[row]+1 << eom;
               // reset the inner solver
               debug() << "Reset the inner solver " << eom;
               delete inner_solver;

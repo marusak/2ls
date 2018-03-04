@@ -90,6 +90,8 @@ public:
     valuet &value,
     exprt::operandst &cond_exprs) = 0;
 
+  virtual void pre_iterate_init(valuet &value) = 0;
+
   // returns true as long as further refinements are possible
   virtual void reset_refinements() { }
   virtual bool refine() { return false; }

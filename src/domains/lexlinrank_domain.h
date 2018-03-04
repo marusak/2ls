@@ -21,6 +21,7 @@ Author: Peter Schrammel
 
 #include "domain.h"
 
+
 class lexlinrank_domaint:public domaint
 {
 public:
@@ -119,6 +120,8 @@ public:
     const var_specst &var_specs,
     const namespacet &ns);
 
+  void pre_iterate_init(domaint::valuet &rank);
+
 
 protected:
   templatet templ;
@@ -133,7 +136,7 @@ protected:
 public:
   // handles on values to retrieve from model
   std::vector<lexlinrank_domaint::pre_post_valuest> strategy_value_exprs;
-
+  std::vector<unsigned> number_elements_per_row;
 };
 
 #endif // CPROVER_2LS_DOMAINS_LEXLINRANK_DOMAIN_H

@@ -5,6 +5,8 @@ bool strategy_solver::iterate(invariantt &inv)
 {
   bool improved=false;
 
+  domain.pre_iterate_init(inv);
+
   solver.new_context();
 
   // Entry value constraints

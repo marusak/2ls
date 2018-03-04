@@ -47,6 +47,21 @@ void heap_domaint::make_template(
   }
 }
 
+/*******************************************************************\
+
+Function: heap_domaint::pre_iterate_init
+
+  Inputs:
+
+ Outputs:
+
+ Purpose:
+
+\*******************************************************************/
+
+void heap_domaint::pre_iterate_init(valuet &value){
+}
+
 
 /*******************************************************************\
 

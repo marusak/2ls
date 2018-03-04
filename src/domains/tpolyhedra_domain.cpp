@@ -54,6 +54,21 @@ void tpolyhedra_domaint::initialize(valuet &value)
 
 /*******************************************************************\
 
+Function: tpolyhedra_domaint::pre_iterate_init
+
+  Inputs:
+
+ Outputs:
+
+ Purpose:
+
+\*******************************************************************/
+
+void tpolyhedra_domaint::pre_iterate_init(valuet &value){
+}
+
+/*******************************************************************\
+
 Function: tpolyhedra_domaint::initialize_solver
 
   Inputs:
