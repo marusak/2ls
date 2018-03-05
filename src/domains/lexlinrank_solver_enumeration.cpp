@@ -27,7 +27,7 @@ bool lexlinrank_solver_enumerationt::iterate(invariantt &_rank)
 
   for(std::size_t i=0; i<strategy_cond_exprs.size(); i++)
   {
-    domain.strategy_cond_literals[i]=solver.solver->convert(strategy_cond_exprs[i]);
+    domain.strategy_cond_literals[i]=solver.convert(strategy_cond_exprs[i]);
     //strategy_cond_exprs[i]=literal_exprt(domain.strategy_cond_literals[i]);
   }
 

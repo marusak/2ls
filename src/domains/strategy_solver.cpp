@@ -1,5 +1,6 @@
 #include <ssa/ssa_inliner.h>
 #include "strategy_solver.h"
+#include <goto-symex/adjust_float_expressions.h>
 
 bool strategy_solver::iterate(invariantt &inv)
 {
@@ -22,9 +23,11 @@ bool strategy_solver::iterate(invariantt &inv)
   for(std::size_t i=0; i<strategy_cond_exprs.size(); ++i)
   {
     domain.strategy_cond_literals[i]=solver.convert(strategy_cond_exprs[i]);
-    strategy_cond_exprs[i]=literal_exprt(domain.strategy_cond_literals[i]);
   }
-  solver << disjunction(strategy_cond_exprs);
+
+  exprt cond=disjunction(strategy_cond_exprs);
+  adjust_float_expressions(cond, ns);
+  solver << cond;
 
   if(solver()==decision_proceduret::D_SATISFIABLE)
   {
