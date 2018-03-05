@@ -189,6 +189,22 @@ bool heap_domaint::edit_row(const rowt &row, exprt &value, valuet &_inv, bool im
 
 /*******************************************************************\
 
+Function: heap_domaint::not_satisfiable
+
+  Inputs:
+
+ Outputs:
+
+ Purpose:
+
+\*******************************************************************/
+
+void heap_domaint::not_satisfiable()
+{
+}
+
+/*******************************************************************\
+
 Function: heap_domaint::find_member_row
 
   Inputs:

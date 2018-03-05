@@ -78,6 +78,25 @@ void lexlinrank_domaint::pre_iterate_init(domaint::valuet &_rank)
     static_cast<lexlinrank_domaint::templ_valuet &>(_rank);
   number_elements_per_row.resize(rank.size());
 }
+
+
+/*******************************************************************\
+
+Function: lexlinrank_domaint::not_satisfiable
+
+  Inputs:
+
+ Outputs:
+
+ Purpose:
+
+\*******************************************************************/
+
+void lexlinrank_domaint::not_satisfiable()
+{
+    reset_refinements();
+}
+
 /*******************************************************************\
 
 Function: lexlinrank_domaint::refine

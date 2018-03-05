@@ -82,6 +82,8 @@ public:
     const exprt &precondition,
     template_generator_baset &template_generator) = 0;
 
+  virtual void pre_iterate_init(valuet &value) = 0;
+
   virtual bool edit_row(const rowt &row, exprt &value, valuet &inv, bool improved) = 0;
 
   virtual exprt to_pre_constraints(valuet &value) = 0;
@@ -90,7 +92,7 @@ public:
     valuet &value,
     exprt::operandst &cond_exprs) = 0;
 
-  virtual void pre_iterate_init(valuet &value) = 0;
+  virtual void not_satisfiable() = 0;
 
   // returns true as long as further refinements are possible
   virtual void reset_refinements() { }

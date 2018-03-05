@@ -75,6 +75,22 @@ bool predabs_domaint::edit_row(const rowt &row, exprt &value, valuet &inv, bool 
 
 /*******************************************************************\
 
+Function: predabs_domaint::not_satisfiable
+
+  Inputs:
+
+ Outputs:
+
+ Purpose:
+
+\*******************************************************************/
+
+void predabs_domaint::not_satisfiable()
+{
+}
+
+/*******************************************************************\
+
 Function: predabs_domaint::get_row_constraint
 
   Inputs:

@@ -66,6 +66,8 @@ public:
     const exprt &precondition,
     template_generator_baset &template_generator);
 
+  void pre_iterate_init(domaint::valuet &rank);
+
   bool edit_row(const rowt &row, exprt &value, valuet &inv, bool improved);
 
   exprt to_pre_constraints(valuet &_value);
@@ -73,6 +75,8 @@ public:
   void make_not_post_constraints(
     valuet &_value,
     exprt::operandst &cond_exprs);
+
+  virtual void not_satisfiable();
 
   virtual bool refine();
   virtual void reset_refinements();
@@ -120,7 +124,6 @@ public:
     const var_specst &var_specs,
     const namespacet &ns);
 
-  void pre_iterate_init(domaint::valuet &rank);
 
 
 protected:

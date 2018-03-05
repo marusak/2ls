@@ -83,6 +83,22 @@ exprt equality_domaint::get_post_not_equ_constraint(unsigned index)
 
 /*******************************************************************\
 
+Function: equality_domaint::not_satisfiable
+
+  Inputs:
+
+ Outputs:
+
+ Purpose:
+
+\*******************************************************************/
+
+void equality_domaint::not_satisfiable()
+{
+}
+
+/*******************************************************************\
+
 Function: equality_domaint::get_pre_disequ_constraint
 
   Inputs:

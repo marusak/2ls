@@ -64,6 +64,8 @@ public:
     valuet &_value,
     exprt::operandst &cond_exprs);
 
+  virtual void not_satisfiable();
+
   virtual void join(valuet &value1, const valuet &value2);
 
   // value -> constraints

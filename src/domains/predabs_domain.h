@@ -66,6 +66,8 @@ public:
     valuet &_value,
     exprt::operandst &cond_exprs);
 
+  virtual void not_satisfiable();
+
   // value -> constraints
   exprt get_row_constraint(const rowt &row, const row_valuet &row_value);
   exprt get_row_pre_constraint(const rowt &row, const row_valuet &row_value);

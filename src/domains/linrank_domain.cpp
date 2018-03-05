@@ -88,6 +88,23 @@ void linrank_domaint::make_not_post_constraints(
     exprt::operandst &cond_exprs)
 {
 }
+
+/*******************************************************************\
+
+Function: linrank_domaint::not_satisfiable
+
+  Inputs:
+
+ Outputs:
+
+ Purpose:
+
+\*******************************************************************/
+
+void linrank_domaint::not_satisfiable()
+{
+}
+
 /*******************************************************************\
 
 Function: linrank_domaint::refine

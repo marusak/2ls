@@ -68,6 +68,7 @@ equality_domaint(
     valuet &_value,
     exprt::operandst &cond_exprs);
 
+  virtual void not_satisfiable();
 
   exprt get_pre_equ_constraint(unsigned index);
   exprt get_post_not_equ_constraint(unsigned index);

@@ -73,6 +73,8 @@ public:
     valuet &_value,
     exprt::operandst &cond_exprs);
 
+  virtual void not_satisfiable();
+
   virtual bool refine();
 
   // value -> constraints

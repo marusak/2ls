@@ -105,6 +105,22 @@ bool tpolyhedra_domaint::edit_row(const rowt &row, exprt &value, valuet &_inv, b
 
 /*******************************************************************\
 
+Function: tpolyhedra_domaint::not_satisfiable
+
+  Inputs:
+
+ Outputs:
+
+ Purpose:
+
+\*******************************************************************/
+
+void tpolyhedra_domaint::not_satisfiable()
+{
+}
+
+/*******************************************************************\
+
 Function: tpolyhedra_domaint::join
 
   Inputs:

@@ -28,22 +28,20 @@ bool lexlinrank_solver_enumerationt::iterate(invariantt &_rank)
   for(std::size_t i=0; i<strategy_cond_exprs.size(); i++)
   {
     domain.strategy_cond_literals[i]=solver.convert(strategy_cond_exprs[i]);
-    //strategy_cond_exprs[i]=literal_exprt(domain.strategy_cond_literals[i]);
   }
 
   exprt cond=disjunction(strategy_cond_exprs);
-  adjust_float_expressions(cond, ns);//this is more than needed
+  adjust_float_expressions(cond, ns);
   solver << cond;
 
   if(solver()==decision_proceduret::D_SATISFIABLE)
   {
     for(std::size_t row=0; row<domain.strategy_cond_literals.size(); row++)
     {
-      lexlinrank_domaint::pre_post_valuest values;//this is more than needed
-
       if(solver.solver->l_get(domain.strategy_cond_literals[row]).is_true())
       {
         //get and edit_row from now on
+        lexlinrank_domaint::pre_post_valuest values;//this is more than needed
         for(auto &row_expr : domain.strategy_value_exprs[row])
         {
           // model for x_i
@@ -210,7 +208,7 @@ bool lexlinrank_solver_enumerationt::iterate(invariantt &_rank)
   else
   {
     debug() << "Outer solver: UNSAT!!" << eom;
-    domain.reset_refinements(); // fucntion for not_satisfied...
+    domain.not_satisfiable();
   }
   solver.pop_context();
   return improved;

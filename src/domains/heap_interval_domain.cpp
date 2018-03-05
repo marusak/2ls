@@ -64,6 +64,23 @@ void heap_interval_domaint::make_not_post_constraints(valuet &_value,
                                                       exprt::operandst &cond_exprs)
 {
 }
+
+/*******************************************************************\
+
+Function: heap_interval_domaint::not_satisfiable
+
+  Inputs:
+
+ Outputs:
+
+ Purpose:
+
+\*******************************************************************/
+
+void heap_interval_domaint::not_satisfiable()
+{
+}
+
 /*******************************************************************\
 
 Function: heap_interval_domaint::output_value
