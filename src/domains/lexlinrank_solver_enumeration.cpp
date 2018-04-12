@@ -41,23 +41,15 @@ bool lexlinrank_solver_enumerationt::iterate(invariantt &_rank)
       if(solver.solver->l_get(domain.strategy_cond_literals[row]).is_true())
       {
         //get and edit_row from now on
-        lexlinrank_domaint::pre_post_valuest values;//this is more than needed
-        for(auto &row_expr : domain.strategy_value_exprs[row])
-        {
-          // model for x_i
-          exprt value=solver.solver->get(row_expr.first);
-          debug() << "Row " << row << " Value for "
-                  << from_expr(ns, "", row_expr.first)
-                  << ": " << from_expr(ns, "", value) << eom;
-          // model for x'_i
-          exprt post_value=solver.solver->get(row_expr.second);
-          debug() << "Row " << row << " Value for "
-                  << from_expr(ns, "", row_expr.second)
-                  << ": " << from_expr(ns, "", post_value) << eom;
-          // record all the values
-          values.push_back(std::make_pair(value, post_value));
+        std::vector<exprt> required_values = domain.get_required_values(row);
+        std::vector<exprt> got_values;
+        for(auto &c_exprt : required_values) {
+            got_values.push_back(solver.solver->get(c_exprt));
         }
-
+        // DO NOT RETURN, JUST SET IT IN
+        lexlinrank_domaint::pre_post_valuest values;//this is more than needed
+        values = domain.set_values(got_values);
+        //---------------
         lexlinrank_domaint::row_valuet symb_values;
         symb_values.resize(rank[row].size());
 

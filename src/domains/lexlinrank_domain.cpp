@@ -79,6 +79,23 @@ void lexlinrank_domaint::pre_iterate_init(domaint::valuet &_rank)
   number_elements_per_row.resize(rank.size());
 }
 
+std::vector<exprt> lexlinrank_domaint::get_required_values(size_t row){
+    std::vector<exprt> r;
+    for(auto &row_expr : strategy_value_exprs[row])
+    {
+      r.push_back(row_expr.first);
+      r.push_back(row_expr.second);
+    }
+    return r;
+}
+
+lexlinrank_domaint::pre_post_valuest lexlinrank_domaint::set_values(std::vector<exprt> got_values){
+    pre_post_valuest r;
+    for (size_t i = 0; i < got_values.size(); i += 2){
+        r.push_back(std::make_pair(got_values[i], got_values[i+1]));
+    }
+    return r;
+}
 
 /*******************************************************************\
 

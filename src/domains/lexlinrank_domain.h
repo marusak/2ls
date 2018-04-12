@@ -75,7 +75,8 @@ public:
   void make_not_post_constraints(
     valuet &_value,
     exprt::operandst &cond_exprs);
-
+  std::vector<exprt> get_required_values(size_t row);
+  pre_post_valuest set_values(std::vector<exprt> got_values);
   virtual void not_satisfiable();
 
   virtual bool refine();
