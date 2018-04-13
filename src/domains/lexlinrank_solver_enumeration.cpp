@@ -47,8 +47,8 @@ bool lexlinrank_solver_enumerationt::iterate(invariantt &_rank)
             got_values.push_back(solver.solver->get(c_exprt));
         }
         // DO NOT RETURN, JUST SET IT IN
-        lexlinrank_domaint::pre_post_valuest values;//this is more than needed
-        values = domain.set_values(got_values);
+        domain.set_values(got_values);
+
         //---------------
         lexlinrank_domaint::row_valuet symb_values;
         symb_values.resize(rank[row].size());
@@ -61,7 +61,7 @@ bool lexlinrank_solver_enumerationt::iterate(invariantt &_rank)
         // generate the new constraint
         constraint=domain.get_row_symb_constraint(
           symb_values,
-          row, values,
+          row,
           refinement_constraint);
 
         simplify_expr(constraint, ns);

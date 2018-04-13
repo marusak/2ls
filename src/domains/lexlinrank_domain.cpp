@@ -89,12 +89,10 @@ std::vector<exprt> lexlinrank_domaint::get_required_values(size_t row){
     return r;
 }
 
-lexlinrank_domaint::pre_post_valuest lexlinrank_domaint::set_values(std::vector<exprt> got_values){
-    pre_post_valuest r;
-    for (size_t i = 0; i < got_values.size(); i += 2){
-        r.push_back(std::make_pair(got_values[i], got_values[i+1]));
-    }
-    return r;
+void lexlinrank_domaint::set_values(std::vector<exprt> got_values){
+    values.clear();
+    for (size_t i = 0; i < got_values.size(); i += 2)
+        values.push_back(std::make_pair(got_values[i], got_values[i+1]));
 }
 
 /*******************************************************************\
@@ -329,7 +327,6 @@ Function: lexlinrank_domaint::get_row_symb_constraint
 exprt lexlinrank_domaint::get_row_symb_constraint(
   row_valuet &symb_values, // contains vars c and d
   const rowt &row,
-  const pre_post_valuest &values,
   exprt &refinement_constraint)
 {
   // NOTE: I assume symb_values.size was set to the number of

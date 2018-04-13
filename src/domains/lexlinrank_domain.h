@@ -76,7 +76,7 @@ public:
     valuet &_value,
     exprt::operandst &cond_exprs);
   std::vector<exprt> get_required_values(size_t row);
-  pre_post_valuest set_values(std::vector<exprt> got_values);
+  void set_values(std::vector<exprt> got_values);
   virtual void not_satisfiable();
 
   virtual bool refine();
@@ -90,7 +90,6 @@ public:
   exprt get_row_symb_constraint(
     row_valuet &symb_values, // contains vars c and d
     const rowt &row,
-    const pre_post_valuest &values,
     exprt &refinement_constraint);
 
   void add_element(const rowt &row, templ_valuet &value);
@@ -131,6 +130,7 @@ protected:
   templatet templ;
   unsigned refinement_level;
 
+  pre_post_valuest values;
   bool is_row_value_false(const row_valuet & row_value) const;
   bool is_row_value_true(const row_valuet & row_value) const;
   bool is_row_element_value_false(
