@@ -26,7 +26,6 @@ Author: Peter Schrammel
 #include "linrank_domain.h"
 #include "lexlinrank_domain.h"
 #include "ranking_solver_enumeration.h"
-#include "lexlinrank_solver_enumeration.h"
 #include "template_generator_ranking.h"
 #include "strategy_solver_predabs.h"
 #include "ssa_analyzer.h"
@@ -92,13 +91,13 @@ void ssa_analyzert::operator()(
     }
     else
     {
-      s_solver=new lexlinrank_solver_enumerationt(
-        *static_cast<lexlinrank_domaint *>(domain),
-        solver,
-        SSA,
-        precondition,
-        get_message_handler(),
-        template_generator);
+    s_solver=new strategy_solver(
+      *static_cast<lexlinrank_domaint *>(domain),
+      solver,
+      SSA,
+      precondition,
+      get_message_handler(),
+      template_generator);
       result=new lexlinrank_domaint::templ_valuet();
     }
   }

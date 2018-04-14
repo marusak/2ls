@@ -57,6 +57,9 @@ const exprt lexlinrank_domaint::initialize_solver(
     const exprt &precondition,
     template_generator_baset &template_generator)
 {
+    delete inner_solver;
+    inner_solver=incremental_solvert::allocate(ns);
+
     return true_exprt();
 }
 
