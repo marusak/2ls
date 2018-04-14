@@ -86,6 +86,16 @@ const exprt heap_domaint::initialize_solver(const local_SSAt &SSA,
   return true_exprt();
 }
 
+std::vector<exprt> heap_domaint::get_required_values(size_t row){
+    std::vector<exprt> r;
+    r.push_back(strategy_value_exprs[row]);
+    return r;
+}
+
+void heap_domaint::set_values(std::vector<exprt> got_values){
+    value = got_values[0];
+}
+
 /*******************************************************************\
 
 Function: heap_domaint::edit_row
@@ -97,7 +107,7 @@ Function: heap_domaint::edit_row
  Purpose:
 
 \*******************************************************************/
-bool heap_domaint::edit_row(const rowt &row, exprt &value, valuet &_inv, bool improved){
+bool heap_domaint::edit_row(const rowt &row, valuet &_inv, bool improved){
     heap_domaint::heap_valuet &inv=static_cast<heap_domaint::heap_valuet &>(_inv);
 
     const template_rowt &templ_row=templ[row];

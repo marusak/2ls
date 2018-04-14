@@ -85,6 +85,16 @@ const exprt tpolyhedra_domaint::initialize_solver(const local_SSAt &SSA,
   return true_exprt();
 }
 
+std::vector<exprt> tpolyhedra_domaint::get_required_values(size_t row){
+    std::vector<exprt> r;
+    r.push_back(strategy_value_exprs[row]);
+    return r;
+}
+
+void tpolyhedra_domaint::set_values(std::vector<exprt> got_values){
+    value = got_values[0];
+}
+
 /*******************************************************************\
 
 Function: tpolyhedra_domaint::edit_row
@@ -97,7 +107,7 @@ Function: tpolyhedra_domaint::edit_row
 
 \*******************************************************************/
 
-bool tpolyhedra_domaint::edit_row(const rowt &row, exprt &value, valuet &_inv, bool improved){
+bool tpolyhedra_domaint::edit_row(const rowt &row, valuet &_inv, bool improved){
     tpolyhedra_domaint::templ_valuet &inv=static_cast<tpolyhedra_domaint::templ_valuet &>(_inv);
     set_row_value(row, simplify_const(value), inv);
     return true;

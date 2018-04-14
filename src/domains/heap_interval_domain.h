@@ -47,7 +47,10 @@ public:
 
   virtual void pre_iterate_init(valuet &value);
 
-  bool edit_row(const rowt &row, exprt &value, valuet &inv, bool improved);
+  std::vector<exprt> get_required_values(size_t row);
+  void set_values(std::vector<exprt> got_values);
+
+  bool edit_row(const rowt &row, valuet &inv, bool improved);
 
   exprt to_pre_constraints(valuet &_value);
 
@@ -70,6 +73,8 @@ public:
     valuet &value,
     const var_sett &vars,
     exprt &result) override;
+protected:
+  exprt value;
 };
 
 #endif // CPROVER_2LS_DOMAINS_HEAP_INTERVAL_DOMAIN_H

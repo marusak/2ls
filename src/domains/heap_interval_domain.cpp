@@ -50,7 +50,17 @@ const exprt heap_interval_domaint::initialize_solver(const local_SSAt &SSA,
     return true_exprt();
 }
 
-bool heap_interval_domaint::edit_row(const rowt &row, exprt &value, valuet &inv, bool improved)
+std::vector<exprt> heap_interval_domaint::get_required_values(size_t row){
+    std::vector<exprt> r;
+    r.push_back(strategy_value_exprs[row]);
+    return r;
+}
+
+void heap_interval_domaint::set_values(std::vector<exprt> got_values){
+    value = got_values[0];
+}
+
+bool heap_interval_domaint::edit_row(const rowt &row, valuet &inv, bool improved)
 {
     return false;
 }

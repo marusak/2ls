@@ -60,7 +60,7 @@ const exprt lexlinrank_domaint::initialize_solver(
     return true_exprt();
 }
 
-bool lexlinrank_domaint::edit_row(const rowt &row, exprt &value, valuet &inv, bool improved)
+bool lexlinrank_domaint::edit_row(const rowt &row, valuet &inv, bool improved)
 {
     lexlinrank_domaint::templ_valuet &rank=
       static_cast<lexlinrank_domaint::templ_valuet &>(inv);

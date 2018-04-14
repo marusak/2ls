@@ -196,7 +196,10 @@ public:
 
   void pre_iterate_init(valuet &value);
 
-  bool edit_row(const rowt &row, exprt &value, valuet &inv, bool improved);
+  std::vector<exprt> get_required_values(size_t row);
+  void set_values(std::vector<exprt> got_values);
+
+  bool edit_row(const rowt &row, valuet &inv, bool improved);
 
   // Value -> constraints
   exprt to_pre_constraints(valuet &value);
@@ -261,6 +264,7 @@ protected:
   exprt::operandst aux_bindings;
 
   std::set<unsigned> updated_rows;
+  exprt value;
 
   /*******************************************************************\
   Specification of a new heap row that is added dynamically

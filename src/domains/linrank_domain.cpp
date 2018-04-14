@@ -73,7 +73,17 @@ const exprt linrank_domaint::initialize_solver(
     return true_exprt();
 }
 
-bool linrank_domaint::edit_row(const rowt &row, exprt &value, valuet &inv, bool improved)
+std::vector<exprt> linrank_domaint::get_required_values(size_t row){
+    std::vector<exprt> r;
+    r.push_back(strategy_value_exprs[row]);
+    return r;
+}
+
+void linrank_domaint::set_values(std::vector<exprt> got_values){
+    value = got_values[0];
+}
+
+bool linrank_domaint::edit_row(const rowt &row, valuet &inv, bool improved)
 {
     return true;
 }

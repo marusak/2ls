@@ -84,13 +84,16 @@ public:
 
   virtual void pre_iterate_init(valuet &value) = 0;
 
-  virtual bool edit_row(const rowt &row, exprt &value, valuet &inv, bool improved) = 0;
+  virtual bool edit_row(const rowt &row, valuet &inv, bool improved) = 0;
 
   virtual exprt to_pre_constraints(valuet &value) = 0;
 
   virtual void make_not_post_constraints(
     valuet &value,
     exprt::operandst &cond_exprs) = 0;
+
+  virtual std::vector<exprt> get_required_values(size_t row) = 0;
+  virtual void set_values(std::vector<exprt> got_values) = 0;
 
   virtual void not_satisfiable() = 0;
 

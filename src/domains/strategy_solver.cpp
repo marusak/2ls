@@ -35,8 +35,15 @@ bool strategy_solver::iterate(invariantt &inv)
     {
       if(solver.l_get(domain.strategy_cond_literals[row]).is_true())
       {
-        exprt value=solver.get(domain.strategy_value_exprs[row]);
-        improved = domain.edit_row(row, value, inv, improved);
+        //Find what values from solver are needed
+        std::vector<exprt> required_values = domain.get_required_values(row);
+        std::vector<exprt> got_values;
+        for(auto &c_exprt : required_values) {
+            got_values.push_back(solver.solver->get(c_exprt));
+        }
+        domain.set_values(got_values);
+
+        improved = domain.edit_row(row, inv, improved);
       }
     }
   }
