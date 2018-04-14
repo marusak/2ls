@@ -12,6 +12,7 @@ Author: Peter Schrammel
 
 #include <util/simplify_expr.h>
 #include <util/cprover_prefix.h>
+#include <goto-symex/adjust_float_expressions.h>
 
 #include "ranking_solver_enumeration.h"
 #include "util.h"
@@ -34,71 +35,52 @@ bool ranking_solver_enumerationt::iterate(invariantt &_rank)
     static_cast<linrank_domaint::templ_valuet &>(_rank);
 
   bool improved=false;
+  domain.pre_iterate_init(_rank);
 
-  // context for "outer" solver
   solver.new_context();
 
-  // choose round to even rounding mode for template computations
-  //  not clear what its implications on soundness and
-  //  termination of the synthesis are
-  exprt rounding_mode=
-    symbol_exprt(CPROVER_PREFIX "rounding_mode", signedbv_typet(32));
-  solver <<
-    equal_exprt(
-      rounding_mode,
-      from_integer(mp_integer(0), signedbv_typet(32)));
+  exprt pre_expr=domain.to_pre_constraints(_rank);
+  solver << pre_expr;
 
   // handles on values to retrieve from model
-  std::vector<linrank_domaint::pre_post_valuest> rank_value_exprs;
-  exprt::operandst rank_cond_exprs;
-  bvt rank_cond_literals;
+  exprt::operandst strategy_cond_exprs;
 
-  exprt rank_expr=
-    linrank_domain.get_not_constraints(rank, rank_cond_exprs, rank_value_exprs);
+  domain.make_not_post_constraints(_rank, strategy_cond_exprs);
 
-  solver << rank_expr;
-
-  rank_cond_literals.resize(rank_cond_exprs.size());
-  for(std::size_t i=0; i<rank_cond_literals.size(); ++i)
+  domain.strategy_cond_literals.resize(strategy_cond_exprs.size());
+  for(std::size_t i=0; i<domain.strategy_cond_literals.size(); ++i)
   {
-    rank_cond_literals[i]=solver.solver->convert(rank_cond_exprs[i]);
+    domain.strategy_cond_literals[i]=solver.convert(strategy_cond_exprs[i]);
   }
 
-  debug() << "solve(): ";
+  exprt cond=disjunction(strategy_cond_exprs);
+  adjust_float_expressions(cond, ns);
+  solver << cond;
+
   if(solver()==decision_proceduret::D_SATISFIABLE)
   {
     debug() << "SAT" << eom;
 
-    for(std::size_t row=0; row<rank_cond_literals.size(); ++row)
+    for(std::size_t row=0; row<domain.strategy_cond_literals.size(); ++row)
     {
-      // retrieve values from the model x_i and x'_i
-      linrank_domaint::pre_post_valuest values;
-
-      if(solver.solver->l_get(rank_cond_literals[row]).is_true())
+      if(solver.solver->l_get(domain.strategy_cond_literals[row]).is_true())
       {
-        for(const auto &rve : rank_value_exprs[row])
-        {
-          // model for x_i
-          exprt value=solver.solver->get(rve.first);
-          debug() << "(RANK) Row " << row << " Value for "
-                  << from_expr(ns, "", rve.first)
-                  << ": " << from_expr(ns, "", value) << eom;
-          // model for x'_i
-          exprt post_value=solver.solver->get(rve.second);
-          debug() << "(RANK) Row " << row << " Value for "
-                  << from_expr(ns, "", rve.second)
-                  << ": " << from_expr(ns, "", post_value) << eom;
-          // record all the values
-          values.push_back(std::make_pair(value, post_value));
+        //Find what values from solver are needed
+        std::vector<exprt> required_values = domain.get_required_values(row);
+        std::vector<exprt> got_values;
+        for(auto &c_exprt : required_values) {
+            got_values.push_back(solver.solver->get(c_exprt));
         }
+        domain.set_values(got_values);
 
+        exprt rounding_mode=symbol_exprt(CPROVER_PREFIX "rounding_mode", signedbv_typet(32));
         linrank_domaint::row_valuet symb_values;
         exprt constraint;
         exprt refinement_constraint;
 
         // generate the new constraint
-        constraint=linrank_domain.get_row_symb_constraint(
-          symb_values, row, values, refinement_constraint);
+        constraint=domain.get_row_symb_constraint(
+          symb_values, row, refinement_constraint);
         simplify_expr(constraint, ns);
         debug() << "Inner Solver: " << row << " constraint "
                 << from_expr(ns, "", constraint) << eom;
@@ -140,7 +122,7 @@ bool ranking_solver_enumerationt::iterate(invariantt &_rank)
           debug() << "Rounding mode: " << from_expr(ns, "", rmv) << eom;
 
           // update the current template
-          linrank_domain.set_row_value(row, new_row_values, rank);
+          domain.set_row_value(row, new_row_values, rank);
 
           improved=true;
         }
@@ -148,7 +130,7 @@ bool ranking_solver_enumerationt::iterate(invariantt &_rank)
         {
           debug() << "inner solver: UNSAT" << eom;
 
-          if(linrank_domain.refine())
+          if(domain.refine())
           {
             debug() << "refining..." << eom;
             improved=true; // refinement possible
@@ -156,8 +138,8 @@ bool ranking_solver_enumerationt::iterate(invariantt &_rank)
           else
           {
             // no ranking function for the current template
-            linrank_domain.set_row_value_to_true(row, rank);
-            linrank_domain.reset_refinements();
+            domain.set_row_value_to_true(row, rank);
+            domain.reset_refinements();
           }
         }
 
@@ -169,7 +151,7 @@ bool ranking_solver_enumerationt::iterate(invariantt &_rank)
   else
   {
     debug() << "UNSAT" << eom;
-    linrank_domain.reset_refinements();
+    domain.reset_refinements();
   }
 
   solver.pop_context();

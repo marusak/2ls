@@ -80,15 +80,9 @@ public:
 
   virtual bool refine();
 
-  // value -> constraints
-  exprt get_not_constraints(
-    const templ_valuet &value,
-    exprt::operandst &cond_exprs, // identical to before
-    std::vector<pre_post_valuest> &value_exprs); // (x, x')
   exprt get_row_symb_constraint(
     row_valuet &symb_values, // contains vars c
     const rowt &row,
-    const pre_post_valuest &values,
     exprt &refinement_constraint);
 
   // set, get value
@@ -124,10 +118,13 @@ public:
 protected:
   templatet templ;
   exprt value;
+  pre_post_valuest values;
   unsigned refinement_level;
 
   bool is_row_value_false(const row_valuet & row_value) const;
   bool is_row_value_true(const row_valuet & row_value) const;
+public:
+  std::vector<linrank_domaint::pre_post_valuest> strategy_value_exprs;
 };
 
 #endif // CPROVER_2LS_DOMAINS_LINRANK_DOMAIN_H

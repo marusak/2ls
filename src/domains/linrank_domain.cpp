@@ -14,6 +14,7 @@ Author: Peter Schrammel
 #include <util/i2string.h>
 #include <util/simplify_expr.h>
 #include <langapi/languages.h>
+#include <util/cprover_prefix.h>
 #include <goto-symex/adjust_float_expressions.h>
 
 #include "linrank_domain.h"
@@ -74,13 +75,20 @@ const exprt linrank_domaint::initialize_solver(
 }
 
 std::vector<exprt> linrank_domaint::get_required_values(size_t row){
+    //check me
     std::vector<exprt> r;
-    r.push_back(strategy_value_exprs[row]);
+    for(auto &row_expr : strategy_value_exprs[row])
+    {
+        r.push_back(row_expr.first);
+        r.push_back(row_expr.second);
+    }
     return r;
 }
 
 void linrank_domaint::set_values(std::vector<exprt> got_values){
-    value = got_values[0];
+    values.clear();
+    for (size_t i = 0; i < got_values.size(); i += 2)
+        values.push_back(std::make_pair(got_values[i], got_values[i+1]));
 }
 
 bool linrank_domaint::edit_row(const rowt &row, valuet &inv, bool improved)
@@ -90,14 +98,10 @@ bool linrank_domaint::edit_row(const rowt &row, valuet &inv, bool improved)
 
 exprt linrank_domaint::to_pre_constraints(valuet &_value)
 {
-    return true_exprt();
+  exprt rounding_mode=symbol_exprt(CPROVER_PREFIX "rounding_mode", signedbv_typet(32));
+  return equal_exprt(rounding_mode, from_integer(mp_integer(0), signedbv_typet(32)));
 }
 
-void linrank_domaint::make_not_post_constraints(
-    valuet &_value,
-    exprt::operandst &cond_exprs)
-{
-}
 
 /*******************************************************************\
 
@@ -147,19 +151,19 @@ Function: linrank_domaint::get_not_constraints
 
 \*******************************************************************/
 
-exprt linrank_domaint::get_not_constraints(
-  const linrank_domaint::templ_valuet &value,
-  exprt::operandst &cond_exprs,
-  std::vector<linrank_domaint::pre_post_valuest> &value_exprs)
+void linrank_domaint::make_not_post_constraints(
+    valuet &_value,
+    exprt::operandst &cond_exprs)
 {
+  linrank_domaint::templ_valuet &value=static_cast<linrank_domaint::templ_valuet &>(_value);
   assert(value.size()==templ.size());
   cond_exprs.resize(value.size());
-  value_exprs.resize(value.size());
+  strategy_value_exprs.resize(value.size());
 
   for(unsigned row=0; row<templ.size(); row++)
   {
-    value_exprs[row].insert(
-      value_exprs[row].end(),
+    strategy_value_exprs[row].insert(
+      strategy_value_exprs[row].end(),
       templ[row].expr.begin(),
       templ[row].expr.end());
 
@@ -222,11 +226,11 @@ exprt linrank_domaint::get_not_constraints(
         implies_exprt(
           and_exprt(templ[row].pre_guard, templ[row].post_guard),
           decreasing));
-      adjust_float_expressions(cond_exprs[row], ns);
+      //adjust_float_expressions(cond_exprs[row], ns);
     }
   }
 
-  return disjunction(cond_exprs);
+  //return disjunction(cond_exprs);
 }
 
 /*******************************************************************\
@@ -244,7 +248,6 @@ Function: linrank_domaint::get_row_symb_constraint
 exprt linrank_domaint::get_row_symb_constraint(
   linrank_domaint::row_valuet &symb_values, // contains vars c
   const linrank_domaint::rowt &row,
-  const pre_post_valuest &values,
   exprt &refinement_constraint)
 {
   symb_values.c.resize(values.size());
