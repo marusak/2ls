@@ -62,7 +62,100 @@ const exprt lexlinrank_domaint::initialize_solver(
 
 bool lexlinrank_domaint::edit_row(const rowt &row, exprt &value, valuet &inv, bool improved)
 {
-    return true;
+    lexlinrank_domaint::templ_valuet &rank=
+      static_cast<lexlinrank_domaint::templ_valuet &>(inv);
+    lexlinrank_domaint::row_valuet symb_values;
+    symb_values.resize(rank[row].size());
+
+    exprt constraint;
+    exprt refinement_constraint;
+
+    // generate the new constraint
+    constraint=get_row_symb_constraint(
+      symb_values,
+      row,
+      refinement_constraint);
+
+    simplify_expr(constraint, ns);
+    *inner_solver << constraint;
+
+    exprt rounding_mode=symbol_exprt(CPROVER_PREFIX "rounding_mode", signedbv_typet(32));
+    // set rounding mode
+    *inner_solver << equal_exprt(
+      rounding_mode, from_integer(mp_integer(0), signedbv_typet(32)));
+
+    // refinement
+    if(!refinement_constraint.is_true())
+    {
+      inner_solver->new_context();
+      *inner_solver << refinement_constraint;
+    }
+
+    // solve
+    //solver_calls++;
+    bool inner_solver_result=(*inner_solver)();
+    if(inner_solver_result==decision_proceduret::D_SATISFIABLE &&
+       number_inner_iterations<max_inner_iterations)
+    {
+      number_inner_iterations++;
+
+      // new_row_values will contain the new values for c and d
+      lexlinrank_domaint::row_valuet new_row_values;
+      new_row_values.resize(rank[row].size());
+
+      for(std::size_t constraint_no=0;
+          constraint_no<symb_values.size(); ++constraint_no)
+      {
+        std::vector<exprt> c=symb_values[constraint_no].c;
+
+        // get the model for all c
+        for(auto &e : c)
+        {
+          exprt v=inner_solver->solver->get(e);
+          new_row_values[constraint_no].c.push_back(v);
+        }
+      }
+
+      improved=true;
+
+      // update the current template
+      set_row_value(row, new_row_values, rank);
+
+      if(!refinement_constraint.is_true())
+        inner_solver->pop_context();
+    }
+    else
+    {
+      if(refine())
+      {
+        improved=true; // refinement possible
+
+        if(!refinement_constraint.is_true())
+          inner_solver->pop_context();
+      }
+      else
+      {
+        if(number_elements_per_row[row]==max_elements-1)
+        {
+          // no ranking function for the current template
+          set_row_value_to_true(row, rank);
+          reset_refinements();
+        }
+        else
+        {
+          number_elements_per_row[row]++;
+          delete inner_solver;
+          inner_solver=incremental_solvert::allocate(ns);
+          //solver_instances++;
+          reset_refinements();
+
+          add_element(row, rank);
+          number_inner_iterations=0;
+          improved=true;
+        }
+      }
+    }
+    return improved;
 }
 
 exprt lexlinrank_domaint::to_pre_constraints(valuet &_value)
