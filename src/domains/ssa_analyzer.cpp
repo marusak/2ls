@@ -93,11 +93,12 @@ void ssa_analyzert::operator()(
     else
     {
       s_solver=new lexlinrank_solver_enumerationt(
-        *static_cast<lexlinrank_domaint *>(domain), solver, SSA.ns,
-        template_generator.options.get_unsigned_int_option(
-          "lexicographic-ranking-function"),
-        template_generator.options.get_unsigned_int_option(
-          "max-inner-ranking-iterations"));
+        *static_cast<lexlinrank_domaint *>(domain),
+        solver,
+        SSA,
+        precondition,
+        get_message_handler(),
+        template_generator);
       result=new lexlinrank_domaint::templ_valuet();
     }
   }

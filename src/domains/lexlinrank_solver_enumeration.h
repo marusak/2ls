@@ -10,6 +10,7 @@ Author: Peter Schrammel
 #ifndef CPROVER_2LS_DOMAINS_LEXLINRANK_SOLVER_ENUMERATION_H
 #define CPROVER_2LS_DOMAINS_LEXLINRANK_SOLVER_ENUMERATION_H
 
+#include <ssa/local_ssa.h>
 #include "strategy_solver_base.h"
 #include "../domains/incremental_solver.h"
 #include "lexlinrank_domain.h"
@@ -21,31 +22,25 @@ class lexlinrank_solver_enumerationt:public strategy_solver_baset
 {
  public:
   explicit lexlinrank_solver_enumerationt(
-    lexlinrank_domaint &_lexlinrank_domain,
+    lexlinrank_domaint &_domain,
     incremental_solvert &_solver,
-    const namespacet &_ns,
-    unsigned _max_elements, // lexicographic components
-    unsigned _max_inner_iterations):
-    strategy_solver_baset(_solver, _ns),
-    domain(_lexlinrank_domain),
-    max_elements(_max_elements),
-    max_inner_iterations(_max_inner_iterations),
-    number_inner_iterations(0)
+    const local_SSAt &SSA,
+    const exprt &precondition,
+    message_handlert &message_handler,
+    template_generator_baset &template_generator):
+    strategy_solver_baset(_solver, SSA.ns),
+    domain(_domain)
   {
-    inner_solver=incremental_solvert::allocate(_ns);
-    solver_instances++;
-  }
+    set_message_handler(message_handler);
+    solver << domain.initialize_solver(SSA, precondition, template_generator);
+    delete domain.inner_solver;
+    domain.inner_solver=incremental_solvert::allocate(ns);
+   }
 
   virtual bool iterate(invariantt &inv);
 
  protected:
   lexlinrank_domaint &domain;
-  const unsigned max_elements; // lexicographic components
-
-  // the "inner" solver
-  const unsigned max_inner_iterations;
-  incremental_solvert *inner_solver;
-  unsigned number_inner_iterations;
 };
 
 #endif
