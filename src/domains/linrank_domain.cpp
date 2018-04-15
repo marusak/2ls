@@ -93,7 +93,71 @@ void linrank_domaint::set_values(std::vector<exprt> got_values){
 
 bool linrank_domaint::edit_row(const rowt &row, valuet &inv, bool improved)
 {
-    return true;
+    linrank_domaint::templ_valuet &rank=
+     static_cast<linrank_domaint::templ_valuet &>(inv);
+    exprt rounding_mode=symbol_exprt(CPROVER_PREFIX "rounding_mode", signedbv_typet(32));
+    linrank_domaint::row_valuet symb_values;
+    exprt constraint;
+    exprt refinement_constraint;
+
+    // generate the new constraint
+    constraint=get_row_symb_constraint(
+      symb_values, row, refinement_constraint);
+    simplify_expr(constraint, ns);
+
+    *inner_solver << equal_exprt(
+      rounding_mode, from_integer(mp_integer(0), signedbv_typet(32)));
+    *inner_solver << constraint;
+
+    // refinement
+    if(!refinement_constraint.is_true())
+    {
+      inner_solver->new_context();
+      *inner_solver << refinement_constraint;
+    }
+
+    // solve
+    //solver_calls++;
+    if((*inner_solver)()==decision_proceduret::D_SATISFIABLE &&
+       number_inner_iterations<max_inner_iterations)
+    {
+
+      std::vector<exprt> c=symb_values.c;
+
+      // new_row_values will contain the new values for c
+      linrank_domaint::row_valuet new_row_values;
+
+      // get the model for all c
+      for(const auto &e : c)
+      {
+        exprt v=inner_solver->solver->get(e);
+        new_row_values.c.push_back(v);
+      }
+      exprt rmv=inner_solver->solver->get(rounding_mode);
+
+      // update the current template
+      set_row_value(row, new_row_values, rank);
+
+      improved=true;
+    }
+    else
+    {
+      if(refine())
+      {
+        improved=true; // refinement possible
+      }
+      else
+      {
+        // no ranking function for the current template
+        set_row_value_to_true(row, rank);
+        reset_refinements();
+      }
+    }
+
+    if(!refinement_constraint.is_true())
+      inner_solver->pop_context();
+
+    return improved;
 }
 
 exprt linrank_domaint::to_pre_constraints(valuet &_value)
@@ -117,6 +181,7 @@ Function: linrank_domaint::not_satisfiable
 
 void linrank_domaint::not_satisfiable()
 {
+    reset_refinements();
 }
 
 /*******************************************************************\

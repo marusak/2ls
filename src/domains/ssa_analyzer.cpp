@@ -25,7 +25,6 @@ Author: Peter Schrammel
 #include "strategy_solver_equality.h"
 #include "linrank_domain.h"
 #include "lexlinrank_domain.h"
-#include "ranking_solver_enumeration.h"
 #include "template_generator_ranking.h"
 #include "strategy_solver_predabs.h"
 #include "ssa_analyzer.h"
@@ -83,13 +82,13 @@ void ssa_analyzert::operator()(
     if(template_generator.options.get_bool_option(
          "monolithic-ranking-function"))
     {
-      s_solver=new ranking_solver_enumerationt(
-        *static_cast<linrank_domaint *>(domain),
-        solver,
-        SSA,
-        precondition,
-        get_message_handler(),
-        template_generator);
+    s_solver=new strategy_solver(
+      *static_cast<linrank_domaint *>(domain),
+      solver,
+      SSA,
+      precondition,
+      get_message_handler(),
+      template_generator);
       result=new linrank_domaint::templ_valuet();
     }
     else
