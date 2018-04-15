@@ -84,9 +84,12 @@ void ssa_analyzert::operator()(
          "monolithic-ranking-function"))
     {
       s_solver=new ranking_solver_enumerationt(
-        *static_cast<linrank_domaint *>(domain), solver, SSA.ns,
-        template_generator.options.get_unsigned_int_option(
-          "max-inner-ranking-iterations"));
+        *static_cast<linrank_domaint *>(domain),
+        solver,
+        SSA,
+        precondition,
+        get_message_handler(),
+        template_generator);
       result=new linrank_domaint::templ_valuet();
     }
     else

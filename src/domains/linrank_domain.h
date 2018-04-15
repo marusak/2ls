@@ -16,6 +16,7 @@ Author: Peter Schrammel
 #include <util/std_expr.h>
 #include <util/arith_tools.h>
 #include <util/ieee_float.h>
+#include "../domains/incremental_solver.h"
 #include <set>
 #include <vector>
 
@@ -49,12 +50,18 @@ public:
   linrank_domaint(
     unsigned _domain_number,
     replace_mapt &_renaming_map,
+    unsigned _max_elements, // lexicographic components
+    unsigned _max_inner_iterations,
     const namespacet &_ns):
     domaint(_domain_number, _renaming_map, _ns),
-    refinement_level(0)
-  {
-  }
-
+    refinement_level(0),
+    max_elements(_max_elements),
+    max_inner_iterations(_max_inner_iterations),
+    number_inner_iterations(0)
+   {
+    inner_solver=incremental_solvert::allocate(_ns);
+    //solver_instances++;
+   }
   // initialize value
   virtual void initialize(valuet &value);
 
@@ -115,11 +122,18 @@ public:
     const var_specst &var_specs,
     const namespacet &ns);
 
-protected:
   templatet templ;
   exprt value;
-  pre_post_valuest values;
   unsigned refinement_level;
+  // the "inner" solver
+  const unsigned max_elements; // lexicographic components
+  const unsigned max_inner_iterations;
+  incremental_solvert *inner_solver;
+  unsigned number_inner_iterations;
+
+
+protected:
+  pre_post_valuest values;
 
   bool is_row_value_false(const row_valuet & row_value) const;
   bool is_row_value_true(const row_valuet & row_value) const;

@@ -73,6 +73,7 @@ bool ranking_solver_enumerationt::iterate(invariantt &_rank)
         }
         domain.set_values(got_values);
 
+        //-----------------
         exprt rounding_mode=symbol_exprt(CPROVER_PREFIX "rounding_mode", signedbv_typet(32));
         linrank_domaint::row_valuet symb_values;
         exprt constraint;
@@ -82,27 +83,23 @@ bool ranking_solver_enumerationt::iterate(invariantt &_rank)
         constraint=domain.get_row_symb_constraint(
           symb_values, row, refinement_constraint);
         simplify_expr(constraint, ns);
-        debug() << "Inner Solver: " << row << " constraint "
-                << from_expr(ns, "", constraint) << eom;
 
-        inner_solver << equal_exprt(
+        *(domain.inner_solver) << equal_exprt(
           rounding_mode, from_integer(mp_integer(0), signedbv_typet(32)));
-        inner_solver << constraint;
+        *(domain.inner_solver) << constraint;
 
         // refinement
         if(!refinement_constraint.is_true())
         {
-          inner_solver.new_context();
-          inner_solver << refinement_constraint;
+          domain.inner_solver->new_context();
+          *(domain.inner_solver) << refinement_constraint;
         }
 
         // solve
-        debug() << "inner solve()" << eom;
         solver_calls++;
-        if(inner_solver()==decision_proceduret::D_SATISFIABLE &&
-           number_inner_iterations<max_inner_iterations)
+        if((*(domain.inner_solver))()==decision_proceduret::D_SATISFIABLE &&
+           domain.number_inner_iterations<domain.max_inner_iterations)
         {
-          debug() << "inner solver: SAT" << eom;
 
           std::vector<exprt> c=symb_values.c;
 
@@ -112,14 +109,10 @@ bool ranking_solver_enumerationt::iterate(invariantt &_rank)
           // get the model for all c
           for(const auto &e : c)
           {
-            exprt v=inner_solver.solver->get(e);
+            exprt v=domain.inner_solver->solver->get(e);
             new_row_values.c.push_back(v);
-            debug() << "Inner Solver: " << row << " c value for "
-                    << from_expr(ns, "", e) << ": "
-                    << from_expr(ns, "", v)  << eom;
           }
-          exprt rmv=inner_solver.solver->get(rounding_mode);
-          debug() << "Rounding mode: " << from_expr(ns, "", rmv) << eom;
+          exprt rmv=domain.inner_solver->solver->get(rounding_mode);
 
           // update the current template
           domain.set_row_value(row, new_row_values, rank);
@@ -128,11 +121,8 @@ bool ranking_solver_enumerationt::iterate(invariantt &_rank)
         }
         else
         {
-          debug() << "inner solver: UNSAT" << eom;
-
           if(domain.refine())
           {
-            debug() << "refining..." << eom;
             improved=true; // refinement possible
           }
           else
@@ -144,7 +134,8 @@ bool ranking_solver_enumerationt::iterate(invariantt &_rank)
         }
 
         if(!refinement_constraint.is_true())
-          inner_solver.pop_context();
+          domain.inner_solver->pop_context();
+        //------------------
       }
     }
   }

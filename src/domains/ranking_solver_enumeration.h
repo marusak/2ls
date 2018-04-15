@@ -12,6 +12,7 @@ Author: Peter Schrammel
 #include <solvers/sat/satcheck.h>
 #include <solvers/flattening/bv_pointers.h>
 
+#include <ssa/local_ssa.h>
 #include "strategy_solver_base.h"
 #include "incremental_solver.h"
 #include "linrank_domain.h"
@@ -20,28 +21,24 @@ class ranking_solver_enumerationt:public strategy_solver_baset
 {
 public:
   ranking_solver_enumerationt(
-    linrank_domaint &_linrank_domain,
+    linrank_domaint &_domain,
     incremental_solvert &_solver,
-    const namespacet &_ns,
-    unsigned _max_inner_iterations):
-    strategy_solver_baset(_solver, _ns),
-    domain(_linrank_domain),
-    max_inner_iterations(_max_inner_iterations),
-    inner_solver(_ns),
-    number_inner_iterations(0)
-  {
-    solver_instances++;
-  }
-
+    const local_SSAt &SSA,
+    const exprt &precondition,
+    message_handlert &message_handler,
+    template_generator_baset &template_generator):
+    strategy_solver_baset(_solver, SSA.ns),
+    domain(_domain)
+   {
+    set_message_handler(message_handler);
+    solver << domain.initialize_solver(SSA, precondition, template_generator);
+    delete domain.inner_solver;
+    domain.inner_solver=incremental_solvert::allocate(ns);
+   }
   virtual bool iterate(invariantt &inv);
 
 protected:
   linrank_domaint &domain;
-
-  // the "inner" solver
-  const unsigned max_inner_iterations;
-  incremental_solvert inner_solver;
-  unsigned number_inner_iterations;
 };
 
 #endif
