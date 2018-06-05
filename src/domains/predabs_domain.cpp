@@ -58,6 +58,11 @@ Function: predabs_domaint::pre_iterate_init
 \*******************************************************************/
 
 void predabs_domaint::pre_iterate_init(valuet &value){
+  e_it=todo_preds.begin();
+}
+
+bool predabs_domaint::nothing_to_solve(){
+    return (e_it == todo_preds.end());
 }
 
 const exprt predabs_domaint::initialize_solver(
@@ -228,15 +233,12 @@ Function: predabs_domaint::to_pre_constraints
 
 exprt predabs_domaint::to_pre_constraints(valuet &_value)
 {
-  predabs_domaint::templ_valuet &value=static_cast<predabs_domaint::templ_valuet &>(_value);
-
-  assert(value.size()==templ.size());
-  exprt::operandst c;
-  for(std::size_t row=0; row<templ.size(); ++row)
-  {
-    c.push_back(get_row_pre_constraint(row, value[row]));
-  }
-  return conjunction(c);
+  assert(*e_it<templ.size());
+  const template_rowt &templ_row=templ[*e_it];
+  kindt k=templ_row.kind;
+  if(k==OUT || k==OUTL)
+    return true_exprt();
+  return implies_exprt(true_exprt(), templ[*e_it].expr);
 }
 
 /*******************************************************************\

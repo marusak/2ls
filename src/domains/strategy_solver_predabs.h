@@ -22,17 +22,13 @@ class strategy_solver_predabst:public strategy_solver_baset
     strategy_solver_baset(_solver, _ns),
     predabs_domain(_predabs_domain)
   {
-    predabs_domain.get_row_set(todo_preds);
+    predabs_domain.get_row_set(predabs_domain.todo_preds);
   }
 
   virtual bool iterate(invariantt &inv);
 
  protected:
   predabs_domaint &predabs_domain;
-
-  typedef std::set<unsigned> worklistt;
-  worklistt todo_preds;
-  worklistt todo_notpreds;
 };
 
 #endif

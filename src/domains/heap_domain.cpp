@@ -62,6 +62,9 @@ Function: heap_domaint::pre_iterate_init
 void heap_domaint::pre_iterate_init(valuet &value){
 }
 
+bool heap_domaint::nothing_to_solve(){
+    return false;
+}
 
 /*******************************************************************\
 

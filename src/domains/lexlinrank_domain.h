@@ -77,6 +77,8 @@ public:
 
   void pre_iterate_init(domaint::valuet &rank);
 
+  bool nothing_to_solve();
+
   bool edit_row(const rowt &row, valuet &inv, bool improved);
 
   exprt to_pre_constraints(valuet &_value);

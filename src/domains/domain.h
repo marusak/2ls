@@ -84,6 +84,8 @@ public:
 
   virtual void pre_iterate_init(valuet &value) = 0;
 
+  virtual bool nothing_to_solve() = 0;
+
   virtual bool edit_row(const rowt &row, valuet &inv, bool improved) = 0;
 
   virtual exprt to_pre_constraints(valuet &value) = 0;

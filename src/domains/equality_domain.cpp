@@ -27,6 +27,10 @@ Function: equality_domaint::pre_iterate_init
 void equality_domaint::pre_iterate_init(valuet &value){
 }
 
+bool equality_domaint::nothing_to_solve(){
+    return false;
+}
+
 const exprt equality_domaint::initialize_solver(
     const local_SSAt &SSA,
     const exprt &precondition,

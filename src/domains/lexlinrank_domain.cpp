@@ -175,6 +175,11 @@ void lexlinrank_domaint::pre_iterate_init(domaint::valuet &_rank)
   number_elements_per_row.resize(rank.size());
 }
 
+bool lexlinrank_domaint::nothing_to_solve()
+{
+  return false;
+}
+
 std::vector<exprt> lexlinrank_domaint::get_required_values(size_t row){
     std::vector<exprt> r;
     for(auto &row_expr : strategy_value_exprs[row])

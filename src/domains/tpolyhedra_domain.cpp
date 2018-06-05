@@ -67,6 +67,10 @@ Function: tpolyhedra_domaint::pre_iterate_init
 void tpolyhedra_domaint::pre_iterate_init(valuet &value){
 }
 
+bool tpolyhedra_domaint::nothing_to_solve(){
+    return false;
+}
+
 /*******************************************************************\
 
 Function: tpolyhedra_domaint::initialize_solver

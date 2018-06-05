@@ -1,6 +1,5 @@
 #include <util/simplify_expr.h>
 #include "strategy_solver_equality.h"
-
 bool strategy_solver_equalityt::iterate(invariantt &_inv)
 {
   equality_domaint::equ_valuet &inv=
@@ -58,24 +57,11 @@ bool strategy_solver_equalityt::iterate(invariantt &_inv)
     literalt cond_literal=solver.convert(post_expr);
 
     solver << literal_exprt(cond_literal);
-
-#if 0
-    debug() << "Checking disequality " << eom;
-    debug() << "Pre: " << from_expr(ns, "", pre_expr) << eom;
-    debug() << "Post: " << from_expr(ns, "", post_expr) << eom;
-#endif
-
     if(solver()==decision_proceduret::D_SATISFIABLE)
     {
-#if 0
-      debug() << "SAT" << eom;
-#endif
     }
     else  // equality holds
     {
-#if 0
-      debug() << "UNSAT" << eom;
-#endif
       equality_domain.set_disequal(*e_it, inv);
       solver << pre_expr; // make permanent
     }
@@ -84,6 +70,5 @@ bool strategy_solver_equalityt::iterate(invariantt &_inv)
 
     todo_disequs.erase(e_it);
   }
-
   return true;
 }

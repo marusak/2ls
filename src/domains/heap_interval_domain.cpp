@@ -43,6 +43,10 @@ Function: heap_interval_domaint::pre_iterate_init
 void heap_interval_domaint::pre_iterate_init(valuet &value){
 }
 
+bool heap_interval_domaint::nothing_to_solve(){
+    return false;
+}
+
 const exprt heap_interval_domaint::initialize_solver(const local_SSAt &SSA,
                                                      const exprt &precondition,
                                                      template_generator_baset &template_generator)
