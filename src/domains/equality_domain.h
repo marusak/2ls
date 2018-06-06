@@ -113,6 +113,7 @@ public:
   worklistt todo_equs;
   worklistt todo_disequs;
   bool first_loop;
+  bool check_dis;
 };
 
 #endif // CPROVER_2LS_DOMAINS_EQUALITY_DOMAIN_H

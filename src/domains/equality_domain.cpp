@@ -30,9 +30,22 @@ void equality_domaint::pre_iterate_init(valuet &value){
 }
 
 bool equality_domaint::something_to_solve(){
-    bool last_loop = first_loop;
-    first_loop = false;
-    return e_it!=todo_equs.end() && last_loop;
+    if (first_loop) {
+        if (e_it!=todo_equs.end()){
+            first_loop = false;
+            check_dis = false;
+            return true;
+        }
+        else {
+            if(todo_disequs.begin() != todo_disequs.end()){
+                e_it = todo_disequs.begin();
+                first_loop = false;
+                check_dis = true;
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 const exprt equality_domaint::initialize_solver(
@@ -54,12 +67,15 @@ void equality_domaint::set_values(std::vector<exprt> got_values){
 
 bool equality_domaint::edit_row(const rowt &row, valuet &inv, bool improved)
 {
-    todo_disequs.insert(*e_it);
+    if (!check_dis)
+        todo_disequs.insert(*e_it);
     return true;
 }
 
 exprt equality_domaint::to_pre_constraints(valuet &_value)
 {
+  if (check_dis)
+    return get_pre_disequ_constraint(*e_it);
   assert(*e_it<templ.size());
   const template_rowt &templ_row=templ[*e_it];
   if(templ_row.kind==OUT || templ_row.kind==OUTL)
@@ -75,6 +91,10 @@ void equality_domaint::make_not_post_constraints(
 {
   assert(*e_it<templ.size());
   cond_exprs.resize(1);
+  if (check_dis) {
+    cond_exprs[0] = get_post_not_disequ_constraint(*e_it);
+    return;
+  }
   const template_rowt &templ_row=templ[*e_it];
   if(templ_row.kind==IN){
     cond_exprs[0]=true_exprt();
@@ -139,12 +159,17 @@ exprt equality_domaint::not_satisfiable(valuet &value)
 {
       equality_domaint::equ_valuet &inv=
         static_cast<equality_domaint::equ_valuet &>(value);
-      set_equal(*e_it, inv);
+      if (check_dis)
+        set_disequal(*e_it, inv);
+      else {
+          set_equal(*e_it, inv);
 
-      // due to transitivity, we have to recheck equalities
-      //   that did not hold
-      todo_equs.insert(todo_disequs.begin(), todo_disequs.end());
-      todo_disequs.clear();
+          // due to transitivity, we have to recheck equalities
+          //   that did not hold
+          todo_equs.insert(todo_disequs.begin(), todo_disequs.end());
+          todo_disequs.clear();
+      }
+
       return to_pre_constraints(value);
 }
 
