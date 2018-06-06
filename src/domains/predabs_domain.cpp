@@ -99,7 +99,7 @@ Function: predabs_domaint::not_satisfiable
 
 \*******************************************************************/
 
-void predabs_domaint::not_satisfiable()
+void predabs_domaint::not_satisfiable(valuet &value)
 {
 }
 

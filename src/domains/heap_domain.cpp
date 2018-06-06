@@ -212,7 +212,7 @@ Function: heap_domaint::not_satisfiable
 
 \*******************************************************************/
 
-void heap_domaint::not_satisfiable()
+void heap_domaint::not_satisfiable(valuet &value)
 {
 }
 

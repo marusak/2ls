@@ -85,7 +85,7 @@ public:
     valuet &_value,
     exprt::operandst &cond_exprs);
 
-  virtual void not_satisfiable();
+  virtual void not_satisfiable(valuet &value);
 
   virtual bool refine();
 

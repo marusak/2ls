@@ -129,7 +129,7 @@ Function: tpolyhedra_domaint::not_satisfiable
 
 \*******************************************************************/
 
-void tpolyhedra_domaint::not_satisfiable()
+void tpolyhedra_domaint::not_satisfiable(valuet &value)
 {
 }
 

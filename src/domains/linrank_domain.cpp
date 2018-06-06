@@ -183,7 +183,7 @@ Function: linrank_domaint::not_satisfiable
 
 \*******************************************************************/
 
-void linrank_domaint::not_satisfiable()
+void linrank_domaint::not_satisfiable(valuet &value)
 {
     reset_refinements();
 }

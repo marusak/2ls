@@ -52,7 +52,7 @@ bool strategy_solver::iterate(invariantt &inv)
   else
   {
     debug() << "Outer solver: UNSAT!!" << eom;
-    domain.not_satisfiable();
+    domain.not_satisfiable(inv);
   }
   solver.pop_context();
 

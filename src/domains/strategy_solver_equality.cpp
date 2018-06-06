@@ -57,15 +57,10 @@ bool strategy_solver_equalityt::iterate(invariantt &_inv)
       }
     else  // equality holds
     {
-      equality_domain.set_equal(*(equality_domain.e_it), inv);
+      equality_domain.not_satisfiable(_inv);
 
-      // due to transitivity, we have to recheck equalities
-      //   that did not hold
-      equality_domain.todo_equs.insert(equality_domain.todo_disequs.begin(), equality_domain.todo_disequs.end());
-      equality_domain.todo_disequs.clear();
-
-      solver.pop_context();
-      solver << pre_expr; // make permanent
+      solver.pop_context(); // THIS IS HERE SURPLUS
+      solver << pre_expr; // THIS IS HERE SURPLUS - notsatifisable can write to solver
 
     }
 

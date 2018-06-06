@@ -217,7 +217,7 @@ public:
 
   exprt get_row_post_constraint(const rowt &row, const row_valuet &row_value);
 
-  virtual void not_satisfiable();
+  virtual void not_satisfiable(valuet &value);
 
   // Row modifications
   bool add_transitivity(const rowt &from, const rowt &to, heap_valuet &value);

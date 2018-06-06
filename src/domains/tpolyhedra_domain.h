@@ -69,7 +69,7 @@ public:
     valuet &_value,
     exprt::operandst &cond_exprs);
 
-  virtual void not_satisfiable();
+  virtual void not_satisfiable(valuet &value);
 
   virtual void join(valuet &value1, const valuet &value2);
 

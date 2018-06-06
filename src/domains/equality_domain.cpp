@@ -132,8 +132,16 @@ Function: equality_domaint::not_satisfiable
 
 \*******************************************************************/
 
-void equality_domaint::not_satisfiable()
+void equality_domaint::not_satisfiable(valuet &value)
 {
+      equality_domaint::equ_valuet &inv=
+        static_cast<equality_domaint::equ_valuet &>(value);
+      set_equal(*e_it, inv);
+
+      // due to transitivity, we have to recheck equalities
+      //   that did not hold
+      todo_equs.insert(todo_disequs.begin(), todo_disequs.end());
+      todo_disequs.clear();
 }
 
 /*******************************************************************\
