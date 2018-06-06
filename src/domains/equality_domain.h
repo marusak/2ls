@@ -107,6 +107,11 @@ protected:
     const namespacet &ns);
 
   bool adapt_types(exprt &v1, exprt &v2);
+public:
+  typedef std::set<unsigned> worklistt;
+  worklistt::iterator e_it;
+  worklistt todo_equs;
+  worklistt todo_disequs;
 };
 
 #endif // CPROVER_2LS_DOMAINS_EQUALITY_DOMAIN_H

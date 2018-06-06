@@ -25,10 +25,11 @@ Function: equality_domaint::pre_iterate_init
 \*******************************************************************/
 
 void equality_domaint::pre_iterate_init(valuet &value){
+    e_it=todo_equs.begin();
 }
 
 bool equality_domaint::nothing_to_solve(){
-    return false;
+    return e_it==todo_equs.end();
 }
 
 const exprt equality_domaint::initialize_solver(
@@ -56,7 +57,13 @@ bool equality_domaint::edit_row(const rowt &row, valuet &inv, bool improved)
 
 exprt equality_domaint::to_pre_constraints(valuet &_value)
 {
+  assert(*e_it<templ.size());
+  const template_rowt &templ_row=templ[*e_it];
+  if(templ_row.kind==OUT || templ_row.kind==OUTL)
     return true_exprt();
+
+  const var_pairt &vv=templ_row.var_pair;
+  return implies_exprt(templ_row.pre_guard, equal_exprt(vv.first, vv.second));
 }
 
 void equality_domaint::make_not_post_constraints(

@@ -1,5 +1,6 @@
 #include <util/simplify_expr.h>
 #include "strategy_solver_predabs.h"
+#include <goto-symex/adjust_float_expressions.h>
 bool strategy_solver_predabst::iterate(invariantt &inv)
 {
   bool improved=false;
@@ -14,13 +15,20 @@ bool strategy_solver_predabst::iterate(invariantt &inv)
   exprt pre_expr=predabs_domain.to_pre_constraints(inv);
   solver << pre_expr;
 
-//--------------------
-    exprt strategy_cond_expr;
-    strategy_cond_expr=
-      predabs_domain.get_row_post_constraint(*(predabs_domain.e_it), true_exprt());
+  exprt::operandst strategy_cond_exprs;
 
-    literalt cond_literal=solver.convert(not_exprt(strategy_cond_expr));
-    solver << literal_exprt(cond_literal);
+  predabs_domain.make_not_post_constraints(inv, strategy_cond_exprs);
+
+  predabs_domain.strategy_cond_literals.resize(strategy_cond_exprs.size());
+
+  for(std::size_t i=0; i<strategy_cond_exprs.size(); ++i)
+  {
+    predabs_domain.strategy_cond_literals[i]=solver.convert(strategy_cond_exprs[i]);
+  }
+
+  exprt cond=disjunction(strategy_cond_exprs);
+  adjust_float_expressions(cond, ns);
+  solver << cond;
 
     if(solver()==decision_proceduret::D_SATISFIABLE)
     {
