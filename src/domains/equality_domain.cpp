@@ -26,24 +26,17 @@ Function: equality_domaint::pre_iterate_init
 
 void equality_domaint::pre_iterate_init(valuet &value){
     e_it=todo_equs.begin();
-    first_loop = true;
 }
 
 bool equality_domaint::something_to_solve(){
-    if (first_loop) {
-        if (e_it!=todo_equs.end()){
-            first_loop = false;
-            check_dis = false;
-            return true;
-        }
-        else {
-            if(todo_disequs.begin() != todo_disequs.end()){
-                e_it = todo_disequs.begin();
-                first_loop = false;
-                check_dis = true;
-                return true;
-            }
-        }
+    if (e_it!=todo_equs.end()){
+        check_dis = false;
+        return true;
+    }
+    if(todo_disequs.begin() != todo_disequs.end()){
+        e_it = todo_disequs.begin();
+        check_dis = true;
+        return true;
     }
     return false;
 }

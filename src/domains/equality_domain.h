@@ -112,7 +112,6 @@ public:
   worklistt::iterator e_it;
   worklistt todo_equs;
   worklistt todo_disequs;
-  bool first_loop;
   bool check_dis;
 };
 

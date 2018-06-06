@@ -7,7 +7,7 @@ bool strategy_solver::iterate(invariantt &inv)
   bool improved=false;
 
   domain.pre_iterate_init(inv);
-  while (domain.something_to_solve()) {
+  if (domain.something_to_solve()) {
 
       solver.new_context();
 

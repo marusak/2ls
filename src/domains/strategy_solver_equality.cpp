@@ -10,7 +10,7 @@ bool strategy_solver_equalityt::iterate(invariantt &_inv)
   bool improved=false;
 
   equality_domain.pre_iterate_init(_inv);
-  while (equality_domain.something_to_solve()){
+  if (equality_domain.something_to_solve()){
       improved = true;
 
       solver.new_context();

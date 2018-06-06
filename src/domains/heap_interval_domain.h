@@ -29,7 +29,6 @@ public:
     interval_domain(_domain_number, _renaming_map, ns)
   {
     interval_domain.add_interval_template(var_specs, ns);
-    iterate_count = 1;
   }
 
   class heap_interval_valuet:public valuet
@@ -77,7 +76,6 @@ public:
     exprt &result) override;
 protected:
   exprt value;
-  int iterate_count;
 };
 
 #endif // CPROVER_2LS_DOMAINS_HEAP_INTERVAL_DOMAIN_H

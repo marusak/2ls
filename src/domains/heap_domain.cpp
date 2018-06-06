@@ -60,11 +60,10 @@ Function: heap_domaint::pre_iterate_init
 \*******************************************************************/
 
 void heap_domaint::pre_iterate_init(valuet &value){
-    iterate_count = 1;
 }
 
 bool heap_domaint::something_to_solve(){
-    return iterate_count--;
+    return true;
 }
 
 /*******************************************************************\

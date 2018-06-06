@@ -44,7 +44,6 @@ public:
     const namespacet &_ns):
     domaint(_domain_number, _renaming_map, _ns)
   {
-      iterate_count = 1;
   }
 
   // initialize value
@@ -160,7 +159,6 @@ protected:
 
   templatet templ;
   exprt value;
-  int iterate_count;
 };
 
 #endif

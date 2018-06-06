@@ -63,7 +63,6 @@ public:
     number_inner_iterations(0)
    {
     inner_solver=incremental_solvert::allocate(_ns);
-    iterate_count = 1;
     //solver_instances++;
    }
 
@@ -160,7 +159,6 @@ public:
   // handles on values to retrieve from model
   std::vector<lexlinrank_domaint::pre_post_valuest> strategy_value_exprs;
   std::vector<unsigned> number_elements_per_row;
-  int iterate_count;
 };
 
 #endif // CPROVER_2LS_DOMAINS_LEXLINRANK_DOMAIN_H

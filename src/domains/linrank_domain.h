@@ -60,7 +60,6 @@ public:
     number_inner_iterations(0)
    {
     inner_solver=incremental_solvert::allocate(_ns);
-    iterate_count = 1;
     //solver_instances++;
    }
   // initialize value
@@ -142,7 +141,6 @@ protected:
   bool is_row_value_true(const row_valuet & row_value) const;
 public:
   std::vector<linrank_domaint::pre_post_valuest> strategy_value_exprs;
-  int iterate_count;
 };
 
 #endif // CPROVER_2LS_DOMAINS_LINRANK_DOMAIN_H
