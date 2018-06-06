@@ -71,7 +71,7 @@ public:
     valuet &_value,
     exprt::operandst &cond_exprs);
 
-  virtual void not_satisfiable(valuet &value);
+  virtual exprt not_satisfiable(valuet &value);
 
   // value -> constraints
   exprt get_row_constraint(const rowt &row, const row_valuet &row_value);

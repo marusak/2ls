@@ -99,8 +99,9 @@ Function: predabs_domaint::not_satisfiable
 
 \*******************************************************************/
 
-void predabs_domaint::not_satisfiable(valuet &value)
+exprt predabs_domaint::not_satisfiable(valuet &value)
 {
+    return true_exprt();
 }
 
 /*******************************************************************\

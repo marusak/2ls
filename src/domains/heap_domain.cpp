@@ -212,8 +212,9 @@ Function: heap_domaint::not_satisfiable
 
 \*******************************************************************/
 
-void heap_domaint::not_satisfiable(valuet &value)
+exprt heap_domaint::not_satisfiable(valuet &value)
 {
+    return true_exprt();
 }
 
 /*******************************************************************\

@@ -91,8 +91,9 @@ Function: heap_interval_domaint::not_satisfiable
 
 \*******************************************************************/
 
-void heap_interval_domaint::not_satisfiable(valuet &value)
+exprt heap_interval_domaint::not_satisfiable(valuet &value)
 {
+    return true_exprt();
 }
 
 /*******************************************************************\

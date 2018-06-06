@@ -129,8 +129,9 @@ Function: tpolyhedra_domaint::not_satisfiable
 
 \*******************************************************************/
 
-void tpolyhedra_domaint::not_satisfiable(valuet &value)
+exprt tpolyhedra_domaint::not_satisfiable(valuet &value)
 {
+    return true_exprt();
 }
 
 /*******************************************************************\

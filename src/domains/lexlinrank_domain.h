@@ -88,7 +88,7 @@ public:
     exprt::operandst &cond_exprs);
   std::vector<exprt> get_required_values(size_t row);
   void set_values(std::vector<exprt> got_values);
-  virtual void not_satisfiable(valuet &value);
+  virtual exprt not_satisfiable(valuet &value);
 
   virtual bool refine();
   virtual void reset_refinements();

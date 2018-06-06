@@ -59,7 +59,7 @@ public:
     valuet &_value,
     exprt::operandst &cond_exprs);
 
-  virtual void not_satisfiable(valuet &value);
+  virtual exprt not_satisfiable(valuet &value);
 
   virtual void output_value(
     std::ostream &out,

@@ -57,11 +57,9 @@ bool strategy_solver_equalityt::iterate(invariantt &_inv)
       }
     else  // equality holds
     {
-      equality_domain.not_satisfiable(_inv);
-
       solver.pop_context(); // THIS IS HERE SURPLUS
-      solver << pre_expr; // THIS IS HERE SURPLUS - notsatifisable can write to solver
 
+      solver << equality_domain.not_satisfiable(_inv);
     }
 
     equality_domain.todo_equs.erase(equality_domain.e_it);
