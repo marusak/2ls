@@ -70,6 +70,24 @@ void equality_domaint::make_not_post_constraints(
     valuet &_value,
     exprt::operandst &cond_exprs)
 {
+  assert(*e_it<templ.size());
+  cond_exprs.resize(1);
+  const template_rowt &templ_row=templ[*e_it];
+  if(templ_row.kind==IN){
+    cond_exprs[0]=true_exprt();
+    return;
+  }
+
+  const var_pairt &vv=templ_row.var_pair;
+  exprt c=
+    and_exprt(
+      templ_row.aux_expr,
+      not_exprt(
+        implies_exprt(
+          templ_row.post_guard,
+          equal_exprt(vv.first, vv.second))));
+  rename(c);
+  cond_exprs[0] = c;
 }
 
 exprt equality_domaint::get_pre_equ_constraint(unsigned index)
