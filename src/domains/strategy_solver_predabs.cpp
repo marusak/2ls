@@ -29,17 +29,27 @@ bool strategy_solver_predabst::iterate(invariantt &inv)
   exprt cond=disjunction(strategy_cond_exprs);
   adjust_float_expressions(cond, ns);
   solver << cond;
-
     if(solver()==decision_proceduret::D_SATISFIABLE)
-    {
-      debug() << "SAT" << eom;
-      predabs_domain.todo_notpreds.insert(*(predabs_domain.e_it));
+      {
+        for(std::size_t row=0; row<predabs_domain.strategy_cond_literals.size(); ++row)
+        {
+          if(solver.l_get(predabs_domain.strategy_cond_literals[row]).is_true())
+          {
+            //Find what values from solver are needed
+            std::vector<exprt> required_values = predabs_domain.get_required_values(row);
+            std::vector<exprt> got_values;
+            for(auto &c_exprt : required_values) {
+                got_values.push_back(solver.solver->get(c_exprt));
+            }
+            predabs_domain.set_values(got_values);
 
-      solver.pop_context();
-    }
-    else
+            improved = predabs_domain.edit_row(row, inv, improved);// TODO set into diseq
+          }
+        }
+        solver.pop_context(); // THIS IS HERE SURPLUS
+      }
+    else  // equality holds
     {
-      debug() << "UNSAT" << eom;
       predabs_domain.set_row_value(*(predabs_domain.e_it), true_exprt(), inv);
       solver.pop_context();
       solver << pre_expr; // make permanent

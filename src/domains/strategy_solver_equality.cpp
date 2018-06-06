@@ -37,27 +37,40 @@ bool strategy_solver_equalityt::iterate(invariantt &_inv)
   solver << cond;
 
     if(solver()==decision_proceduret::D_SATISFIABLE)
-    {
-      equality_domain.todo_disequs.insert(*(equality_domain.e_it));
+      {
+        for(std::size_t row=0; row<equality_domain.strategy_cond_literals.size(); ++row)
+        {
+          if(solver.l_get(equality_domain.strategy_cond_literals[row]).is_true())
+          {
+            //Find what values from solver are needed
+            std::vector<exprt> required_values = equality_domain.get_required_values(row);
+            std::vector<exprt> got_values;
+            for(auto &c_exprt : required_values) {
+                got_values.push_back(solver.solver->get(c_exprt));
+            }
+            equality_domain.set_values(got_values);
 
-      solver.pop_context();
-    }
+            improved = equality_domain.edit_row(row, inv, improved);
+          }
+        }
+        solver.pop_context(); // THIS IS HERE SURPLUS
+      }
     else  // equality holds
     {
       equality_domain.set_equal(*(equality_domain.e_it), inv);
-
-      solver.pop_context();
-
-      solver << pre_expr; // make permanent
 
       // due to transitivity, we have to recheck equalities
       //   that did not hold
       equality_domain.todo_equs.insert(equality_domain.todo_disequs.begin(), equality_domain.todo_disequs.end());
       equality_domain.todo_disequs.clear();
+
+      solver.pop_context();
+      solver << pre_expr; // make permanent
+
     }
 
     equality_domain.todo_equs.erase(equality_domain.e_it);
-  }
+  } // want to continue stuff
   else // check disequalities
   {
     equality_domain.e_it=equality_domain.todo_disequs.begin();

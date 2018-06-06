@@ -42,16 +42,16 @@ const exprt equality_domaint::initialize_solver(
 
 std::vector<exprt> equality_domaint::get_required_values(size_t row){
     std::vector<exprt> r;
-    r.push_back(strategy_value_exprs[row]);
     return r;
 }
 
 void equality_domaint::set_values(std::vector<exprt> got_values){
-    value = got_values[0];
+    todo_disequs.insert(*e_it);
 }
 
 bool equality_domaint::edit_row(const rowt &row, valuet &inv, bool improved)
 {
+    todo_disequs.insert(*e_it);
     return true;
 }
 

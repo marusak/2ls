@@ -75,16 +75,15 @@ const exprt predabs_domaint::initialize_solver(
 
 std::vector<exprt> predabs_domaint::get_required_values(size_t row){
     std::vector<exprt> r;
-    r.push_back(strategy_value_exprs[row]);
     return r;
 }
 
 void predabs_domaint::set_values(std::vector<exprt> got_values){
-    value = got_values[0];
 }
 
 bool predabs_domaint::edit_row(const rowt &row, valuet &inv, bool improved)
 {
+    todo_notpreds.insert(*e_it);
     return true;
 }
 
