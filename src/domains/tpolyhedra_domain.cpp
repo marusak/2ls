@@ -65,10 +65,11 @@ Function: tpolyhedra_domaint::pre_iterate_init
 \*******************************************************************/
 
 void tpolyhedra_domaint::pre_iterate_init(valuet &value){
+    iterate_count = 1;
 }
 
-bool tpolyhedra_domaint::nothing_to_solve(){
-    return false;
+bool tpolyhedra_domaint::something_to_solve(){
+    return iterate_count--;
 }
 
 /*******************************************************************\

@@ -29,6 +29,7 @@ public:
     interval_domain(_domain_number, _renaming_map, ns)
   {
     interval_domain.add_interval_template(var_specs, ns);
+    iterate_count = 1;
   }
 
   class heap_interval_valuet:public valuet
@@ -46,7 +47,7 @@ public:
     template_generator_baset &template_generator);
 
   virtual void pre_iterate_init(valuet &value);
-  virtual bool nothing_to_solve();
+  virtual bool something_to_solve();
 
   std::vector<exprt> get_required_values(size_t row);
   void set_values(std::vector<exprt> got_values);
@@ -76,6 +77,7 @@ public:
     exprt &result) override;
 protected:
   exprt value;
+  int iterate_count;
 };
 
 #endif // CPROVER_2LS_DOMAINS_HEAP_INTERVAL_DOMAIN_H

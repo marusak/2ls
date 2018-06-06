@@ -26,10 +26,13 @@ Function: equality_domaint::pre_iterate_init
 
 void equality_domaint::pre_iterate_init(valuet &value){
     e_it=todo_equs.begin();
+    first_loop = true;
 }
 
-bool equality_domaint::nothing_to_solve(){
-    return e_it==todo_equs.end();
+bool equality_domaint::something_to_solve(){
+    bool last_loop = first_loop;
+    first_loop = false;
+    return e_it!=todo_equs.end() && last_loop;
 }
 
 const exprt equality_domaint::initialize_solver(

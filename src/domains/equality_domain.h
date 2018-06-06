@@ -60,7 +60,7 @@ equality_domaint(
 
   virtual void pre_iterate_init(valuet &value);
 
-  virtual bool nothing_to_solve();
+  virtual bool something_to_solve();
 
   bool edit_row(const rowt &row, valuet &inv, bool improved);
 
@@ -112,6 +112,7 @@ public:
   worklistt::iterator e_it;
   worklistt todo_equs;
   worklistt todo_disequs;
+  bool first_loop;
 };
 
 #endif // CPROVER_2LS_DOMAINS_EQUALITY_DOMAIN_H

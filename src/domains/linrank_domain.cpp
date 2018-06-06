@@ -64,10 +64,11 @@ Function: linrank_domaint::pre_iterate_init
 \*******************************************************************/
 
 void linrank_domaint::pre_iterate_init(valuet &value){
+    iterate_count = 1;
 }
 
-bool linrank_domaint::nothing_to_solve(){
-    return false;
+bool linrank_domaint::something_to_solve(){
+    return iterate_count--;
 }
 
 const exprt linrank_domaint::initialize_solver(

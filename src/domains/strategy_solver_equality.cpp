@@ -10,12 +10,10 @@ bool strategy_solver_equalityt::iterate(invariantt &_inv)
   bool improved=false;
 
   equality_domain.pre_iterate_init(_inv);
-  // THIS CONDITION DIFFER
-  if (!equality_domain.nothing_to_solve()){
+  //change to while
+  if (equality_domain.something_to_solve()){
 
   solver.new_context();
-
-
 
   // Entry value constraints
   exprt pre_expr=equality_domain.to_pre_constraints(inv);
@@ -58,40 +56,41 @@ bool strategy_solver_equalityt::iterate(invariantt &_inv)
     else  // equality holds
     {
       solver.pop_context(); // THIS IS HERE SURPLUS
-
       solver << equality_domain.not_satisfiable(_inv);
     }
 
     equality_domain.todo_equs.erase(equality_domain.e_it);
-  } // want to continue stuff
-  else // check disequalities
-  {
+    }  else  { // HERE WE ARE - more than one loop???
+
+    // will be checked in while condition
     equality_domain.e_it=equality_domain.todo_disequs.begin();
     if(equality_domain.e_it==equality_domain.todo_disequs.end())
       return false; // done
 
-    solver.new_context();
+    solver.new_context();//OK
 
+    // When disegu loop, retrun something else from to_pre_constraints
     exprt pre_expr=equality_domain.get_pre_disequ_constraint(*(equality_domain.e_it));
-
     solver << pre_expr;
 
+    //Detto
     exprt post_expr=equality_domain.get_post_not_disequ_constraint(*(equality_domain.e_it));
     literalt cond_literal=solver.convert(post_expr);
 
     solver << literal_exprt(cond_literal);
     if(solver()==decision_proceduret::D_SATISFIABLE)
     {
+        //Edit rwo on second loop does nothing
     }
     else  // equality holds
     {
+     //not satifiable on second loop knows what do to
       equality_domain.set_disequal(*(equality_domain.e_it), inv);
       solver << pre_expr; // make permanent
     }
 
-    solver.pop_context();
-
     equality_domain.todo_disequs.erase(equality_domain.e_it);
+    solver.pop_context();
   }
   return true;
 }

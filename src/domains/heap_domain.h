@@ -36,6 +36,7 @@ public:
     domaint(_domain_number, _renaming_map, _ns)
   {
     make_template(var_specs, ns);
+    iterate_count = 1;
   }
 
   struct template_rowt
@@ -196,7 +197,7 @@ public:
 
   void pre_iterate_init(valuet &value);
 
-  virtual bool nothing_to_solve();
+  virtual bool something_to_solve();
 
   std::vector<exprt> get_required_values(size_t row);
   void set_values(std::vector<exprt> got_values);
@@ -267,6 +268,7 @@ protected:
 
   std::set<unsigned> updated_rows;
   exprt value;
+  int iterate_count;
 
   /*******************************************************************\
   Specification of a new heap row that is added dynamically

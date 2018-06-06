@@ -41,10 +41,11 @@ Function: heap_interval_domaint::pre_iterate_init
 \*******************************************************************/
 
 void heap_interval_domaint::pre_iterate_init(valuet &value){
+    iterate_count = 1;
 }
 
-bool heap_interval_domaint::nothing_to_solve(){
-    return false;
+bool heap_interval_domaint::something_to_solve(){
+    return iterate_count--;
 }
 
 const exprt heap_interval_domaint::initialize_solver(const local_SSAt &SSA,

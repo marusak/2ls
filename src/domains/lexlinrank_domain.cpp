@@ -170,14 +170,15 @@ exprt lexlinrank_domaint::to_pre_constraints(valuet &_value)
 
 void lexlinrank_domaint::pre_iterate_init(domaint::valuet &_rank)
 {
+  iterate_count = 1;
   lexlinrank_domaint::templ_valuet &rank=
     static_cast<lexlinrank_domaint::templ_valuet &>(_rank);
   number_elements_per_row.resize(rank.size());
 }
 
-bool lexlinrank_domaint::nothing_to_solve()
+bool lexlinrank_domaint::something_to_solve()
 {
-  return false;
+  return iterate_count--;
 }
 
 std::vector<exprt> lexlinrank_domaint::get_required_values(size_t row){

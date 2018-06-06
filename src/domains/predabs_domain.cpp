@@ -61,7 +61,7 @@ void predabs_domaint::pre_iterate_init(valuet &value){
   e_it=todo_preds.begin();
 }
 
-bool predabs_domaint::nothing_to_solve(){
+bool predabs_domaint::something_to_solve(){
     return (e_it == todo_preds.end());
 }
 

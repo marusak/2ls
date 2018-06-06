@@ -44,6 +44,7 @@ public:
     const namespacet &_ns):
     domaint(_domain_number, _renaming_map, _ns)
   {
+      iterate_count = 1;
   }
 
   // initialize value
@@ -56,7 +57,7 @@ public:
 
   virtual void pre_iterate_init(valuet &value);
 
-  virtual bool nothing_to_solve();
+  virtual bool something_to_solve();
 
   std::vector<exprt> get_required_values(size_t row);
   void set_values(std::vector<exprt> got_values);
@@ -159,6 +160,7 @@ protected:
 
   templatet templ;
   exprt value;
+  int iterate_count;
 };
 
 #endif

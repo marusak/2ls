@@ -6,58 +6,57 @@ bool strategy_solver_predabst::iterate(invariantt &inv)
   bool improved=false;
 
   predabs_domain.pre_iterate_init(inv);
-  if (predabs_domain.nothing_to_solve())
-      return improved;
+  if (predabs_domain.something_to_solve()){
 
-  solver.new_context();
+      solver.new_context();
 
-  // Entry value constraints
-  exprt pre_expr=predabs_domain.to_pre_constraints(inv);
-  solver << pre_expr;
+      // Entry value constraints
+      exprt pre_expr=predabs_domain.to_pre_constraints(inv);
+      solver << pre_expr;
 
-  exprt::operandst strategy_cond_exprs;
+      exprt::operandst strategy_cond_exprs;
 
-  predabs_domain.make_not_post_constraints(inv, strategy_cond_exprs);
+      predabs_domain.make_not_post_constraints(inv, strategy_cond_exprs);
 
-  predabs_domain.strategy_cond_literals.resize(strategy_cond_exprs.size());
+      predabs_domain.strategy_cond_literals.resize(strategy_cond_exprs.size());
 
-  for(std::size_t i=0; i<strategy_cond_exprs.size(); ++i)
-  {
-    predabs_domain.strategy_cond_literals[i]=solver.convert(strategy_cond_exprs[i]);
-  }
-
-  exprt cond=disjunction(strategy_cond_exprs);
-  adjust_float_expressions(cond, ns);
-  solver << cond;
-    if(solver()==decision_proceduret::D_SATISFIABLE)
+      for(std::size_t i=0; i<strategy_cond_exprs.size(); ++i)
       {
-        for(std::size_t row=0; row<predabs_domain.strategy_cond_literals.size(); ++row)
-        {
-          if(solver.l_get(predabs_domain.strategy_cond_literals[row]).is_true())
-          {
-            //Find what values from solver are needed
-            std::vector<exprt> required_values = predabs_domain.get_required_values(row);
-            std::vector<exprt> got_values;
-            for(auto &c_exprt : required_values) {
-                got_values.push_back(solver.solver->get(c_exprt));
-            }
-            predabs_domain.set_values(got_values);
-
-            improved = predabs_domain.edit_row(row, inv, improved);// TODO set into diseq
-          }
-        }
-        solver.pop_context(); // THIS IS HERE SURPLUS
+        predabs_domain.strategy_cond_literals[i]=solver.convert(strategy_cond_exprs[i]);
       }
-    else  // equality holds
-    {
-      predabs_domain.set_row_value(*(predabs_domain.e_it), true_exprt(), inv);
-      solver.pop_context();
-      solver << pre_expr; // make permanent
-      predabs_domain.todo_preds.insert(predabs_domain.todo_notpreds.begin(), predabs_domain.todo_notpreds.end());
-      predabs_domain.todo_notpreds.clear();
+
+      exprt cond=disjunction(strategy_cond_exprs);
+      adjust_float_expressions(cond, ns);
+      solver << cond;
+        if(solver()==decision_proceduret::D_SATISFIABLE)
+          {
+            for(std::size_t row=0; row<predabs_domain.strategy_cond_literals.size(); ++row)
+            {
+              if(solver.l_get(predabs_domain.strategy_cond_literals[row]).is_true())
+              {
+                //Find what values from solver are needed
+                std::vector<exprt> required_values = predabs_domain.get_required_values(row);
+                std::vector<exprt> got_values;
+                for(auto &c_exprt : required_values) {
+                    got_values.push_back(solver.solver->get(c_exprt));
+                }
+                predabs_domain.set_values(got_values);
+
+                improved = predabs_domain.edit_row(row, inv, improved);// TODO set into diseq
+              }
+            }
+            solver.pop_context(); // THIS IS HERE SURPLUS
+          }
+        else  // equality holds
+        {
+          predabs_domain.set_row_value(*(predabs_domain.e_it), true_exprt(), inv);
+          solver.pop_context();
+          solver << pre_expr; // make permanent
+          predabs_domain.todo_preds.insert(predabs_domain.todo_notpreds.begin(), predabs_domain.todo_notpreds.end());
+          predabs_domain.todo_notpreds.clear();
+        }
+
+        predabs_domain.todo_preds.erase(predabs_domain.e_it);
     }
-
-    predabs_domain.todo_preds.erase(predabs_domain.e_it);
-
     return true;
 }

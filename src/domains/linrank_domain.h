@@ -60,6 +60,7 @@ public:
     number_inner_iterations(0)
    {
     inner_solver=incremental_solvert::allocate(_ns);
+    iterate_count = 1;
     //solver_instances++;
    }
   // initialize value
@@ -72,7 +73,7 @@ public:
 
   virtual void pre_iterate_init(valuet &value);
 
-  virtual bool nothing_to_solve();
+  virtual bool something_to_solve();
 
   std::vector<exprt> get_required_values(size_t row);
   void set_values(std::vector<exprt> got_values);
@@ -141,6 +142,7 @@ protected:
   bool is_row_value_true(const row_valuet & row_value) const;
 public:
   std::vector<linrank_domaint::pre_post_valuest> strategy_value_exprs;
+  int iterate_count;
 };
 
 #endif // CPROVER_2LS_DOMAINS_LINRANK_DOMAIN_H

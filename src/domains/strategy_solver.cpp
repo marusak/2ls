@@ -7,54 +7,54 @@ bool strategy_solver::iterate(invariantt &inv)
   bool improved=false;
 
   domain.pre_iterate_init(inv);
-  if (domain.nothing_to_solve())
-      return improved;
+  while (domain.something_to_solve()) {
 
-  solver.new_context();
+      solver.new_context();
 
-  // Entry value constraints
-  exprt pre_expr=domain.to_pre_constraints(inv);
-  solver << pre_expr;
+      // Entry value constraints
+      exprt pre_expr=domain.to_pre_constraints(inv);
+      solver << pre_expr;
 
-  // Exit value constraints
-  exprt::operandst strategy_cond_exprs;
-  domain.make_not_post_constraints(inv, strategy_cond_exprs);
+      // Exit value constraints
+      exprt::operandst strategy_cond_exprs;
+      domain.make_not_post_constraints(inv, strategy_cond_exprs);
 
-  domain.strategy_cond_literals.resize(strategy_cond_exprs.size());
+      domain.strategy_cond_literals.resize(strategy_cond_exprs.size());
 
-  for(std::size_t i=0; i<strategy_cond_exprs.size(); ++i)
-  {
-    domain.strategy_cond_literals[i]=solver.convert(strategy_cond_exprs[i]);
-  }
-
-  exprt cond=disjunction(strategy_cond_exprs);
-  adjust_float_expressions(cond, ns);
-  solver << cond;
-
-  if(solver()==decision_proceduret::D_SATISFIABLE)
-  {
-    for(std::size_t row=0; row<domain.strategy_cond_literals.size(); ++row)
-    {
-      if(solver.l_get(domain.strategy_cond_literals[row]).is_true())
+      for(std::size_t i=0; i<strategy_cond_exprs.size(); ++i)
       {
-        //Find what values from solver are needed
-        std::vector<exprt> required_values = domain.get_required_values(row);
-        std::vector<exprt> got_values;
-        for(auto &c_exprt : required_values) {
-            got_values.push_back(solver.solver->get(c_exprt));
-        }
-        domain.set_values(got_values);
-
-        improved = domain.edit_row(row, inv, improved);
+        domain.strategy_cond_literals[i]=solver.convert(strategy_cond_exprs[i]);
       }
-    }
-  }
-  else
-  {
-    debug() << "Outer solver: UNSAT!!" << eom;
-    solver << domain.not_satisfiable(inv);
-  }
-  solver.pop_context();
 
+      exprt cond=disjunction(strategy_cond_exprs);
+      adjust_float_expressions(cond, ns);
+      solver << cond;
+
+      if(solver()==decision_proceduret::D_SATISFIABLE)
+      {
+        for(std::size_t row=0; row<domain.strategy_cond_literals.size(); ++row)
+        {
+          if(solver.l_get(domain.strategy_cond_literals[row]).is_true())
+          {
+            //Find what values from solver are needed
+            std::vector<exprt> required_values = domain.get_required_values(row);
+            std::vector<exprt> got_values;
+            for(auto &c_exprt : required_values) {
+                got_values.push_back(solver.solver->get(c_exprt));
+            }
+            domain.set_values(got_values);
+
+            improved = domain.edit_row(row, inv, improved);
+          }
+        }
+      }
+      else
+      {
+        debug() << "Outer solver: UNSAT!!" << eom;
+        solver << domain.not_satisfiable(inv);
+      }
+    //domain.post_loop();
+    solver.pop_context();
+  }
   return improved;
 }
