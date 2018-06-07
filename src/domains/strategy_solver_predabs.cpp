@@ -7,7 +7,7 @@ bool strategy_solver_predabst::iterate(invariantt &inv)
 
   predabs_domain.pre_iterate_init(inv);
   if (predabs_domain.something_to_solve()){
-
+      improved = true;
       solver.new_context();
 
       // Entry value constraints
@@ -49,14 +49,11 @@ bool strategy_solver_predabst::iterate(invariantt &inv)
           }
         else  // equality holds
         {
-          predabs_domain.set_row_value(*(predabs_domain.e_it), true_exprt(), inv);
-          solver.pop_context();
-          solver << pre_expr; // make permanent
-          predabs_domain.todo_preds.insert(predabs_domain.todo_notpreds.begin(), predabs_domain.todo_notpreds.end());
-          predabs_domain.todo_notpreds.clear();
+          solver.pop_context(); // THIS IS SURPLUS
+          solver << predabs_domain.not_satisfiable(inv);
         }
-
-        predabs_domain.todo_preds.erase(predabs_domain.e_it);
+        predabs_domain.post_edit();
+        //pop context??
     }
-    return true;
+    return improved;
 }

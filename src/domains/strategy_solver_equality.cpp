@@ -62,13 +62,9 @@ bool strategy_solver_equalityt::iterate(invariantt &_inv)
             solver << equality_domain.not_satisfiable(_inv);
         }
 
-        //make it domian.post_edit()
-        if (!equality_domain.check_dis)
-            equality_domain.todo_equs.erase(equality_domain.e_it);
-        else{
+        equality_domain.post_edit();
+        if (equality_domain.check_dis) // THIS IS HERE SURPLUS
             solver.pop_context();
-            equality_domain.todo_disequs.erase(equality_domain.e_it);
-        }
     }
   return improved;
 }

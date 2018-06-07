@@ -89,6 +89,7 @@ bool predabs_domaint::edit_row(const rowt &row, valuet &inv, bool improved)
 
 void predabs_domaint::post_edit()
 {
+    todo_preds.erase(e_it);
 }
 
 /*******************************************************************\
@@ -105,7 +106,10 @@ Function: predabs_domaint::not_satisfiable
 
 exprt predabs_domaint::not_satisfiable(valuet &value)
 {
-    return true_exprt();
+    set_row_value(*e_it, true_exprt(), value);
+    todo_preds.insert(todo_notpreds.begin(), todo_notpreds.end());
+    todo_notpreds.clear();
+    return to_pre_constraints(value);
 }
 
 /*******************************************************************\
