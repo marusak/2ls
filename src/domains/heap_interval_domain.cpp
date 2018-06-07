@@ -28,32 +28,6 @@ void heap_interval_domaint::initialize(domaint::valuet &value)
   interval_domain.initialize(v.interval_value);
 }
 
-/*******************************************************************\
-
-Function: heap_interval_domaint::pre_iterate_init
-
-  Inputs:
-
- Outputs:
-
- Purpose:
-
-\*******************************************************************/
-
-void heap_interval_domaint::pre_iterate_init(valuet &value){
-}
-
-bool heap_interval_domaint::something_to_solve(){
-    return true;
-}
-
-const exprt heap_interval_domaint::initialize_solver(const local_SSAt &SSA,
-                                                     const exprt &precondition,
-                                                     template_generator_baset &template_generator)
-{
-    return true_exprt();
-}
-
 std::vector<exprt> heap_interval_domaint::get_required_values(size_t row){
     std::vector<exprt> r;
     r.push_back(strategy_value_exprs[row]);
@@ -69,10 +43,6 @@ bool heap_interval_domaint::edit_row(const rowt &row, valuet &inv, bool improved
     return false;
 }
 
-void heap_interval_domaint::post_edit()
-{
-}
-
 exprt heap_interval_domaint::to_pre_constraints(valuet &_value)
 {
     return true_exprt();
@@ -81,23 +51,6 @@ exprt heap_interval_domaint::to_pre_constraints(valuet &_value)
 void heap_interval_domaint::make_not_post_constraints(valuet &_value,
                                                       exprt::operandst &cond_exprs)
 {
-}
-
-/*******************************************************************\
-
-Function: heap_interval_domaint::not_satisfiable
-
-  Inputs:
-
- Outputs:
-
- Purpose:
-
-\*******************************************************************/
-
-exprt heap_interval_domaint::not_satisfiable(valuet &value)
-{
-    return true_exprt();
 }
 
 /*******************************************************************\

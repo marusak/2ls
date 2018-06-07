@@ -65,14 +65,6 @@ bool predabs_domaint::something_to_solve(){
     return (e_it == todo_preds.end());
 }
 
-const exprt predabs_domaint::initialize_solver(
-    const local_SSAt &SSA,
-    const exprt &precondition,
-    template_generator_baset &template_generator)
-{
-    return true_exprt();
-}
-
 std::vector<exprt> predabs_domaint::get_required_values(size_t row){
     std::vector<exprt> r;
     return r;

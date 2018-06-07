@@ -194,16 +194,10 @@ public:
     const exprt &precondition,
     template_generator_baset &template_generator);
 
-  void pre_iterate_init(valuet &value);
-
-  virtual bool something_to_solve();
-
   std::vector<exprt> get_required_values(size_t row);
   void set_values(std::vector<exprt> got_values);
 
   bool edit_row(const rowt &row, valuet &inv, bool improved);
-
-  void post_edit();
 
   // Value -> constraints
   exprt to_pre_constraints(valuet &value);
@@ -218,8 +212,6 @@ public:
     const row_valuet &row_value) const;
 
   exprt get_row_post_constraint(const rowt &row, const row_valuet &row_value);
-
-  virtual exprt not_satisfiable(valuet &value);
 
   // Row modifications
   bool add_transitivity(const rowt &from, const rowt &to, heap_valuet &value);

@@ -47,14 +47,16 @@ bool strategy_solver::iterate(invariantt &inv)
             improved = domain.edit_row(row, inv, improved);
           }
         }
+        // predabs and equality in equality
       }
       else
       {
         debug() << "Outer solver: UNSAT!!" << eom;
+        // predabs equality in equality check
         solver << domain.not_satisfiable(inv);
       }
     domain.post_edit();
-    solver.pop_context();
+    solver.pop_context(); // NOT equality when in disequality check and predabs
   }
   return improved;
 }

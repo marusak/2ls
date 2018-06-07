@@ -51,33 +51,6 @@ void linrank_domaint::initialize(valuet &value)
   }
 }
 
-/*******************************************************************\
-
-Function: linrank_domaint::pre_iterate_init
-
-  Inputs:
-
- Outputs:
-
- Purpose:
-
-\*******************************************************************/
-
-void linrank_domaint::pre_iterate_init(valuet &value){
-}
-
-bool linrank_domaint::something_to_solve(){
-    return true;
-}
-
-const exprt linrank_domaint::initialize_solver(
-    const local_SSAt &SSA,
-    const exprt &precondition,
-    template_generator_baset &template_generator)
-{
-    return true_exprt();
-}
-
 std::vector<exprt> linrank_domaint::get_required_values(size_t row){
     //check me
     std::vector<exprt> r;
@@ -162,10 +135,6 @@ bool linrank_domaint::edit_row(const rowt &row, valuet &inv, bool improved)
       inner_solver->pop_context();
 
     return improved;
-}
-
-void linrank_domaint::post_edit()
-{
 }
 
 exprt linrank_domaint::to_pre_constraints(valuet &_value)

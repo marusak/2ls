@@ -41,14 +41,6 @@ bool equality_domaint::something_to_solve(){
     return false;
 }
 
-const exprt equality_domaint::initialize_solver(
-    const local_SSAt &SSA,
-    const exprt &precondition,
-    template_generator_baset &template_generator)
-{
-    return true_exprt();
-}
-
 std::vector<exprt> equality_domaint::get_required_values(size_t row){
     std::vector<exprt> r;
     return r;

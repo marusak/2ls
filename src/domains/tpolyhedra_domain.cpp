@@ -52,43 +52,6 @@ void tpolyhedra_domaint::initialize(valuet &value)
   }
 }
 
-/*******************************************************************\
-
-Function: tpolyhedra_domaint::pre_iterate_init
-
-  Inputs:
-
- Outputs:
-
- Purpose:
-
-\*******************************************************************/
-
-void tpolyhedra_domaint::pre_iterate_init(valuet &value){
-}
-
-bool tpolyhedra_domaint::something_to_solve(){
-    return true;
-}
-
-/*******************************************************************\
-
-Function: tpolyhedra_domaint::initialize_solver
-
-  Inputs:
-
- Outputs:
-
- Purpose:
-
-\*******************************************************************/
-const exprt tpolyhedra_domaint::initialize_solver(const local_SSAt &SSA,
-                                                  const exprt &precondition,
-                                                  template_generator_baset &template_generator)
-{
-  return true_exprt();
-}
-
 std::vector<exprt> tpolyhedra_domaint::get_required_values(size_t row){
     std::vector<exprt> r;
     r.push_back(strategy_value_exprs[row]);
@@ -115,27 +78,6 @@ bool tpolyhedra_domaint::edit_row(const rowt &row, valuet &_inv, bool improved){
     tpolyhedra_domaint::templ_valuet &inv=static_cast<tpolyhedra_domaint::templ_valuet &>(_inv);
     set_row_value(row, simplify_const(value), inv);
     return true;
-}
-
-void tpolyhedra_domaint::post_edit()
-{
-}
-
-/*******************************************************************\
-
-Function: tpolyhedra_domaint::not_satisfiable
-
-  Inputs:
-
- Outputs:
-
- Purpose:
-
-\*******************************************************************/
-
-exprt tpolyhedra_domaint::not_satisfiable(valuet &value)
-{
-    return true_exprt();
 }
 
 /*******************************************************************\

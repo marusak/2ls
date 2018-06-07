@@ -53,11 +53,6 @@ equality_domaint(
 
   virtual void initialize(valuet &value);
 
-  const exprt initialize_solver(
-    const local_SSAt &SSA,
-    const exprt &precondition,
-    template_generator_baset &template_generator);
-
   virtual void pre_iterate_init(valuet &value);
 
   virtual bool something_to_solve();

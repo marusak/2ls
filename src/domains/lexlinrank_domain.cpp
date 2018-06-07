@@ -161,10 +161,6 @@ bool lexlinrank_domaint::edit_row(const rowt &row, valuet &inv, bool improved)
     return improved;
 }
 
-void lexlinrank_domaint::post_edit()
-{
-}
-
 exprt lexlinrank_domaint::to_pre_constraints(valuet &_value)
 {
   exprt rounding_mode=symbol_exprt(CPROVER_PREFIX "rounding_mode", signedbv_typet(32));
@@ -177,11 +173,6 @@ void lexlinrank_domaint::pre_iterate_init(domaint::valuet &_rank)
   lexlinrank_domaint::templ_valuet &rank=
     static_cast<lexlinrank_domaint::templ_valuet &>(_rank);
   number_elements_per_row.resize(rank.size());
-}
-
-bool lexlinrank_domaint::something_to_solve()
-{
-  return true;
 }
 
 std::vector<exprt> lexlinrank_domaint::get_required_values(size_t row){

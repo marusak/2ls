@@ -40,28 +40,16 @@ public:
 
   virtual void initialize(valuet &value) override;
 
-  const exprt initialize_solver(
-    const local_SSAt &SSA,
-    const exprt &precondition,
-    template_generator_baset &template_generator);
-
-  virtual void pre_iterate_init(valuet &value);
-  virtual bool something_to_solve();
-
   std::vector<exprt> get_required_values(size_t row);
   void set_values(std::vector<exprt> got_values);
 
   bool edit_row(const rowt &row, valuet &inv, bool improved);
-
-  void post_edit();
 
   exprt to_pre_constraints(valuet &_value);
 
   void make_not_post_constraints(
     valuet &_value,
     exprt::operandst &cond_exprs);
-
-  virtual exprt not_satisfiable(valuet &value);
 
   virtual void output_value(
     std::ostream &out,

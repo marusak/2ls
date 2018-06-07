@@ -49,25 +49,6 @@ void heap_domaint::make_template(
 
 /*******************************************************************\
 
-Function: heap_domaint::pre_iterate_init
-
-  Inputs:
-
- Outputs:
-
- Purpose:
-
-\*******************************************************************/
-
-void heap_domaint::pre_iterate_init(valuet &value){
-}
-
-bool heap_domaint::something_to_solve(){
-    return true;
-}
-
-/*******************************************************************\
-
 Function: heap_domaint::initialize_solver
 
   Inputs:
@@ -198,28 +179,6 @@ bool heap_domaint::edit_row(const rowt &row, valuet &_inv, bool improved){
         update_rows_rec(row, inv);
     }
     return improved;
-}
-
-void heap_domaint::post_edit()
-{
-}
-
-
-/*******************************************************************\
-
-Function: heap_domaint::not_satisfiable
-
-  Inputs:
-
- Outputs:
-
- Purpose:
-
-\*******************************************************************/
-
-exprt heap_domaint::not_satisfiable(valuet &value)
-{
-    return true_exprt();
 }
 
 /*******************************************************************\

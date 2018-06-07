@@ -80,15 +80,15 @@ public:
   virtual const exprt initialize_solver(
     const local_SSAt &SSA,
     const exprt &precondition,
-    template_generator_baset &template_generator) = 0;
+    template_generator_baset &template_generator);
 
-  virtual void pre_iterate_init(valuet &value) = 0;
+  virtual void pre_iterate_init(valuet &value);
 
-  virtual bool something_to_solve() = 0;
+  virtual bool something_to_solve();
 
   virtual bool edit_row(const rowt &row, valuet &inv, bool improved) = 0;
 
-  virtual void post_edit() = 0;
+  virtual void post_edit();
 
   virtual exprt to_pre_constraints(valuet &value) = 0;
 
@@ -99,7 +99,7 @@ public:
   virtual std::vector<exprt> get_required_values(size_t row) = 0;
   virtual void set_values(std::vector<exprt> got_values) = 0;
 
-  virtual exprt not_satisfiable(valuet &value) = 0;
+  virtual exprt not_satisfiable(valuet &value);
 
   // returns true as long as further refinements are possible
   virtual void reset_refinements() { }

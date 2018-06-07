@@ -65,3 +65,27 @@ void domaint::output_var_specs(
     out << from_expr(ns, "", v.var) << std::endl;
   }
 }
+
+const exprt domaint::initialize_solver(
+    const local_SSAt &SSA,
+    const exprt &precondition,
+    template_generator_baset &template_generator)
+{
+    return true_exprt();
+}
+
+void domaint::pre_iterate_init(valuet &value){
+}
+
+bool domaint::something_to_solve(){
+    return true;
+}
+
+exprt domaint::not_satisfiable(valuet &value)
+{
+    return true_exprt();
+}
+
+void domaint::post_edit()
+{
+}

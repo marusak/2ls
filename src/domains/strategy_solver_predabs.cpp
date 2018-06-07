@@ -42,7 +42,7 @@ bool strategy_solver_predabst::iterate(invariantt &inv)
                 }
                 predabs_domain.set_values(got_values);
 
-                improved = predabs_domain.edit_row(row, inv, improved);// TODO set into diseq
+                improved = predabs_domain.edit_row(row, inv, improved);
               }
             }
             solver.pop_context(); // THIS IS HERE SURPLUS
@@ -53,7 +53,6 @@ bool strategy_solver_predabst::iterate(invariantt &inv)
           solver << predabs_domain.not_satisfiable(inv);
         }
         predabs_domain.post_edit();
-        //pop context??
     }
     return improved;
 }
