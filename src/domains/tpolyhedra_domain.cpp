@@ -117,6 +117,10 @@ bool tpolyhedra_domaint::edit_row(const rowt &row, valuet &_inv, bool improved){
     return true;
 }
 
+void tpolyhedra_domaint::post_edit()
+{
+}
+
 /*******************************************************************\
 
 Function: tpolyhedra_domaint::not_satisfiable

@@ -88,6 +88,8 @@ public:
 
   virtual bool edit_row(const rowt &row, valuet &inv, bool improved) = 0;
 
+  virtual void post_edit() = 0;
+
   virtual exprt to_pre_constraints(valuet &value) = 0;
 
   virtual void make_not_post_constraints(

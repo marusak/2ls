@@ -58,12 +58,11 @@ bool strategy_solver_equalityt::iterate(invariantt &_inv)
         {
           if (!equality_domain.check_dis){
             solver.pop_context(); // THIS IS HERE SURPLUS
-            solver << equality_domain.not_satisfiable(_inv);
-          } else {
-            solver << equality_domain.not_satisfiable(_inv);
           }
+            solver << equality_domain.not_satisfiable(_inv);
         }
 
+        //make it domian.post_edit()
         if (!equality_domain.check_dis)
             equality_domain.todo_equs.erase(equality_domain.e_it);
         else{

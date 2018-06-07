@@ -65,6 +65,10 @@ bool equality_domaint::edit_row(const rowt &row, valuet &inv, bool improved)
     return true;
 }
 
+void equality_domaint::post_edit()
+{
+}
+
 exprt equality_domaint::to_pre_constraints(valuet &_value)
 {
   if (check_dis)

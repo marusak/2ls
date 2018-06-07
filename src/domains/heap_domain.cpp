@@ -200,6 +200,11 @@ bool heap_domaint::edit_row(const rowt &row, valuet &_inv, bool improved){
     return improved;
 }
 
+void heap_domaint::post_edit()
+{
+}
+
+
 /*******************************************************************\
 
 Function: heap_domaint::not_satisfiable

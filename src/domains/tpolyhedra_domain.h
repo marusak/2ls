@@ -63,6 +63,8 @@ public:
 
   bool edit_row(const rowt &row, valuet &inv, bool improved);
 
+  void post_edit();
+
   exprt to_pre_constraints(valuet &_value);
 
   void make_not_post_constraints(

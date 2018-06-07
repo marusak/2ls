@@ -69,6 +69,10 @@ bool heap_interval_domaint::edit_row(const rowt &row, valuet &inv, bool improved
     return false;
 }
 
+void heap_interval_domaint::post_edit()
+{
+}
+
 exprt heap_interval_domaint::to_pre_constraints(valuet &_value)
 {
     return true_exprt();

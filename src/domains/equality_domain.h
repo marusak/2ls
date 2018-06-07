@@ -64,6 +64,8 @@ equality_domaint(
 
   bool edit_row(const rowt &row, valuet &inv, bool improved);
 
+  void post_edit();
+
   std::vector<exprt> get_required_values(size_t row);
   void set_values(std::vector<exprt> got_values);
 

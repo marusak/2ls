@@ -87,6 +87,10 @@ bool predabs_domaint::edit_row(const rowt &row, valuet &inv, bool improved)
     return true;
 }
 
+void predabs_domaint::post_edit()
+{
+}
+
 /*******************************************************************\
 
 Function: predabs_domaint::not_satisfiable

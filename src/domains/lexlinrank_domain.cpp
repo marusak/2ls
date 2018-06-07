@@ -161,6 +161,10 @@ bool lexlinrank_domaint::edit_row(const rowt &row, valuet &inv, bool improved)
     return improved;
 }
 
+void lexlinrank_domaint::post_edit()
+{
+}
+
 exprt lexlinrank_domaint::to_pre_constraints(valuet &_value)
 {
   exprt rounding_mode=symbol_exprt(CPROVER_PREFIX "rounding_mode", signedbv_typet(32));
