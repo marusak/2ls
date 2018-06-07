@@ -70,7 +70,8 @@ equality_domaint(
     valuet &_value,
     exprt::operandst &cond_exprs);
 
-  virtual exprt not_satisfiable(valuet &value);
+  virtual void not_satisfiable(valuet &value);
+  virtual exprt make_permanent(valuet &value);
 
   exprt get_pre_equ_constraint(unsigned index);
   exprt get_post_not_equ_constraint(unsigned index);
@@ -110,6 +111,7 @@ public:
   worklistt todo_equs;
   worklistt todo_disequs;
   bool check_dis;
+  bool unsatisfiable;
 };
 
 #endif // CPROVER_2LS_DOMAINS_EQUALITY_DOMAIN_H

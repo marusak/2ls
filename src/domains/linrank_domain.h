@@ -76,7 +76,7 @@ public:
     valuet &_value,
     exprt::operandst &cond_exprs);
 
-  virtual exprt not_satisfiable(valuet &value);
+  virtual void not_satisfiable(valuet &value);
 
   virtual bool refine();
 

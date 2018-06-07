@@ -81,11 +81,15 @@ bool domaint::something_to_solve(){
     return true;
 }
 
-exprt domaint::not_satisfiable(valuet &value)
+void domaint::not_satisfiable(valuet &value)
 {
-    return true_exprt();
 }
 
 void domaint::post_edit()
 {
+}
+
+exprt domaint::make_permanent(valuet &value)
+{
+    return true_exprt();
 }

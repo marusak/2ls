@@ -88,6 +88,7 @@ public:
 
   virtual bool edit_row(const rowt &row, valuet &inv, bool improved) = 0;
 
+  virtual exprt make_permanent(valuet &value);
   virtual void post_edit();
 
   virtual exprt to_pre_constraints(valuet &value) = 0;
@@ -99,7 +100,7 @@ public:
   virtual std::vector<exprt> get_required_values(size_t row) = 0;
   virtual void set_values(std::vector<exprt> got_values) = 0;
 
-  virtual exprt not_satisfiable(valuet &value);
+  virtual void not_satisfiable(valuet &value);
 
   // returns true as long as further refinements are possible
   virtual void reset_refinements() { }

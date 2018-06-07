@@ -51,20 +51,15 @@ bool strategy_solver_equalityt::iterate(invariantt &_inv)
                 improved = equality_domain.edit_row(row, inv, improved);
               }
             }
-            if (!equality_domain.check_dis)
-                solver.pop_context(); // THIS IS HERE SURPLUS
           }
         else  // equality holds
         {
-          if (!equality_domain.check_dis){
-            solver.pop_context(); // THIS IS HERE SURPLUS
-          }
-            solver << equality_domain.not_satisfiable(_inv);
+            equality_domain.not_satisfiable(_inv);
         }
 
+        solver.pop_context();
+        solver << equality_domain.make_permanent(_inv);
         equality_domain.post_edit();
-        if (equality_domain.check_dis) // THIS IS HERE SURPLUS
-            solver.pop_context();
     }
   return improved;
 }

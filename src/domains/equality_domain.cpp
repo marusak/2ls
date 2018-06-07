@@ -26,6 +26,7 @@ Function: equality_domaint::pre_iterate_init
 
 void equality_domaint::pre_iterate_init(valuet &value){
     e_it=todo_equs.begin();
+    unsatisfiable = false;
 }
 
 bool equality_domaint::something_to_solve(){
@@ -148,22 +149,31 @@ Function: equality_domaint::not_satisfiable
 
 \*******************************************************************/
 
-exprt equality_domaint::not_satisfiable(valuet &value)
+void equality_domaint::not_satisfiable(valuet &value)
 {
       equality_domaint::equ_valuet &inv=
         static_cast<equality_domaint::equ_valuet &>(value);
       if (check_dis)
         set_disequal(*e_it, inv);
-      else {
+      unsatisfiable = true;
+}
+
+exprt equality_domaint::make_permanent(valuet &value)
+{
+    equality_domaint::equ_valuet &inv=
+      static_cast<equality_domaint::equ_valuet &>(value);
+    if (unsatisfiable){
+        if (!check_dis){
           set_equal(*e_it, inv);
 
           // due to transitivity, we have to recheck equalities
           //   that did not hold
           todo_equs.insert(todo_disequs.begin(), todo_disequs.end());
           todo_disequs.clear();
-      }
-
-      return to_pre_constraints(value);
+        }
+        return to_pre_constraints(value);
+    }
+    return true_exprt();
 }
 
 /*******************************************************************\

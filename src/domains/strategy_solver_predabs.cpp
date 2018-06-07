@@ -50,7 +50,7 @@ bool strategy_solver_predabst::iterate(invariantt &inv)
         else  // equality holds
         {
           solver.pop_context(); // THIS IS SURPLUS
-          solver << predabs_domain.not_satisfiable(inv);
+          predabs_domain.not_satisfiable(inv);
         }
         predabs_domain.post_edit();
     }

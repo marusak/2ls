@@ -96,11 +96,14 @@ Function: predabs_domaint::not_satisfiable
 
 \*******************************************************************/
 
-exprt predabs_domaint::not_satisfiable(valuet &value)
+void predabs_domaint::not_satisfiable(valuet &value)
 {
     set_row_value(*e_it, true_exprt(), value);
     todo_preds.insert(todo_notpreds.begin(), todo_notpreds.end());
     todo_notpreds.clear();
+}
+
+exprt predabs_domaint::make_permanent(valuet &value){
     return to_pre_constraints(value);
 }
 

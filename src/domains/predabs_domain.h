@@ -68,7 +68,9 @@ public:
     valuet &_value,
     exprt::operandst &cond_exprs);
 
-  virtual exprt not_satisfiable(valuet &value);
+  void not_satisfiable(valuet &value);
+
+  exprt make_permanent(valuet &value);
 
   // value -> constraints
   exprt get_row_constraint(const rowt &row, const row_valuet &row_value);
