@@ -59,6 +59,8 @@ public:
   void undo_restriction();
   void eliminate_sympaths(const std::vector<symbolic_patht> &sympaths);
   void clear_aux_symbols();
+protected:
+  exprt value;
 };
 
 #endif // CPROVER_2LS_DOMAINS_HEAP_INTERVAL_DOMAIN_H

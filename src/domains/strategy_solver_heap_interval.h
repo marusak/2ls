@@ -12,7 +12,7 @@ Author: Viktor Malik
 
 #include "strategy_solver_base.h"
 #include "heap_interval_domain.h"
-#include "strategy_solver_heap.h"
+#include "strategy_solver.h"
 #include "strategy_solver_binsearch.h"
 
 class strategy_solver_heap_intervalt:public strategy_solver_baset
@@ -46,7 +46,7 @@ public:
 protected:
   heap_interval_domaint &heap_interval_domain;
 
-  strategy_solver_heapt heap_solver;
+  strategy_solver heap_solver;
   strategy_solver_binsearcht interval_solver;
 };
 
