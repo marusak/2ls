@@ -81,8 +81,9 @@ bool domaint::something_to_solve(){
     return true;
 }
 
-void domaint::not_satisfiable(valuet &value)
+bool domaint::not_satisfiable(valuet &value, bool improved)
 {
+    return improved;
 }
 
 void domaint::post_edit()

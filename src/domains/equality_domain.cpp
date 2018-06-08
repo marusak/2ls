@@ -149,13 +149,14 @@ Function: equality_domaint::not_satisfiable
 
 \*******************************************************************/
 
-void equality_domaint::not_satisfiable(valuet &value)
+bool equality_domaint::not_satisfiable(valuet &value, bool improved)
 {
       equality_domaint::equ_valuet &inv=
         static_cast<equality_domaint::equ_valuet &>(value);
       if (check_dis)
         set_disequal(*e_it, inv);
       unsatisfiable = true;
+      return true;
 }
 
 exprt equality_domaint::make_permanent(valuet &value)

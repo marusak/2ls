@@ -203,9 +203,10 @@ Function: lexlinrank_domaint::not_satisfiable
 
 \*******************************************************************/
 
-void lexlinrank_domaint::not_satisfiable(valuet &value)
+bool lexlinrank_domaint::not_satisfiable(valuet &value, bool improved)
 {
     reset_refinements();
+    return improved;
 }
 
 /*******************************************************************\

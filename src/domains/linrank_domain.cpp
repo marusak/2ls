@@ -156,9 +156,10 @@ Function: linrank_domaint::not_satisfiable
 
 \*******************************************************************/
 
-void linrank_domaint::not_satisfiable(valuet &value)
+bool linrank_domaint::not_satisfiable(valuet &value, bool improved)
 {
     reset_refinements();
+    return improved;
 }
 
 /*******************************************************************\

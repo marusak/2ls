@@ -100,7 +100,7 @@ public:
   virtual std::vector<exprt> get_required_values(size_t row) = 0;
   virtual void set_values(std::vector<exprt> got_values) = 0;
 
-  virtual void not_satisfiable(valuet &value);
+  virtual bool not_satisfiable(valuet &value, bool improved);
 
   // returns true as long as further refinements are possible
   virtual void reset_refinements() { }

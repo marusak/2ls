@@ -7,7 +7,6 @@ bool strategy_solver_predabst::iterate(invariantt &inv)
 
   predabs_domain.pre_iterate_init(inv);
   if (predabs_domain.something_to_solve()){
-      improved = true;
       solver.new_context();
 
       // Entry value constraints
@@ -50,7 +49,7 @@ bool strategy_solver_predabst::iterate(invariantt &inv)
         else  // equality holds
         {
           solver.pop_context(); // THIS IS SURPLUS
-          predabs_domain.not_satisfiable(inv);
+          improved = predabs_domain.not_satisfiable(inv, improved);
         }
         predabs_domain.post_edit();
     }
