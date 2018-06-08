@@ -99,13 +99,14 @@ Function: predabs_domaint::not_satisfiable
 bool predabs_domaint::not_satisfiable(valuet &value, bool improved)
 {
     set_row_value(*e_it, true_exprt(), value);
-    todo_preds.insert(todo_notpreds.begin(), todo_notpreds.end());
-    todo_notpreds.clear();
     return true;
 }
 
 exprt predabs_domaint::make_permanent(valuet &value){
-    return to_pre_constraints(value);
+    exprt to_r = to_pre_constraints(value);
+    todo_preds.insert(todo_notpreds.begin(), todo_notpreds.end());
+    todo_notpreds.clear();
+    return to_r;
 }
 
 /*******************************************************************\
