@@ -78,7 +78,6 @@ void domaint::pre_iterate_init(valuet &value)
 {
 }
 
-<<<<<<< HEAD
 bool domaint::edit_row(const rowt &row, valuet &inv, bool improved) {
     return improved;
 }
