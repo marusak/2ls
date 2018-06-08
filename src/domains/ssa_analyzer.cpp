@@ -32,6 +32,7 @@ Author: Peter Schrammel
 #include "strategy_solver_predabs.h"
 #include "ssa_analyzer.h"
 #include "strategy_solver_heap.h"
+#include "strategy_solver.h"
 #include "strategy_solver_heap_interval.h"
 
 // NOLINTNEXTLINE(*)
@@ -79,7 +80,7 @@ void ssa_analyzert::operator()(
   domain=template_generator.domain();
 
   // get strategy solver from options
-  strategy_solver_baset *strategy_solver;
+  strategy_solver_baset *s_solver;
   if(template_generator.options.get_bool_option("compute-ranking-functions"))
   {
     if(template_generator.options.get_bool_option(
@@ -121,7 +122,7 @@ void ssa_analyzert::operator()(
   }
   else if(template_generator.options.get_bool_option("heap-interval"))
   {
-    strategy_solver=new strategy_solver_heap_intervalt(
+    s_solver=new strategy_solver_heap_intervalt(
       *static_cast<heap_interval_domaint *>(domain),
       solver,
       SSA,
@@ -147,28 +148,28 @@ void ssa_analyzert::operator()(
     else if(template_generator.options.get_bool_option("binsearch-solver"))
     {
       result=new tpolyhedra_domaint::templ_valuet();
-      strategy_solver=new BINSEARCH_SOLVER;
+      s_solver=new BINSEARCH_SOLVER;
     }
     else
       assert(false);
   }
 
-  strategy_solver->set_message_handler(get_message_handler());
+  s_solver->set_message_handler(get_message_handler());
 
   // initialize inv
   domain->initialize(*result);
 
   // iterate
-  while(strategy_solver->iterate(*result)) {}
+  while(s_solver->iterate(*result)) {}
 
   solver.pop_context();
 
   // statistics
-  solver_instances+=strategy_solver->get_number_of_solver_instances();
-  solver_calls+=strategy_solver->get_number_of_solver_calls();
-  solver_instances+=strategy_solver->get_number_of_solver_instances();
+  solver_instances+=s_solver->get_number_of_solver_instances();
+  solver_calls+=s_solver->get_number_of_solver_calls();
+  solver_instances+=s_solver->get_number_of_solver_instances();
 
-  delete strategy_solver;
+  delete s_solver;
 }
 
 /*******************************************************************\
