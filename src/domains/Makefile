@@ -2,7 +2,7 @@ SRC = tpolyhedra_domain.cpp equality_domain.cpp domain.cpp \
   predabs_domain.cpp heap_domain.cpp list_iterator.cpp \
   heap_interval_domain.cpp \
   ssa_analyzer.cpp util.cpp incremental_solver.cpp \
-  strategy_solver_base.cpp strategy_solver_equality.cpp \
+  strategy_solver_base.cpp \
   linrank_domain.cpp lexlinrank_domain.cpp\
   ranking_solver_enumeration.cpp lexlinrank_solver_enumeration.cpp \
   strategy_solver_enumeration.cpp strategy_solver_binsearch.cpp \
