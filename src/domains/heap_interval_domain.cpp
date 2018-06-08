@@ -28,6 +28,31 @@ void heap_interval_domaint::initialize(domaint::valuet &value)
   interval_domain.initialize(v.interval_value);
 }
 
+std::vector<exprt> heap_interval_domaint::get_required_values(size_t row){
+    std::vector<exprt> r;
+    r.push_back(strategy_value_exprs[row]);
+    return r;
+}
+
+void heap_interval_domaint::set_values(std::vector<exprt> got_values){
+    value = got_values[0];
+}
+
+bool heap_interval_domaint::edit_row(const rowt &row, valuet &inv, bool improved)
+{
+    return false;
+}
+
+exprt heap_interval_domaint::to_pre_constraints(valuet &_value)
+{
+    return true_exprt();
+}
+
+void heap_interval_domaint::make_not_post_constraints(valuet &_value,
+                                                      exprt::operandst &cond_exprs)
+{
+}
+
 /*******************************************************************\
 
 Function: heap_interval_domaint::output_value
