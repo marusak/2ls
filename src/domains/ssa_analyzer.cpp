@@ -31,7 +31,6 @@ Author: Peter Schrammel
 #include "template_generator_ranking.h"
 #include "strategy_solver_predabs.h"
 #include "ssa_analyzer.h"
-#include "strategy_solver_heap.h"
 #include "strategy_solver.h"
 #include "strategy_solver_heap_interval.h"
 
@@ -116,7 +115,7 @@ void ssa_analyzert::operator()(
   }
   else if(template_generator.options.get_bool_option("heap"))
   {
-    strategy_solver=new strategy_solver_heapt(
+    s_solver=new strategy_solver(
       *static_cast<heap_domaint *>(domain),
       solver,
       SSA,

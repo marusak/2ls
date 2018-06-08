@@ -21,7 +21,6 @@ Author: Viktor Malik
 class heap_domaint:public domaint
 {
 public:
-  typedef unsigned rowt;
   // Field of a dynamic object (a variable)
   typedef vart member_fieldt;
   // We represent dynamic object by the object itself and its member field
@@ -195,13 +194,17 @@ public:
     const exprt &precondition,
     template_generator_baset &template_generator);
 
+  std::vector<exprt> get_required_values(size_t row);
+  void set_values(std::vector<exprt> got_values);
+
+  bool edit_row(const rowt &row, valuet &inv, bool improved);
+
   // Value -> constraints
-  exprt to_pre_constraints(const heap_valuet &value) const;
+  exprt to_pre_constraints(valuet &value);
 
   void make_not_post_constraints(
-    const heap_valuet &value,
-    exprt::operandst &cond_exprs,
-    exprt::operandst &value_exprs);
+    valuet &value,
+    exprt::operandst &cond_exprs);
 
   // Row -> constraints
   exprt get_row_pre_constraint(
@@ -256,6 +259,9 @@ protected:
   exprt::operandst iterator_bindings;
   exprt::operandst aux_bindings;
 
+  std::set<unsigned> updated_rows;
+  exprt value;
+
   /*******************************************************************\
   Specification of a new heap row that is added dynamically
   at the beginning of the analysis, after binding of iterators to the actual
@@ -298,11 +304,25 @@ protected:
 
   void add_template_row(const var_spect &var_spec, const typet &pointed_type);
 
+  int find_member_row(const exprt &obj,
+                      const irep_idt &member,
+                      int actual_loc,
+                      const domaint::kindt &kind);
+
+  bool update_rows_rec(const heap_domaint::rowt &row,
+                       heap_domaint::heap_valuet &value);
+
   // Initializing functions
   void bind_iterators(
     const local_SSAt &SSA,
     const exprt &precondition,
     template_generator_baset &template_generator);
+
+  const exprt initialize_solver(
+    const local_SSAt &SSA,
+    const exprt &precondition,
+    template_generator_baset &template_generator);
+
 
   void create_precondition(const symbol_exprt &var, const exprt &precondition);
 
@@ -342,7 +362,7 @@ protected:
   // Utility functions
   static int get_symbol_loc(const exprt &expr);
 
-  friend class strategy_solver_heapt;
+  friend class strategy_solver;
 };
 
 #endif // CPROVER_2LS_DOMAINS_HEAP_DOMAIN_H
