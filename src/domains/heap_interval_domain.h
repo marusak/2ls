@@ -53,6 +53,8 @@ public:
     valuet &value,
     const var_sett &vars,
     exprt &result) override;
+protected:
+  exprt value;
 };
 
 #endif // CPROVER_2LS_DOMAINS_HEAP_INTERVAL_DOMAIN_H
