@@ -49,9 +49,6 @@ class strategy_solver_baset:public messaget
   unsigned solver_instances;
   unsigned solver_calls;
 
-  void find_symbolic_path(
-    std::set<symbol_exprt> &loop_guards,
-    const exprt &current_guard=nil_exprt());
 };
 
 #endif

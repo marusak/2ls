@@ -135,7 +135,7 @@ bool heap_domaint::edit_row(const rowt &row, valuet &_inv, bool improved){
     exprt ptr_value=value_to_ptr_exprt(value);
 
     const exprt loop_guard=to_and_expr(
-      heap_domain.templ[row].pre_guard).op1();
+      templ[row].pre_guard).op1();
     find_symbolic_path(loop_guards, loop_guard);
 
     if((ptr_value.id()==ID_constant &&
@@ -294,7 +294,7 @@ bool heap_domaint::update_rows_rec(
     if(templ[ptr].mem_kind==heap_domaint::HEAP &&
        templ[ptr].member==templ_row.member)
     {
-      if(add_transitivity(symbolic_path, ptr, row, value))
+      if(add_transitivity(ptr, row, value))
         result=true;
 
       // Recursive update is called for each row only once
@@ -1784,7 +1784,6 @@ void heap_domaint::clear_pointing_rows(
 
   for(auto &ptr : row_value.pointed_by)
   {
-    debug() << "Clearing row: " << ptr << eom;
     value[ptr].clear();
   }
 }

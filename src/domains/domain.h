@@ -18,6 +18,7 @@ Author: Peter Schrammel
 #include <util/replace_expr.h>
 #include <util/namespace.h>
 #include <solvers/refinement/bv_refinement.h>
+#include "symbolic_path.h"
 
 // Forward declaration - real is in template_generator_base.h
 class template_generator_baset;
@@ -152,11 +153,16 @@ public:
     const var_specst &var_specs,
     const namespacet &ns);
 
+  void find_symbolic_path(
+    std::set<symbol_exprt> &loop_guards,
+    const exprt &current_guard=nil_exprt());
+
 protected:
   unsigned domain_number; // serves as id for variables names
   replace_mapt &renaming_map;
   const namespacet &ns;
 
+  symbolic_patht symbolic_path;
   inline void rename(exprt &expr)
   {
     replace_expr(renaming_map, expr);
