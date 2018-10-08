@@ -24,11 +24,9 @@ public:
     message_handlert &message_handler,
     template_generator_baset &template_generator):
     strategy_solver_baset(_solver, SSA.ns),
-    heap_domain(_heap_domain),
-    loop_guards(SSA.loop_guards)
+    heap_domain(_heap_domain)
   {
     set_message_handler(message_handler);
-    initialize(SSA, precondition, template_generator);
   }
 
   virtual bool iterate(invariantt &_inv) override;
@@ -40,27 +38,7 @@ public:
 
 protected:
   heap_domaint &heap_domain;
-  std::set<std::pair<symbol_exprt, symbol_exprt>> loop_guards;
-  std::set<unsigned> updated_rows;
 
-  const exprt get_points_to_dest(
-    const exprt &pointer,
-    const exprt &templ_row_expr);
-
-  int find_member_row(
-    const exprt &obj,
-    const irep_idt &member,
-    int actual_loc,
-    const domaint::kindt &kind);
-
-  bool update_rows_rec(
-    const heap_domaint::rowt &row,
-    heap_domaint::heap_valuet &value);
-  void clear_pointing_rows(
-    const heap_domaint::rowt &row,
-    heap_domaint::heap_valuet &value);
-
-  void print_solver_expr(const exprt &expr);
 };
 
 

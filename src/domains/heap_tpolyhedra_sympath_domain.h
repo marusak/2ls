@@ -27,7 +27,7 @@ public:
     const heap_tpolyhedra_domaint::polyhedra_kindt polyhedra_kind):
     domaint(_domain_number, _renaming_map, SSA.ns),
     heap_tpolyhedra_domain(
-      _domain_number, _renaming_map, var_specs, SSA.ns, polyhedra_kind)
+      _domain_number, _renaming_map, var_specs, polyhedra_kind, SSA)
   {
     exprt::operandst false_loop_guards;
     for(auto &g : SSA.loop_guards)

@@ -28,18 +28,18 @@ public:
     unsigned int _domain_number,
     replace_mapt &_renaming_map,
     const var_specst &var_specs,
-    const namespacet &ns,
-    const polyhedra_kindt polyhedra_kind):
-    domaint(_domain_number, _renaming_map, ns),
-    heap_domain(_domain_number, _renaming_map, var_specs, ns),
-    polyhedra_domain(_domain_number, _renaming_map, ns)
+    const polyhedra_kindt polyhedra_kind,
+    const local_SSAt &SSA):
+    domaint(_domain_number, _renaming_map, SSA.ns),
+    heap_domain(_domain_number, _renaming_map, var_specs, SSA),
+    polyhedra_domain(_domain_number, _renaming_map, SSA.ns)
   {
     if(polyhedra_kind==INTERVAL)
-      polyhedra_domain.add_interval_template(var_specs, ns);
+      polyhedra_domain.add_interval_template(var_specs, SSA.ns);
     else if(polyhedra_kind==ZONES)
     {
-      polyhedra_domain.add_difference_template(var_specs, ns);
-      polyhedra_domain.add_interval_template(var_specs, ns);
+      polyhedra_domain.add_difference_template(var_specs, SSA.ns);
+      polyhedra_domain.add_interval_template(var_specs, SSA.ns);
     }
   }
 
