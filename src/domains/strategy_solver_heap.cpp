@@ -38,6 +38,18 @@ bool strategy_solver_heapt::iterate(invariantt &_inv)
           if(solver.l_get(strategy_cond_literals[row]).is_true())
           {
 
+            //Find what values from solver are needed
+            std::vector<exprt> required_values = heap_domain.get_required_values(row);
+            std::vector<exprt> got_values;
+            for(auto &c_exprt : required_values) {
+                got_values.push_back(solver.solver->get(c_exprt));
+            }
+            heap_domain.set_values(got_values);
+
+            //improved = heap_domain.edit_row(row, inv, improved);
+
+            ////////////////////////////////////////////
+
             const heap_domaint::template_rowt &templ_row=heap_domain.templ[row];
 
             const exprt loop_guard=to_and_expr(

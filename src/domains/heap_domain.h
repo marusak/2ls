@@ -199,6 +199,9 @@ public:
     const exprt &precondition,
     template_generator_baset &template_generator);
 
+  std::vector<exprt> get_required_values(size_t row);
+  void set_values(std::vector<exprt> got_values);
+
   // Value -> constraints
   exprt to_pre_constraints(valuet &_value);
 
@@ -264,6 +267,9 @@ protected:
   // Bindings computed during interprocedural analysis
   exprt::operandst iterator_bindings;
   exprt::operandst aux_bindings;
+
+  std::set<unsigned> updated_rows;
+  exprt value;
 
   /*******************************************************************\
   Specification of a new heap row that is added dynamically

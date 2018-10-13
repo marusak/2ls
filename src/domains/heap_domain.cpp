@@ -103,6 +103,17 @@ void heap_domaint::make_template(
   }
 }
 
+std::vector<exprt> heap_domaint::get_required_values(size_t row){
+    std::vector<exprt> r;
+    r.push_back(strategy_value_exprs[row]);
+    return r;
+}
+
+void heap_domaint::set_values(std::vector<exprt> got_values){
+    value = got_values[0];
+}
+
+
 /*******************************************************************\
 
 Function: heap_domaint::add_template_row
