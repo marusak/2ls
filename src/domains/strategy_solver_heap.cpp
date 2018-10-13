@@ -1,6 +1,7 @@
 #include <ssa/ssa_inliner.h>
 #include <algorithm>
 #include "strategy_solver_heap.h"
+#include <goto-symex/adjust_float_expressions.h>
 
 bool strategy_solver_heapt::iterate(invariantt &_inv)
 {
@@ -18,19 +19,17 @@ bool strategy_solver_heapt::iterate(invariantt &_inv)
 
       // Exit value constraints
       exprt::operandst strategy_cond_exprs;
-      heap_domain.make_not_post_constraints(
-        inv,
-        strategy_cond_exprs,
-        strategy_value_exprs);
+      heap_domain.make_not_post_constraints(_inv, strategy_cond_exprs);
 
-      strategy_cond_literals.resize(strategy_cond_exprs.size());
+      heap_domain.strategy_cond_literals.resize(strategy_cond_exprs.size());
 
       for(unsigned i=0; i<strategy_cond_exprs.size(); ++i)
       {
-        strategy_cond_literals[i]=solver.convert(strategy_cond_exprs[i]);
-        strategy_cond_exprs[i]=literal_exprt(strategy_cond_literals[i]);
+        heap_domain.strategy_cond_literals[i]=solver.convert(strategy_cond_exprs[i]);
       }
-      solver << disjunction(strategy_cond_exprs);
+      exprt cond=disjunction(strategy_cond_exprs);
+      adjust_float_expressions(cond, ns);
+      solver << cond;
 
       if(solver()==decision_proceduret::D_SATISFIABLE)  // improvement check
       {

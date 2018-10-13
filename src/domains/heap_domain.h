@@ -203,9 +203,8 @@ public:
   exprt to_pre_constraints(valuet &_value);
 
   void make_not_post_constraints(
-    const heap_valuet &value,
-    exprt::operandst &cond_exprs,
-    exprt::operandst &value_exprs);
+    valuet &_value,
+    exprt::operandst &cond_exprs);
 
   // Row -> constraints
   exprt get_row_pre_constraint(
