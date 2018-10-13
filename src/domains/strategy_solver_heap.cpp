@@ -13,7 +13,7 @@ bool strategy_solver_heapt::iterate(invariantt &_inv)
       solver.new_context();
 
       // Entry value constraints
-      exprt pre_expr=heap_domain.to_pre_constraints(inv);
+      exprt pre_expr=heap_domain.to_pre_constraints(_inv);
       solver << pre_expr;
 
       // Exit value constraints

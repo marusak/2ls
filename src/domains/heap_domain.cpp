@@ -199,8 +199,9 @@ Function: heap_domaint::to_pre_constraints
 
 \*******************************************************************/
 
-exprt heap_domaint::to_pre_constraints(const heap_valuet &value) const
+exprt heap_domaint::to_pre_constraints(valuet &_value)
 {
+  heap_domaint::heap_valuet &value=static_cast<heap_domaint::heap_valuet &>(_value);
   assert(value.size()==templ.size());
   exprt::operandst c;
   for(rowt row=0; row<templ.size(); ++row)

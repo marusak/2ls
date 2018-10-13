@@ -200,7 +200,7 @@ public:
     template_generator_baset &template_generator);
 
   // Value -> constraints
-  exprt to_pre_constraints(const heap_valuet &value) const;
+  exprt to_pre_constraints(valuet &_value);
 
   void make_not_post_constraints(
     const heap_valuet &value,
