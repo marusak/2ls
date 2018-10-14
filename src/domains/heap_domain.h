@@ -271,6 +271,8 @@ protected:
 
   std::set<unsigned> updated_rows;
   exprt value;
+  exprt solver_value_op0;
+  exprt solver_value_op1;
 
   /*******************************************************************\
   Specification of a new heap row that is added dynamically
@@ -364,9 +366,8 @@ protected:
   // Utility functions
   static int get_symbol_loc(const exprt &expr);
   const exprt get_points_to_dest(
-    const exprt &pointer,
-    const exprt &templ_row_expr,
-    incremental_solvert &solver); //TODO remove solver
+    const exprt &solver_value,
+    const exprt &templ_row_expr);
 
   int find_member_row(
     const exprt &obj,

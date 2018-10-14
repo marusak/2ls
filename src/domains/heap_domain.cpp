@@ -106,11 +106,15 @@ void heap_domaint::make_template(
 std::vector<exprt> heap_domaint::get_required_values(size_t row){
     std::vector<exprt> r;
     r.push_back(strategy_value_exprs[row]);
+    r.push_back(strategy_value_exprs[row].op1());
+    r.push_back(strategy_value_exprs[row].op0());
     return r;
 }
 
 void heap_domaint::set_values(std::vector<exprt> got_values){
     value = got_values[0];
+    solver_value_op1 = got_values[1];
+    solver_value_op0 = got_values[2];
 }
 
 
@@ -1680,10 +1684,8 @@ bool heap_domaint::edit_row(const rowt &row, valuet &_inv, bool improved, increm
     if(templ_row.expr.id()==ID_and)
     {
       // Handle template row with a pair of variables in the expression
-      exprt points_to1=get_points_to_dest(
-        strategy_value_exprs[row].op0(), templ_row.expr.op0(), solver);
-      exprt points_to2=get_points_to_dest(
-        strategy_value_exprs[row].op1(), templ_row.expr.op1(), solver);
+      exprt points_to1=get_points_to_dest(solver_value_op0, templ_row.expr.op0());
+      exprt points_to2=get_points_to_dest(solver_value_op1, templ_row.expr.op1());
 
       if(points_to1.is_nil() || points_to2.is_nil())
       {
@@ -1708,8 +1710,7 @@ bool heap_domaint::edit_row(const rowt &row, valuet &_inv, bool improved, increm
 
     int actual_loc=get_symbol_loc(templ_row.expr);
 
-    exprt points_to=get_points_to_dest(
-      strategy_value_exprs[row], templ_row.expr, solver);
+    exprt points_to=get_points_to_dest(value, templ_row.expr);
 
     if(points_to.is_nil())
     {
@@ -1939,13 +1940,12 @@ Function: heap_domaint::get_points_to_dest
 
 \*******************************************************************/
 const exprt heap_domaint::get_points_to_dest(
-  const exprt &pointer,
-  const exprt &templ_row_expr,
-  incremental_solvert &solver)
+  const exprt &solver_value,
+  const exprt &templ_row_expr)
 {
   //exprt value=solver.get(pointer);
   // Value from the solver must be converted into an expression
-  exprt ptr_value=value_to_ptr_exprt(value);
+  exprt ptr_value=value_to_ptr_exprt(solver_value);
 
   if((ptr_value.id()==ID_constant &&
       to_constant_expr(ptr_value).get_value()==ID_NULL) ||
