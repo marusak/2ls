@@ -46,7 +46,7 @@ bool strategy_solver_heapt::iterate(invariantt &_inv)
             }
             heap_domain.set_values(got_values);
 
-            improved = heap_domain.edit_row(row, _inv, improved, solver, loop_guards);//remove solver and loop_guards
+            improved = heap_domain.edit_row(row, _inv, improved, solver);
 
           }
         }

@@ -1672,14 +1672,14 @@ void heap_domaint::undo_restriction()
   }
 }
 
-bool heap_domaint::edit_row(const rowt &row, valuet &_inv, bool improved, incremental_solvert &solver,
-        std::set<std::pair<symbol_exprt, symbol_exprt>> &loop_guards){
+bool heap_domaint::edit_row(const rowt &row, valuet &_inv, bool improved, incremental_solvert &solver)
+{
     heap_domaint::heap_valuet &inv=static_cast<heap_domaint::heap_valuet &>(_inv);
     const heap_domaint::template_rowt &templ_row=templ[row];
 
     const exprt loop_guard=to_and_expr(
       templ[row].pre_guard).op1();
-    find_symbolic_path(loop_guards, solver, loop_guard);
+    find_symbolic_path(solver, loop_guard);
 
     if(templ_row.expr.id()==ID_and)
     {
@@ -1999,7 +1999,6 @@ Function: heap_domaint::find_symbolic_path
 
 \*******************************************************************/
 void heap_domaint::find_symbolic_path(
-  std::set<std::pair<symbol_exprt, symbol_exprt>> &loop_guards,
   incremental_solvert &solver,
   const exprt &current_guard)
 {
