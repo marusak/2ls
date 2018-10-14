@@ -24,7 +24,7 @@ public:
     message_handlert &message_handler,
     template_generator_baset &template_generator):
     strategy_solver_baset(_solver, SSA.ns),
-    heap_domain(_heap_domain)
+    heap_domain(_heap_domain)//this
   {
     set_message_handler(message_handler);
     solver<< heap_domain.initialize_solver(SSA, precondition, template_generator);
@@ -35,8 +35,6 @@ public:
 
 protected:
   heap_domaint &heap_domain;
-  std::set<unsigned> updated_rows;
-
 };
 
 

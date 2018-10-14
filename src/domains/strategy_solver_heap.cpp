@@ -1,13 +1,11 @@
 #include <ssa/ssa_inliner.h>
-#include <algorithm>
 #include "strategy_solver_heap.h"
 #include <goto-symex/adjust_float_expressions.h>
 
 bool strategy_solver_heapt::iterate(invariantt &_inv)
 {
-  heap_domaint::heap_valuet &inv=static_cast<heap_domaint::heap_valuet &>(_inv);
-
   bool improved=false;
+
   heap_domain.pre_iterate_init(_inv);
   if (heap_domain.something_to_solve()) {
 
@@ -55,10 +53,10 @@ bool strategy_solver_heapt::iterate(invariantt &_inv)
       else
       {
         debug() << "UNSAT" << eom;
-        improved = heap_domain.not_satisfiable(inv, improved);
+        improved = heap_domain.not_satisfiable(_inv, improved);
       }
     solver.pop_context();
-    solver << heap_domain.make_permanent(inv);
+    solver << heap_domain.make_permanent(_inv);
     heap_domain.post_edit();
   }
 
