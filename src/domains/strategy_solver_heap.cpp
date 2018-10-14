@@ -21,7 +21,7 @@ bool strategy_solver_heapt::iterate(invariantt &inv)
 
       domain.strategy_cond_literals.resize(strategy_cond_exprs.size());
 
-      for(unsigned i=0; i<strategy_cond_exprs.size(); ++i)
+      for(std::size_t i=0; i<strategy_cond_exprs.size(); ++i)
       {
         domain.strategy_cond_literals[i]=solver.convert(strategy_cond_exprs[i]);
       }
@@ -29,7 +29,7 @@ bool strategy_solver_heapt::iterate(invariantt &inv)
       adjust_float_expressions(cond, ns);
       solver << cond;
 
-      if(solver()==decision_proceduret::D_SATISFIABLE)  // improvement check
+      if(solver()==decision_proceduret::D_SATISFIABLE)
       {
         for(unsigned row=0; row<strategy_cond_literals.size(); ++row)
         {
@@ -52,7 +52,7 @@ bool strategy_solver_heapt::iterate(invariantt &inv)
 
       else
       {
-        debug() << "UNSAT" << eom;
+        debug() << "Outer solver: UNSAT!!" << eom;
         improved = domain.not_satisfiable(inv, improved);
       }
     solver.pop_context();
