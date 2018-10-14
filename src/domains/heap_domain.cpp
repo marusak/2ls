@@ -1943,7 +1943,7 @@ const exprt heap_domaint::get_points_to_dest(
   const exprt &templ_row_expr,
   incremental_solvert &solver)
 {
-  exprt value=solver.get(pointer);
+  //exprt value=solver.get(pointer);
   // Value from the solver must be converted into an expression
   exprt ptr_value=value_to_ptr_exprt(value);
 
