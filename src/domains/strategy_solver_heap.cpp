@@ -158,9 +158,11 @@ bool strategy_solver_heapt::iterate(invariantt &_inv)
       else
       {
         debug() << "UNSAT" << eom;
-
+        improved = heap_domain.not_satisfiable(inv, improved);
       }
-      solver.pop_context();
+    solver.pop_context();
+    solver << heap_domain.make_permanent(inv);
+    heap_domain.post_edit();
   }
 
   return improved;
