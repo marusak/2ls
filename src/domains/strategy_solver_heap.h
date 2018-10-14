@@ -24,17 +24,17 @@ public:
     message_handlert &message_handler,
     template_generator_baset &template_generator):
     strategy_solver_baset(_solver, SSA.ns),
-    heap_domain(_heap_domain)//this
+    domain(_heap_domain)//this
   {
     set_message_handler(message_handler);
-    solver<< heap_domain.initialize_solver(SSA, precondition, template_generator);
+    solver<< domain.initialize_solver(SSA, precondition, template_generator);
   }
 
   virtual bool iterate(invariantt &_inv) override;
 
 
 protected:
-  heap_domaint &heap_domain;
+  heap_domaint &domain;
 };
 
 
