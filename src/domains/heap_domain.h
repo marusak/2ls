@@ -17,6 +17,7 @@ Author: Viktor Malik
 
 #include "domain.h"
 #include "template_generator_base.h"
+#include <ssa/ssa_inliner.h>
 
 class heap_domaint:public domaint
 {
@@ -360,6 +361,27 @@ protected:
 
   // Utility functions
   static int get_symbol_loc(const exprt &expr);
+  const exprt get_points_to_dest(
+    const exprt &pointer,
+    const exprt &templ_row_expr,
+    incremental_solvert &solver); //TODO remove solver
+
+  int find_member_row(
+    const exprt &obj,
+    const irep_idt &member,
+    int actual_loc,
+    const domaint::kindt &kind);
+
+  bool update_rows_rec(
+    const heap_domaint::rowt &row,
+    heap_domaint::heap_valuet &value);
+  void clear_pointing_rows(
+    const heap_domaint::rowt &row,
+    heap_domaint::heap_valuet &value);
+  const exprt initialize_solver(
+    const local_SSAt &SSA,
+    const exprt &precondition,
+    template_generator_baset &template_generator);
 
   friend class strategy_solver_heapt;
 };

@@ -1667,3 +1667,211 @@ void heap_domaint::undo_restriction()
     }
   }
 }
+
+/*******************************************************************\
+
+Function: heap_domaint::find_member_row
+
+  Inputs: object
+          field
+          actual location
+
+ Outputs: Row number for obj.member#loc with maximal loc less than actual_loc
+          -1 if such template row does not exist
+
+ Purpose: Find the template row that contains specified member field
+          of a dynamic object at the given location.
+
+\*******************************************************************/
+
+int heap_domaint::find_member_row(
+  const exprt &obj,
+  const irep_idt &member,
+  int actual_loc,
+  const domaint::kindt &kind)
+{
+  assert(obj.id()==ID_symbol);
+  std::string obj_id=id2string(
+    ssa_inlinert::get_original_identifier(to_symbol_expr(obj)));
+
+  int result=-1;
+  int max_loc=-1;
+  for(unsigned i=0; i<templ.size(); ++i)
+  {
+    heap_domaint::template_rowt &templ_row=templ[i];
+    if(templ_row.kind==kind && templ_row.member==member &&
+       templ_row.mem_kind==heap_domaint::HEAP)
+    {
+      std::string id=id2string(to_symbol_expr(templ_row.expr).get_identifier());
+      if(id.find(obj_id)!=std::string::npos &&
+         id.find_first_of(".")==obj_id.length())
+      {
+        int loc=get_symbol_loc(templ_row.expr);
+        if(loc>max_loc &&
+           (kind==domaint::OUT || kind==domaint::OUTHEAP || loc<=actual_loc))
+        {
+          max_loc=loc;
+          result=i;
+        }
+      }
+    }
+  }
+  return result;
+}
+
+/*******************************************************************\
+
+Function: heap_domaint::update_rows_rec
+
+  Inputs:
+
+ Outputs:
+
+ Purpose: Recursively update rows that point to given row.
+
+\*******************************************************************/
+
+bool heap_domaint::update_rows_rec(
+  const heap_domaint::rowt &row,
+  heap_domaint::heap_valuet &value)
+{
+  heap_domaint::heap_row_valuet &row_value=
+    static_cast<heap_domaint::heap_row_valuet &>(value[row]);
+  const heap_domaint::template_rowt &templ_row=templ[row];
+
+  updated_rows.insert(row);
+  bool result=false;
+  for(const heap_domaint::rowt &ptr : row_value.pointed_by)
+  {
+    if(templ[ptr].mem_kind==heap_domaint::HEAP &&
+       templ[ptr].member==templ_row.member)
+    {
+      if(add_transitivity(ptr, row, value))
+        result=true;
+
+      // Recursive update is called for each row only once
+      if(updated_rows.find(ptr)==updated_rows.end())
+        result=update_rows_rec(ptr, value) || result;
+    }
+  }
+  return result;
+}
+
+/*******************************************************************\
+
+Function: heap_domaint::initialize_solver
+
+  Inputs:
+
+ Outputs:
+
+ Purpose:
+
+\*******************************************************************/
+
+const exprt heap_domaint::initialize_solver(
+  const local_SSAt &SSA,
+  const exprt &precondition,
+  template_generator_baset &template_generator)
+{
+  initialize_domain(SSA, precondition, template_generator);
+
+  const exprt input_bindings=get_input_bindings();
+  if(!input_bindings.is_true())
+  {
+    return input_bindings;
+  }
+  return true_exprt();
+}
+
+
+/*******************************************************************\
+
+Function: heap_domaint::clear_pointing_rows
+
+  Inputs:
+
+ Outputs:
+
+ Purpose:
+
+\*******************************************************************/
+void heap_domaint::clear_pointing_rows(
+  const heap_domaint::rowt &row,
+  heap_domaint::heap_valuet &value)
+{
+  heap_domaint::heap_row_valuet &row_value=
+    static_cast<heap_domaint::heap_row_valuet &>(value[row]);
+
+  std::vector<heap_domaint::rowt> to_remove;
+  for(auto &ptr : row_value.pointed_by)
+  {
+    if(ptr!=row)
+    {
+      value[ptr].clear();
+      to_remove.push_back(ptr);
+    }
+  }
+  for(auto &r : to_remove)
+    row_value.pointed_by.erase(r);
+}
+
+/*******************************************************************\
+
+Function: heap_domaint::get_points_to_dest
+
+  Inputs:
+
+ Outputs:
+
+ Purpose: Get an address where the given pointer points to in the current
+          solver iteration. Returns nil_exprt if the value of the pointer
+          is nondet.
+
+\*******************************************************************/
+const exprt heap_domaint::get_points_to_dest(
+  const exprt &pointer,
+  const exprt &templ_row_expr,
+  incremental_solvert &solver)
+{
+  exprt value=solver.get(pointer);
+  // Value from the solver must be converted into an expression
+  exprt ptr_value=value_to_ptr_exprt(value);
+
+  if((ptr_value.id()==ID_constant &&
+      to_constant_expr(ptr_value).get_value()==ID_NULL) ||
+     ptr_value.id()==ID_symbol)
+  {
+    // Add equality p == NULL or p == symbol
+    return ptr_value;
+  }
+  else if(ptr_value.id()==ID_address_of)
+  {
+    // Template row pointer points to the heap (p = &obj)
+    assert(ptr_value.id()==ID_address_of);
+    if(to_address_of_expr(ptr_value).object().id()!=ID_symbol)
+    {
+      // If solver did not return address of a symbol, it is considered
+      // as nondet value.
+      return nil_exprt();
+    }
+
+    symbol_exprt obj=to_symbol_expr(
+      to_address_of_expr(ptr_value).object());
+
+    if(obj.type()!=templ_row_expr.type() &&
+       ns.follow(templ_row_expr.type().subtype())!=ns.follow(obj.type()))
+    {
+      if(!is_cprover_symbol(templ_row_expr))
+      {
+        // If types disagree, it's a nondet (solver assigned random value)
+        return nil_exprt();
+      }
+    }
+
+    // Add equality p == &obj
+    return obj;
+  }
+  else
+    return nil_exprt();
+}
