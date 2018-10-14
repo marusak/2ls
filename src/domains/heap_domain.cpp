@@ -1668,6 +1668,115 @@ void heap_domaint::undo_restriction()
   }
 }
 
+bool heap_domaint::edit_row(const rowt &row, valuet &_inv, bool improved, incremental_solvert &solver,
+        std::set<std::pair<symbol_exprt, symbol_exprt>> &loop_guards){
+    heap_domaint::heap_valuet &inv=static_cast<heap_domaint::heap_valuet &>(_inv);
+    const heap_domaint::template_rowt &templ_row=templ[row];
+
+    const exprt loop_guard=to_and_expr(
+      templ[row].pre_guard).op1();
+    find_symbolic_path(loop_guards, solver, loop_guard);
+
+    if(templ_row.expr.id()==ID_and)
+    {
+      // Handle template row with a pair of variables in the expression
+      exprt points_to1=get_points_to_dest(
+        strategy_value_exprs[row].op0(), templ_row.expr.op0(), solver);
+      exprt points_to2=get_points_to_dest(
+        strategy_value_exprs[row].op1(), templ_row.expr.op1(), solver);
+
+      if(points_to1.is_nil() || points_to2.is_nil())
+      {
+        if(set_nondet(row, inv))
+        {
+          improved=true;
+        }
+      }
+      else
+      {
+        if(add_points_to(
+          row, inv, and_exprt(points_to1, points_to2)))
+        {
+          improved=true;
+          const std::string info=
+            templ_row.mem_kind==heap_domaint::STACK ? "points to "
+                                                    : "path to ";
+        }
+      }
+      return improved;
+    }
+
+    int actual_loc=get_symbol_loc(templ_row.expr);
+
+    exprt points_to=get_points_to_dest(
+      strategy_value_exprs[row], templ_row.expr, solver);
+
+    if(points_to.is_nil())
+    {
+      if(set_nondet(row, inv))
+      {
+        improved=true;
+      }
+     return improved;
+    }
+    else
+    {
+      if(add_points_to(row, inv, points_to))
+      {
+        improved=true;
+        const std::string info=
+          templ_row.mem_kind==heap_domaint::STACK ? "points to "
+                                                  : "path to ";
+      }
+    }
+
+    // If the template row is of heap kind, we need to ensure the
+    // transitive closure over the set of all paths
+    if(templ_row.mem_kind==heap_domaint::HEAP &&
+       points_to.type().get_bool("#dynamic") &&
+       points_to.id()==ID_symbol &&
+       id2string(to_symbol_expr(points_to).get_identifier()).find(
+         "$unknown")==
+       std::string::npos)
+    {
+      // Find row with corresponding member field of the pointed object
+      // (obj.member)
+      int member_val_index;
+      member_val_index=
+        find_member_row(
+          points_to,
+          templ_row.member,
+          actual_loc,
+          templ_row.kind);
+      if(member_val_index>=0 && !inv[member_val_index].nondet)
+      {
+        // Add all paths from obj.next to p
+        if(add_transitivity(
+          row,
+          static_cast<unsigned>(member_val_index),
+          inv))
+        {
+          improved=true;
+          const std::string expr_str=
+            from_expr(ns, "", templ[member_val_index].expr);
+        }
+      }
+    }
+
+    // Recursively update all rows that are dependent on this row
+    if(templ_row.mem_kind==heap_domaint::HEAP)
+    {
+      updated_rows.clear();
+      if(!inv[row].nondet)
+        update_rows_rec(row, inv);
+      else
+        clear_pointing_rows(row, inv);
+    }
+
+    return improved;
+}
+
+
 /*******************************************************************\
 
 Function: heap_domaint::find_member_row
@@ -1874,4 +1983,38 @@ const exprt heap_domaint::get_points_to_dest(
   }
   else
     return nil_exprt();
+}
+
+/*******************************************************************\
+
+Function: heap_domaint::find_symbolic_path
+
+  Inputs:
+
+ Outputs:
+
+ Purpose: Find symbolic path that is explored by the current solver
+          iteration. A path is specified by a conjunction of literals
+          containing loop-select guards of all loops in program.
+
+\*******************************************************************/
+void heap_domaint::find_symbolic_path(
+  std::set<std::pair<symbol_exprt, symbol_exprt>> &loop_guards,
+  incremental_solvert &solver,
+  const exprt &current_guard)
+{
+  for(const auto &guard : loop_guards)
+  {
+    if(guard.first==current_guard)
+    {
+      symbolic_path[guard.first]=true;
+      continue;
+    }
+    exprt ls_guard_value=solver.get(guard.first);
+    exprt lh_guard_value=solver.get(guard.second);
+    if(ls_guard_value.is_true() && lh_guard_value.is_true())
+      symbolic_path[guard.first]=true;
+    else if(ls_guard_value.is_false())
+      symbolic_path[guard.first]=false;
+  }
 }

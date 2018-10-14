@@ -353,6 +353,8 @@ protected:
     const exprt &expr,
     const exprt &precondition);
 
+  bool edit_row(const rowt &row, valuet &inv, bool improved, incremental_solvert &solver,
+          std::set<std::pair<symbol_exprt, symbol_exprt>> &loop_guards);
 
   void add_new_heap_row_spec(
     const symbol_exprt &expr,
@@ -382,7 +384,12 @@ protected:
     const local_SSAt &SSA,
     const exprt &precondition,
     template_generator_baset &template_generator);
+  void find_symbolic_path(
+    std::set<std::pair<symbol_exprt, symbol_exprt>> &loop_guards,
+    incremental_solvert &solver, // TODO remove solver
+    const exprt &current_guard=nil_exprt());
 
+  symbolic_patht symbolic_path;
   friend class strategy_solver_heapt;
 };
 
