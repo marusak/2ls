@@ -108,6 +108,11 @@ std::vector<exprt> heap_domaint::get_required_values(size_t row){
     r.push_back(strategy_value_exprs[row]);
     r.push_back(strategy_value_exprs[row].op1());
     r.push_back(strategy_value_exprs[row].op0());
+    for(const auto &guard : loop_guards)
+    {
+      r.push_back(guard.first);
+      r.push_back(guard.second);
+    }
     return r;
 }
 
@@ -115,6 +120,8 @@ void heap_domaint::set_values(std::vector<exprt> got_values){
     value = got_values[0];
     solver_value_op1 = got_values[1];
     solver_value_op0 = got_values[2];
+    for (unsigned i=3; i< got_values.size(); i++)
+        solver_values_guards.push_back(got_values[i]);
 }
 
 
@@ -1672,14 +1679,14 @@ void heap_domaint::undo_restriction()
   }
 }
 
-bool heap_domaint::edit_row(const rowt &row, valuet &_inv, bool improved, incremental_solvert &solver)
+bool heap_domaint::edit_row(const rowt &row, valuet &_inv, bool improved)
 {
     heap_domaint::heap_valuet &inv=static_cast<heap_domaint::heap_valuet &>(_inv);
     const heap_domaint::template_rowt &templ_row=templ[row];
 
     const exprt loop_guard=to_and_expr(
       templ[row].pre_guard).op1();
-    find_symbolic_path(solver, loop_guard);
+    find_symbolic_path(loop_guard);
 
     if(templ_row.expr.id()==ID_and)
     {
@@ -1943,7 +1950,6 @@ const exprt heap_domaint::get_points_to_dest(
   const exprt &solver_value,
   const exprt &templ_row_expr)
 {
-  //exprt value=solver.get(pointer);
   // Value from the solver must be converted into an expression
   exprt ptr_value=value_to_ptr_exprt(solver_value);
 
@@ -1999,18 +2005,19 @@ Function: heap_domaint::find_symbolic_path
 
 \*******************************************************************/
 void heap_domaint::find_symbolic_path(
-  incremental_solvert &solver,
   const exprt &current_guard)
 {
+  int value_counter = 0;
   for(const auto &guard : loop_guards)
   {
+    value_counter += 2;
     if(guard.first==current_guard)
     {
       symbolic_path[guard.first]=true;
       continue;
     }
-    exprt ls_guard_value=solver.get(guard.first);
-    exprt lh_guard_value=solver.get(guard.second);
+    exprt ls_guard_value=solver_values_guards[value_counter-2];
+    exprt lh_guard_value=solver_values_guards[value_counter-1];
     if(ls_guard_value.is_true() && lh_guard_value.is_true())
       symbolic_path[guard.first]=true;
     else if(ls_guard_value.is_false())

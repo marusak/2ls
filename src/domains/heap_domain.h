@@ -357,7 +357,7 @@ protected:
     const exprt &expr,
     const exprt &precondition);
 
-  bool edit_row(const rowt &row, valuet &inv, bool improved, incremental_solvert &solver);
+  bool edit_row(const rowt &row, valuet &inv, bool improved);
 
   void add_new_heap_row_spec(
     const symbol_exprt &expr,
@@ -387,9 +387,9 @@ protected:
     const exprt &precondition,
     template_generator_baset &template_generator);
   void find_symbolic_path(
-    incremental_solvert &solver, // TODO remove solver
     const exprt &current_guard=nil_exprt());
 
+  std::vector<exprt> solver_values_guards;
   symbolic_patht symbolic_path;
   friend class strategy_solver_heapt;
 };
