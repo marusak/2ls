@@ -33,7 +33,7 @@ bool strategy_solver_heapt::iterate(invariantt &inv)
       {
         for(unsigned row=0; row<strategy_cond_literals.size(); ++row)
         {
-          if(solver.l_get(strategy_cond_literals[row]).is_true())
+          if(solver.l_get(domain.strategy_cond_literals[row]).is_true())
           {
 
             //Find what values from solver are needed
