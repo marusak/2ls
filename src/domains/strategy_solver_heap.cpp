@@ -31,7 +31,7 @@ bool strategy_solver_heapt::iterate(invariantt &inv)
 
       if(solver()==decision_proceduret::D_SATISFIABLE)
       {
-        for(unsigned row=0; row<strategy_cond_literals.size(); ++row)
+        for(unsigned row=0; row<domain.strategy_cond_literals.size(); ++row)
         {
           if(solver.l_get(domain.strategy_cond_literals[row]).is_true())
           {
