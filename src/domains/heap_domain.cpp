@@ -106,8 +106,14 @@ void heap_domaint::make_template(
 std::vector<exprt> heap_domaint::get_required_values(size_t row){
     std::vector<exprt> r;
     r.push_back(strategy_value_exprs[row]);
-    r.push_back(strategy_value_exprs[row].op1());
-    r.push_back(strategy_value_exprs[row].op0());
+    if (strategy_value_exprs[row].id()==ID_and){
+        r.push_back(strategy_value_exprs[row].op1());
+        r.push_back(strategy_value_exprs[row].op0());
+    }
+    else {
+        r.push_back(strategy_value_exprs[row]);
+        r.push_back(strategy_value_exprs[row]);
+    }
     for(const auto &guard : loop_guards)
     {
       r.push_back(guard.first);
