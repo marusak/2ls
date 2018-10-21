@@ -123,6 +123,7 @@ std::vector<exprt> heap_domaint::get_required_values(size_t row){
 }
 
 void heap_domaint::set_values(std::vector<exprt> got_values){
+    solver_values_guards.clear();
     value = got_values[0];
     solver_value_op1 = got_values[1];
     solver_value_op0 = got_values[2];
