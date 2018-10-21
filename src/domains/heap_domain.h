@@ -390,8 +390,9 @@ protected:
     const exprt &current_guard=nil_exprt());
 
   std::vector<exprt> solver_values_guards;
-  symbolic_patht symbolic_path;
   friend class strategy_solver_heapt;
+public:
+  symbolic_patht symbolic_path;
 };
 
 #endif // CPROVER_2LS_DOMAINS_HEAP_DOMAIN_H
