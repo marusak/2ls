@@ -31,17 +31,21 @@ bool strategy_solver_heap_tpolyhedrat::iterate(
     static_cast<heap_tpolyhedra_domaint::heap_tpolyhedra_valuet &>(_inv);
 
 
+  // Prepare this in domain
   std::vector<domaint*> domains = {&heap_tpolyhedra_domain.heap_domain,
                                   &heap_tpolyhedra_domain.polyhedra_domain};
 
   std::vector<strategy_solver_baset*> solvers = {&heap_solver,
                                                  &tpolyhedra_solver};
 
+  std::vector<invariantt*> domain_values = {&inv.heap_value,
+                                            &inv.tpolyhedra_value};
+
   // Run one iteration of heap solver in the context of invariant from
   // the template polyhedra solver
   solver.new_context();
-  solver << domains[1]->to_pre_constraints(inv.tpolyhedra_value);
-  bool heap_improved=solvers[0]->iterate(inv.heap_value);
+  solver << domains[1]->to_pre_constraints(*domain_values[1]);
+  bool heap_improved=solvers[0]->iterate(*domain_values[0]);
   solver.pop_context();
 
   if(heap_improved)
@@ -55,9 +59,8 @@ bool strategy_solver_heap_tpolyhedrat::iterate(
   // Run one interation of the template polyhedra solver in the context of
   // invariant from the heap solver
   solver.new_context();
-  solver << domains[0]->to_pre_constraints(
-    inv.heap_value);
-  bool tpolyhedra_improved=solvers[1]->iterate(inv.tpolyhedra_value);
+  solver << domains[0]->to_pre_constraints(*domain_values[0]);
+  bool tpolyhedra_improved=solvers[1]->iterate(*domain_values[1]);
   solver.pop_context();
 
   /*
