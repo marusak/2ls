@@ -40,8 +40,7 @@ bool strategy_solver_heap_tpolyhedrat::iterate(
   // Run one iteration of heap solver in the context of invariant from
   // the template polyhedra solver
   solver.new_context();
-  solver << heap_tpolyhedra_domain.polyhedra_domain.to_pre_constraints(
-    inv.tpolyhedra_value);
+  solver << domains[1]->to_pre_constraints(inv.tpolyhedra_value);
   bool heap_improved=heap_solver.iterate(inv.heap_value);
   solver.pop_context();
 
@@ -50,7 +49,7 @@ bool strategy_solver_heap_tpolyhedrat::iterate(
     // If heap part was improved, restrict template polyhedra part to the found
     // symbolic path
     symbolic_path=static_cast<heap_domaint &>(*domains[0]).symbolic_path;
-    heap_tpolyhedra_domain.polyhedra_domain.restrict_to_sympath(symbolic_path);
+    static_cast<tpolyhedra_domaint &>(*domains[1]).restrict_to_sympath(symbolic_path);
   }
 
   // Run one interation of the template polyhedra solver in the context of
