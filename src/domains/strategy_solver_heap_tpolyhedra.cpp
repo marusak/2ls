@@ -41,17 +41,19 @@ bool strategy_solver_heap_tpolyhedrat::iterate(
   std::vector<invariantt*> domain_values = {&inv.heap_value,
                                             &inv.tpolyhedra_value};
 
+  bool improved = false;
   // Run one iteration of heap solver in the context of invariant from
   // the template polyhedra solver
   solver.new_context();
   solver << domains[1]->to_pre_constraints(*domain_values[1]);
-  bool heap_improved=solvers[0]->iterate(*domain_values[0]);
+  improved = improved || solvers[0]->iterate(*domain_values[0]);
   solver.pop_context();
 
-  if(heap_improved)
+  if(improved)
   {
     // If heap part was improved, restrict template polyhedra part to the found
     // symbolic path
+    // domian[1].to_domin(domins[0].to_other_domain())
     symbolic_path=static_cast<heap_domaint &>(*domains[0]).symbolic_path;
     static_cast<tpolyhedra_domaint &>(*domains[1]).restrict_to_sympath(symbolic_path);
   }
@@ -60,14 +62,14 @@ bool strategy_solver_heap_tpolyhedrat::iterate(
   // invariant from the heap solver
   solver.new_context();
   solver << domains[0]->to_pre_constraints(*domain_values[0]);
-  bool tpolyhedra_improved=solvers[1]->iterate(*domain_values[1]);
+  improved = improved || solvers[1]->iterate(*domain_values[1]);
   solver.pop_context();
 
   /*
   if(heap_improved)
     heap_tpolyhedra_domain.polyhedra_domain.undo_restriction();
   */
-  return heap_improved || tpolyhedra_improved;
+  return improved;
 }
 
 /*******************************************************************\
