@@ -54,7 +54,7 @@ bool strategy_solver_heap_tpolyhedrat::iterate(
     // If heap part was improved, restrict template polyhedra part to the found
     // symbolic path
     // domian[1].to_domin(domins[0].to_other_domain())
-    symbolic_path=static_cast<heap_domaint &>(*domains[0]).symbolic_path;
+    symbolic_path=domains[0]->get_symbolic_path();
     static_cast<tpolyhedra_domaint &>(*domains[1]).restrict_to_sympath(symbolic_path);
   }
 

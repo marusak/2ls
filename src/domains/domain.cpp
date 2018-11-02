@@ -96,3 +96,8 @@ exprt domaint::make_permanent(valuet &value)
 {
     return true_exprt();
 }
+
+symbolic_patht domaint::get_symbolic_path()
+{
+    return symbolic_patht();
+}

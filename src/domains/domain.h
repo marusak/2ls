@@ -18,6 +18,7 @@ Author: Peter Schrammel
 #include <util/replace_expr.h>
 #include <util/namespace.h>
 #include <solvers/refinement/bv_refinement.h>
+#include "symbolic_path.h"
 
 // Forward declaration - real is in template_generator_base.h
 class template_generator_baset;
@@ -234,6 +235,19 @@ public:
 
   \*******************************************************************/
   virtual bool handle_unsat(valuet &value, bool improved);
+
+  /*******************************************************************\
+
+    Function: domaint::
+
+    Inputs:
+
+    Outputs:
+
+    Purpose: Return symbolic path if any exists
+
+  \*******************************************************************/
+  virtual symbolic_patht get_symbolic_path();
 
   // returns true as long as further refinements are possible
   virtual void reset_refinements() { }

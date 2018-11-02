@@ -47,28 +47,12 @@ bool strategy_solver_heap_tpolyhedra_sympatht::iterate(
   bool improved;
   if(!new_path)
   {
-    // Computing invariant for the same symbolic path
-
-#ifdef DEBUG
-    std::cerr << "------------------------------------------\n";
-    std::cerr << "Same path\n";
-    std::cerr << from_expr(ns, "", symbolic_path.get_expr()) << "\n";
-#endif
-
     const exprt sympath=symbolic_path.get_expr();
 
     domain.heap_tpolyhedra_domain.restrict_to_sympath(symbolic_path);
     improved=heap_tpolyhedra_solver.iterate(inv.at(sympath));
     if(!improved)
     {
-      // Invariant for the current symbolic path cannot be improved
-
-#ifdef DEBUG
-      std::cerr << "End of path\n";
-      std::cerr << "++++++++++++++++++++++++++++++++++++++++++\n";
-#endif
-
-      // Check if the computed path is really feasible
       if(!is_current_path_feasible(inv))
         inv.erase(sympath);
 
@@ -87,10 +71,6 @@ bool strategy_solver_heap_tpolyhedra_sympatht::iterate(
       inv.emplace(new_sympath, std::move(inv.at(sympath)));
       inv.erase(sympath);
       symbolic_path=heap_tpolyhedra_solver.symbolic_path;
-#ifdef DEBUG
-      std::cerr << "Path altered\n";
-      std::cerr << from_expr(ns, "", symbolic_path.get_expr()) << "\n";
-#endif
     }
     domain.heap_tpolyhedra_domain.undo_restriction();
   }
@@ -104,10 +84,6 @@ bool strategy_solver_heap_tpolyhedra_sympatht::iterate(
     if(improved)
     {
       symbolic_path=heap_tpolyhedra_solver.symbolic_path;
-#ifdef DEBUG
-      std::cerr << "Symbolic path:\n";
-      std::cerr << from_expr(ns, "", symbolic_path.get_expr()) << "\n";
-#endif
       const exprt sympath=heap_tpolyhedra_solver.symbolic_path.get_expr();
       inv.emplace(sympath, std::move(new_value));
       new_path=false;
