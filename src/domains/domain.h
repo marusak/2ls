@@ -249,6 +249,19 @@ public:
   \*******************************************************************/
   virtual symbolic_patht get_symbolic_path();
 
+  /*******************************************************************\
+
+    Function: domaint::
+
+    Inputs:
+
+    Outputs:
+
+    Purpose: Restrict to a given symbolic path
+
+  \*******************************************************************/
+  void restrict_to_sympath(const symbolic_patht &sympath);
+
   // returns true as long as further refinements are possible
   virtual void reset_refinements() { }
   virtual bool refine() { return false; }

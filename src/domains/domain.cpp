@@ -101,3 +101,7 @@ symbolic_patht domaint::get_symbolic_path()
 {
     return symbolic_patht();
 }
+
+void domaint::restrict_to_sympath(const symbolic_patht &sympath)
+{
+}
