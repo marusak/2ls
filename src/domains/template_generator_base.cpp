@@ -18,6 +18,7 @@ Author: Peter Schrammel
 #include "domain.h"
 #include "equality_domain.h"
 #include "tpolyhedra_domain.h"
+#include "combination_domain.h"
 #include "predabs_domain.h"
 #include "heap_domain.h"
 #include "heap_tpolyhedra_domain.h"
@@ -817,10 +818,9 @@ void template_generator_baset::instantiate_standard_domains(
       domain_values.push_back(heap_value);
       domain_values.push_back(tpolyhedra_value);
 
-      //TODO use domain_combination
-      //domian_ptr=new combination_domaint(domain_number, renaming_map, var_specs, SSA, domains, domain_values)
-      domain_ptr=new heap_tpolyhedra_domaint(
-        domain_number, renaming_map, var_specs, SSA, polyhedra_kind);
+      domain_ptr=new combination_domaint(domain_number, renaming_map, var_specs, SSA, domains, domain_values);
+      //domain_ptr=new heap_tpolyhedra_domaint(
+      //  domain_number, renaming_map, var_specs, SSA, polyhedra_kind);
     }
   }
 }
