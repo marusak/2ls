@@ -261,6 +261,7 @@ public:
 
   \*******************************************************************/
   void restrict_to_sympath(const symbolic_patht &sympath);
+  void undo_restriction();
 
   // returns true as long as further refinements are possible
   virtual void reset_refinements() { }

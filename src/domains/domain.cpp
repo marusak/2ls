@@ -105,3 +105,18 @@ symbolic_patht domaint::get_symbolic_path()
 void domaint::restrict_to_sympath(const symbolic_patht &sympath)
 {
 }
+
+/*******************************************************************\
+
+Function: heap_domaint::undo_restriction
+
+  Inputs:
+
+ Outputs:
+
+ Purpose: Undo last restriction (remove last conjunct from each aux_expr).
+
+\*******************************************************************/
+void domaint::undo_restriction()
+{
+}

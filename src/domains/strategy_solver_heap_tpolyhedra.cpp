@@ -44,6 +44,8 @@ bool strategy_solver_heap_tpolyhedrat::iterate(
   // UNTIL THIS
 
   bool improved = false;
+  bool last_improved = false;
+  int set_symbolic_path = -1;
 
   for (unsigned i = 0; i < domains.size(); i++){
       solver.new_context();
@@ -54,28 +56,25 @@ bool strategy_solver_heap_tpolyhedrat::iterate(
         solver << domains[j]->to_pre_constraints(*domain_values[j]);
       }
       // Run one iteration in the context of invariant from templates of others solvers
-      improved = improved || solvers[i]->iterate(*domain_values[i]);
+      last_improved = solvers[i]->iterate(*domain_values[i]);
       solver.pop_context();
 
-      // IF FIRST TRUE, ALWAYS TRUE
-      if(improved)
+      if(last_improved && set_symbolic_path == -1)
       {
-        // HOW SHOULD THIS WORK - EVERYONE PROVIDES? EVERYONE WRITES?
-        // DOES NOT WORK WHEN i = 1
+        set_symbolic_path = i;
         symbolic_path=domains[i]->get_symbolic_path();
-        for (unsigned j = 0; j < domains.size(); j++){
-            if (i == j)
-                continue;
+        for (unsigned j = i + 1; j < domains.size(); j++){
             domains[j]->restrict_to_sympath(symbolic_path);
         }
       }
+      improved = improved || last_improved;
   }
 
-  // WHAT WAS THIS?
-  /*
-  if(heap_improved)
-    heap_tpolyhedra_domain.polyhedra_domain.undo_restriction();
-  */
+  if(improved){
+    for (unsigned j = set_symbolic_path + 1; j < domains.size(); j++){
+        domains[j]->undo_restriction();
+    }
+ }
 
   return improved;
 }
