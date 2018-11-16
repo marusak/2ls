@@ -143,6 +143,11 @@ void ssa_analyzert::operator()(
     }
     else
     {
+     //TODO
+     //create solvers
+     //pass it to strategy_solver_combination
+
+
       s_solver=new strategy_solver_heap_tpolyhedrat(
         *static_cast<heap_tpolyhedra_domaint *>(domain),
         solver,

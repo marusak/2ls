@@ -804,9 +804,16 @@ void template_generator_baset::instantiate_standard_domains(
     if(options.get_bool_option("sympath"))
       domain_ptr=new heap_tpolyhedra_sympath_domaint(
         domain_number, renaming_map, var_specs, SSA, polyhedra_kind);
-    else
+    else {
+      //TODO use domain_combination
+         //Create domains
+         std::vector<domaint*> domains;
+         domains.push_back(new heap_domaint(domain_number, renaming_map, var_specs, SSA));
+         domains.push_back(new tpolyhedra_domaint(domain_number, renaming_map, SSA.ns));
+      //domian_ptr=new combination_domaint(domain_number, renaming_map, var_specs, SSA, domains)
       domain_ptr=new heap_tpolyhedra_domaint(
         domain_number, renaming_map, var_specs, SSA, polyhedra_kind);
+    }
   }
 }
 
