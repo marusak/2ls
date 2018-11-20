@@ -15,8 +15,10 @@ Author: Peter Schrammel
 #include <ssa/ssa_inliner.h>
 
 #include "template_generator_base.h"
+#include "domain.h"
 #include "equality_domain.h"
 #include "tpolyhedra_domain.h"
+#include "combination_domain.h"
 #include "predabs_domain.h"
 #include "heap_domain.h"
 #include "heap_tpolyhedra_domain.h"
@@ -805,8 +807,22 @@ void template_generator_baset::instantiate_standard_domains(
       domain_ptr=new heap_tpolyhedra_sympath_domaint(
         domain_number, renaming_map, var_specs, SSA, polyhedra_kind);
     else
-      domain_ptr=new heap_tpolyhedra_domaint(
-        domain_number, renaming_map, var_specs, SSA, polyhedra_kind);
+    {
+      // Create domains
+      std::vector<domaint*> domains;
+      domains.push_back(
+        new heap_domaint(domain_number, renaming_map, var_specs, SSA));
+      domains.push_back(
+        new tpolyhedra_domaint(domain_number, renaming_map, SSA.ns));
+
+      std::vector<domaint::valuet> domain_values;
+      heap_domaint::heap_valuet heap_value;
+      tpolyhedra_domaint::templ_valuet tpolyhedra_value;
+      domain_values.push_back(heap_value);
+      domain_values.push_back(tpolyhedra_value);
+
+      domain_ptr=new combination_domaint(domain_number, renaming_map, var_specs, SSA, domains, domain_values);
+    }
   }
 }
 
