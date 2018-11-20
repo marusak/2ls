@@ -79,14 +79,6 @@ Function: strategy_solver_combinationt::set_message_handler
 void strategy_solver_combinationt::set_message_handler(
   message_handlert &_message_handler)
 {
-  //TOOD
-  //heap_solver.set_message_handler(_message_handler);
-  //tpolyhedra_solver.set_message_handler(_message_handler);
-}
-
-void strategy_solver_combinationt::clear_symbolic_path()
-{
-  // TODO
-  //heap_tpolyhedra_domain.heap_domain.symbolic_path.clear();
-  //tpolyhedra_solver.symbolic_path.clear();
+  for(unsigned  i=0; i < solvers.size(); i++)
+      solvers[i]->set_message_handler(_message_handler);
 }

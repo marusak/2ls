@@ -31,7 +31,6 @@ Author: Peter Schrammel
 #include "template_generator_ranking.h"
 #include "ssa_analyzer.h"
 #include "strategy_solver_combination.h"
-#include "strategy_solver_heap_tpolyhedra.h"
 #include "strategy_solver_heap_tpolyhedra_sympath.h"
 #include "strategy_solver.h"
 

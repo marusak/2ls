@@ -819,8 +819,6 @@ void template_generator_baset::instantiate_standard_domains(
       domain_values.push_back(tpolyhedra_value);
 
       domain_ptr=new combination_domaint(domain_number, renaming_map, var_specs, SSA, domains, domain_values);
-      //domain_ptr=new heap_tpolyhedra_domaint(
-      //  domain_number, renaming_map, var_specs, SSA, polyhedra_kind);
     }
   }
 }
