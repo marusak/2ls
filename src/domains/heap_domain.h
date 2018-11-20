@@ -219,6 +219,8 @@ public:
 
   exprt get_row_post_constraint(const rowt &row, const row_valuet &row_value);
 
+  symbolic_patht get_symbolic_path();
+
   // Row modifications
   bool add_transitivity(const rowt &from, const rowt &to, heap_valuet &value);
 

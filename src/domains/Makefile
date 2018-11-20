@@ -1,9 +1,9 @@
 SRC = tpolyhedra_domain.cpp equality_domain.cpp domain.cpp \
   predabs_domain.cpp heap_domain.cpp list_iterator.cpp \
   heap_tpolyhedra_domain.cpp heap_tpolyhedra_sympath_domain.cpp \
-  symbolic_path.cpp\
+  symbolic_path.cpp combination_domain.cpp \
   ssa_analyzer.cpp util.cpp incremental_solver.cpp \
-  strategy_solver_binsearch.cpp \
+  strategy_solver_binsearch.cpp strategy_solver_combination.cpp \
   strategy_solver_base.cpp \
   linrank_domain.cpp lexlinrank_domain.cpp \
   template_generator_base.cpp template_generator_summary.cpp \
