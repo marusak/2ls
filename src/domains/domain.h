@@ -260,8 +260,10 @@ public:
     Purpose: Restrict to a given symbolic path
 
   \*******************************************************************/
-  void restrict_to_sympath(const symbolic_patht &sympath);
-  void undo_restriction();
+  virtual void restrict_to_sympath(const symbolic_patht &sympath);
+  virtual void undo_restriction();
+  virtual void eliminate_sympaths(const std::vector<symbolic_patht> &sympaths);
+  virtual void clear_aux_symbols();
 
   // returns true as long as further refinements are possible
   virtual void reset_refinements() { }

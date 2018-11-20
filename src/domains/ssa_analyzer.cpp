@@ -23,12 +23,14 @@ Author: Peter Schrammel
 #include "strategy_solver_binsearch2.h"
 #include "strategy_solver_binsearch3.h"
 #include "linrank_domain.h"
+#include "combination_domain.h"
 #include "equality_domain.h"
 #include "lexlinrank_domain.h"
 #include "predabs_domain.h"
 #include "combination_domain.h"
 #include "template_generator_ranking.h"
 #include "ssa_analyzer.h"
+#include "strategy_solver_combination.h"
 #include "strategy_solver_heap_tpolyhedra.h"
 #include "strategy_solver_heap_tpolyhedra_sympath.h"
 #include "strategy_solver.h"
@@ -160,14 +162,15 @@ void ssa_analyzert::operator()(
     // TODO pass it to strategy_solver_combination
 
 
-      s_solver=new strategy_solver_heap_tpolyhedrat(
-        *static_cast<heap_tpolyhedra_domaint *>(domain),
+      s_solver=new strategy_solver_combinationt(
+        *static_cast<combination_domaint *>(domain),
         solver,
         SSA,
         precondition,
         get_message_handler(),
+        solvers,
         template_generator);
-      result=new heap_tpolyhedra_domaint::heap_tpolyhedra_valuet();
+      result=new combination_domaint::combination_valuet(static_cast<combination_domaint *>(domain)->domain_values);
     }
   }
   else

@@ -120,3 +120,11 @@ Function: heap_domaint::undo_restriction
 void domaint::undo_restriction()
 {
 }
+
+void domaint::eliminate_sympaths(const std::vector<symbolic_patht> &sympaths)
+{
+}
+
+void domaint::clear_aux_symbols()
+{
+}

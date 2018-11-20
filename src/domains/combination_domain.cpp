@@ -22,9 +22,9 @@ Function: combination_domaint::initialize
 
 void combination_domaint::initialize(domaint::valuet &value)
 {
-  //heap_tpolyhedra_valuet &v=static_cast<heap_tpolyhedra_valuet &>(value);
-  //TODO
-  //heap_domain.initialize(v.heap_value);
+  combination_valuet &v=static_cast<combination_valuet &>(value);
+  for(unsigned  i=0; i < domains.size(); i++)
+      domains[i]->initialize(v.domain_values[i]);
 }
 
 /*******************************************************************\
@@ -44,11 +44,9 @@ void combination_domaint::output_value(
   const domaint::valuet &value,
   const namespacet &ns) const
 {
-  //const heap_tpolyhedra_valuet &v=
-  //  static_cast<const heap_tpolyhedra_valuet &>(value);
-
-  //TODO
-  //heap_domain.output_value(out, v.heap_value, ns);
+  const combination_valuet &v=static_cast<const combination_valuet &>(value);
+  for(unsigned  i=0; i < domains.size(); i++)
+      domains[i]->output_value(out,v.domain_values[i], ns);
 }
 
 /*******************************************************************\
@@ -67,8 +65,8 @@ void combination_domaint::output_domain(
   std::ostream &out,
   const namespacet &ns) const
 {
-  // TODO
-  //  heap_domain.output_domain(out, ns);
+  for(unsigned  i=0; i < domains.size(); i++)
+      domains[i]->output_domain(out, ns);
 }
 
 /*******************************************************************\
@@ -88,19 +86,15 @@ void combination_domaint::project_on_vars(
   const domaint::var_sett &vars,
   exprt &result)
 {
-  //TODO
-  /*
-    heap_tpolyhedra_valuet &v=static_cast<heap_tpolyhedra_valuet &>(value);
+  combination_valuet &v=static_cast<combination_valuet &>(value);
+  domains[0]->project_on_vars(v.domain_values[0], vars, result);
 
-  exprt heap_result;
-  heap_domain.project_on_vars(v.heap_value, vars, heap_result);
-  exprt tpolyhedra_result;
-  polyhedra_domain.project_on_vars(v.tpolyhedra_value, vars, tpolyhedra_result);
-
-  result=heap_result;
-  if(tpolyhedra_result!=true_exprt())
-    result=and_exprt(result, tpolyhedra_result);
-    */
+  exprt tmp_result;
+  for(unsigned  i=1; i < domains.size(); i++){
+    domains[i]->project_on_vars(v.domain_values[i], vars, tmp_result);
+    if(tmp_result!=true_exprt())
+      result=and_exprt(result, tmp_result);
+  }
 }
 
 /*******************************************************************\
@@ -117,8 +111,8 @@ Function: combination_domaint::restrict_to_sympath
 void combination_domaint::restrict_to_sympath(
   const symbolic_patht &sympath)
 {
-  // TODO for each 
-  //heap_domain.restrict_to_sympath(sympath);
+  for(unsigned  i=0; i < domains.size(); i++)
+      domains[i]->restrict_to_sympath(sympath);
 }
 
 /*******************************************************************\
@@ -134,8 +128,8 @@ Function: combination_domaint::clear_aux_symbols
 \*******************************************************************/
 void combination_domaint::clear_aux_symbols()
 {
-  // TODO FOR each
-  //heap_domain.clear_aux_symbols();
+  for(unsigned  i=0; i < domains.size(); i++)
+      domains[i]->clear_aux_symbols();
 }
 
 /*******************************************************************\
@@ -152,8 +146,8 @@ Function: combination_domaint::eliminate_sympaths
 void combination_domaint::eliminate_sympaths(
   const std::vector<symbolic_patht> &sympaths)
 {
-  // TODO for each eliminate
-  //heap_domain.eliminate_sympaths(sympaths);
+  for(unsigned  i=0; i < domains.size(); i++)
+      domains[i]->eliminate_sympaths(sympaths);
 }
 
 /*******************************************************************\
@@ -169,7 +163,8 @@ Function: combination_domaint::undo_restriction
 \*******************************************************************/
 void combination_domaint::undo_restriction()
 {
-  // TODO for each undo_restirciton
+  for(unsigned  i=0; i < domains.size(); i++)
+      domains[i]->undo_restriction();
 }
 
 bool combination_domaint::edit_row(

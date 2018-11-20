@@ -40,6 +40,16 @@ public:
     domain_values = _domain_values;
   }
 
+  class combination_valuet:public valuet
+  {
+  public:
+    std::vector<valuet> domain_values;
+    combination_valuet(
+      std::vector<domaint::valuet> _domain_values){
+        domain_values = _domain_values;
+    }
+  };
+
   virtual void initialize(valuet &value) override;
 
   virtual void output_value(
