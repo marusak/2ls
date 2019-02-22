@@ -27,8 +27,13 @@ public:
     const heap_tpolyhedra_domaint::polyhedra_kindt polyhedra_kind):
     domaint(_domain_number, _renaming_map, SSA.ns),
     heap_tpolyhedra_domain(
-      _domain_number, _renaming_map, var_specs, SSA, polyhedra_kind)
+      _domain_number, _renaming_map, var_specs, SSA, polyhedra_kind,
+      *(new (std::vector<domaint::valuet*>)))
   {
+
+     heap_tpolyhedra_domain.domain_values.push_back(new heap_domaint::heap_valuet());
+    heap_tpolyhedra_domain.domain_values.push_back(new tpolyhedra_domaint::templ_valuet());
+
     exprt::operandst false_loop_guards;
     for(auto &g : SSA.loop_guards)
       false_loop_guards.push_back(not_exprt(g.first));

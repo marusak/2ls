@@ -97,7 +97,12 @@ bool strategy_solver_heap_tpolyhedra_sympatht::iterate(
   else
   {
     // Computing invariant for a new path
-    heap_tpolyhedra_domaint::heap_tpolyhedra_valuet new_value;
+
+    domain.heap_tpolyhedra_domain.domain_values.clear();
+    domain.heap_tpolyhedra_domain.domain_values.push_back(new heap_domaint::heap_valuet());
+    domain.heap_tpolyhedra_domain.domain_values.push_back(new tpolyhedra_domaint::templ_valuet());
+
+    heap_tpolyhedra_domaint::heap_tpolyhedra_valuet new_value(domain.heap_tpolyhedra_domain.domain_values);
     domain.heap_tpolyhedra_domain.initialize(new_value);
     improved=heap_tpolyhedra_solver.iterate(new_value);
 

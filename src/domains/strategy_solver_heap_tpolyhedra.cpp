@@ -34,8 +34,8 @@ bool strategy_solver_heap_tpolyhedrat::iterate(
   // the template polyhedra solver
   solver.new_context();
   solver << heap_tpolyhedra_domain.polyhedra_domain.to_pre_constraints(
-    inv.tpolyhedra_value);
-  bool heap_improved=heap_solver.iterate(inv.heap_value);
+    *(inv.domain_values[1]));
+  bool heap_improved=heap_solver.iterate(*(inv.domain_values[0]));
   solver.pop_context();
 
   if(heap_improved)
@@ -50,8 +50,8 @@ bool strategy_solver_heap_tpolyhedrat::iterate(
   // invariant from the heap solver
   solver.new_context();
   solver << heap_tpolyhedra_domain.heap_domain.to_pre_constraints(
-    inv.heap_value);
-  bool tpolyhedra_improved=tpolyhedra_solver.iterate(inv.tpolyhedra_value);
+    *(inv.domain_values[0]));
+  bool tpolyhedra_improved=tpolyhedra_solver.iterate(*(inv.domain_values[1]));
   solver.pop_context();
 
   if(heap_improved)

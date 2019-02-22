@@ -23,17 +23,20 @@ public:
 
   heap_domaint heap_domain;
   tpolyhedra_domaint polyhedra_domain;
+  std::vector<valuet*> domain_values;
 
   heap_tpolyhedra_domaint(
     unsigned int _domain_number,
     replace_mapt &_renaming_map,
     const var_specst &var_specs,
     const local_SSAt &SSA,
-    const polyhedra_kindt polyhedra_kind):
+    const polyhedra_kindt polyhedra_kind,
+      std::vector<domaint::valuet*> _domain_values):
     domaint(_domain_number, _renaming_map, SSA.ns),
     heap_domain(_domain_number, _renaming_map, var_specs, SSA),
     polyhedra_domain(_domain_number, _renaming_map, ns)
   {
+      domain_values=_domain_values;
     if(polyhedra_kind==INTERVAL)
       polyhedra_domain.add_interval_template(var_specs, ns);
     else if(polyhedra_kind==ZONES)
@@ -46,8 +49,11 @@ public:
   class heap_tpolyhedra_valuet:public valuet
   {
   public:
-    heap_domaint::heap_valuet heap_value;
-    tpolyhedra_domaint::templ_valuet tpolyhedra_value;
+      std::vector<valuet*> domain_values;
+      heap_tpolyhedra_valuet(std::vector<domaint::valuet*> _domain_values)
+    {
+        domain_values=_domain_values;
+    }
   };
 
   virtual void initialize(valuet &value) override;

@@ -24,8 +24,8 @@ void heap_tpolyhedra_domaint::initialize(domaint::valuet &value)
 {
   heap_tpolyhedra_valuet &v=static_cast<heap_tpolyhedra_valuet &>(value);
 
-  heap_domain.initialize(v.heap_value);
-  polyhedra_domain.initialize(v.tpolyhedra_value);
+  heap_domain.initialize(*(v.domain_values[0]));
+  polyhedra_domain.initialize(*(v.domain_values[1]));
 }
 
 /*******************************************************************\
@@ -48,8 +48,8 @@ void heap_tpolyhedra_domaint::output_value(
   const heap_tpolyhedra_valuet &v=
     static_cast<const heap_tpolyhedra_valuet &>(value);
 
-  heap_domain.output_value(out, v.heap_value, ns);
-  polyhedra_domain.output_value(out, v.tpolyhedra_value, ns);
+  heap_domain.output_value(out, *(v.domain_values[0]), ns);
+  polyhedra_domain.output_value(out, *(v.domain_values[1]), ns);
 }
 
 /*******************************************************************\
@@ -92,9 +92,9 @@ void heap_tpolyhedra_domaint::project_on_vars(
   heap_tpolyhedra_valuet &v=static_cast<heap_tpolyhedra_valuet &>(value);
 
   exprt heap_result;
-  heap_domain.project_on_vars(v.heap_value, vars, heap_result);
+  heap_domain.project_on_vars(*(v.domain_values[0]), vars, heap_result);
   exprt tpolyhedra_result;
-  polyhedra_domain.project_on_vars(v.tpolyhedra_value, vars, tpolyhedra_result);
+  polyhedra_domain.project_on_vars(*(v.domain_values[1]), vars, tpolyhedra_result);
 
   result=heap_result;
   if(tpolyhedra_result!=true_exprt())
