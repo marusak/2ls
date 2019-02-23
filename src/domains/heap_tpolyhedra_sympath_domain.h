@@ -18,18 +18,41 @@ class heap_tpolyhedra_sympath_domaint:public domaint
 {
 public:
   heap_tpolyhedra_domaint heap_tpolyhedra_domain;
+  enum polyhedra_kindt
+  {
+    INTERVAL, ZONES, OCTAGONS
+  };
 
   heap_tpolyhedra_sympath_domaint(
     unsigned int _domain_number,
     replace_mapt &_renaming_map,
     const var_specst &var_specs,
     const local_SSAt &SSA,
-    const heap_tpolyhedra_domaint::polyhedra_kindt polyhedra_kind):
+    const polyhedra_kindt polyhedra_kind):
     domaint(_domain_number, _renaming_map, SSA.ns),
     heap_tpolyhedra_domain(
-      _domain_number, _renaming_map, var_specs, SSA, polyhedra_kind,
+      _domain_number, _renaming_map, var_specs, SSA,
+      *(new (std::vector<domaint*>)),
       *(new (std::vector<domaint::valuet*>)))
   {
+      // Create domains
+      heap_tpolyhedra_domain.domains.push_back(
+        new heap_domaint(domain_number, renaming_map, var_specs, SSA));
+
+      heap_tpolyhedra_domain.domains.push_back(
+        new tpolyhedra_domaint(domain_number, renaming_map, SSA.ns));
+
+      tpolyhedra_domaint *phd = static_cast<tpolyhedra_domaint*>(heap_tpolyhedra_domain.domains[1]);
+
+      if(polyhedra_kind==INTERVAL)
+        phd->add_interval_template(var_specs, ns);
+      else if(polyhedra_kind==ZONES)
+      {
+        phd->add_difference_template(var_specs, ns);
+        phd->add_interval_template(var_specs, ns);
+      }
+
+
 
      heap_tpolyhedra_domain.domain_values.push_back(new heap_domaint::heap_valuet());
     heap_tpolyhedra_domain.domain_values.push_back(new tpolyhedra_domaint::templ_valuet());

@@ -801,8 +801,8 @@ void template_generator_baset::instantiate_standard_domains(
   {
     filter_heap_interval_domain();
     auto polyhedra_kind=options.get_bool_option("heap-interval")
-                        ? heap_tpolyhedra_domaint::INTERVAL
-                        : heap_tpolyhedra_domaint::ZONES;
+                        ? heap_tpolyhedra_sympath_domaint::INTERVAL
+                        : heap_tpolyhedra_sympath_domaint::ZONES;
     if(options.get_bool_option("sympath"))
       domain_ptr=new heap_tpolyhedra_sympath_domaint(
         domain_number, renaming_map, var_specs, SSA, polyhedra_kind);

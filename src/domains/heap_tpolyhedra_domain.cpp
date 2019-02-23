@@ -24,8 +24,8 @@ void heap_tpolyhedra_domaint::initialize(domaint::valuet &value)
 {
   heap_tpolyhedra_valuet &v=static_cast<heap_tpolyhedra_valuet &>(value);
 
-  heap_domain.initialize(*(v.domain_values[0]));
-  polyhedra_domain.initialize(*(v.domain_values[1]));
+  domains[0]->initialize(*(v.domain_values[0]));
+  domains[1]->initialize(*(v.domain_values[1]));
 }
 
 /*******************************************************************\
@@ -48,8 +48,8 @@ void heap_tpolyhedra_domaint::output_value(
   const heap_tpolyhedra_valuet &v=
     static_cast<const heap_tpolyhedra_valuet &>(value);
 
-  heap_domain.output_value(out, *(v.domain_values[0]), ns);
-  polyhedra_domain.output_value(out, *(v.domain_values[1]), ns);
+  domains[0]->output_value(out, *(v.domain_values[0]), ns);
+  domains[1]->output_value(out, *(v.domain_values[1]), ns);
 }
 
 /*******************************************************************\
@@ -68,8 +68,8 @@ void heap_tpolyhedra_domaint::output_domain(
   std::ostream &out,
   const namespacet &ns) const
 {
-  heap_domain.output_domain(out, ns);
-  polyhedra_domain.output_domain(out, ns);
+  domains[0]->output_domain(out, ns);
+  domains[1]->output_domain(out, ns);
 }
 
 /*******************************************************************\
@@ -92,9 +92,9 @@ void heap_tpolyhedra_domaint::project_on_vars(
   heap_tpolyhedra_valuet &v=static_cast<heap_tpolyhedra_valuet &>(value);
 
   exprt heap_result;
-  heap_domain.project_on_vars(*(v.domain_values[0]), vars, heap_result);
+  domains[0]->project_on_vars(*(v.domain_values[0]), vars, heap_result);
   exprt tpolyhedra_result;
-  polyhedra_domain.project_on_vars(*(v.domain_values[1]), vars, tpolyhedra_result);
+  domains[1]->project_on_vars(*(v.domain_values[1]), vars, tpolyhedra_result);
 
   result=heap_result;
   if(tpolyhedra_result!=true_exprt())
@@ -115,8 +115,8 @@ Function: heap_tpolyhedra_domaint::restrict_to_sympath
 void heap_tpolyhedra_domaint::restrict_to_sympath(
   const symbolic_patht &sympath)
 {
-  heap_domain.restrict_to_sympath(sympath);
-  polyhedra_domain.restrict_to_sympath(sympath);
+  domains[0]->restrict_to_sympath(sympath);
+  domains[1]->restrict_to_sympath(sympath);
 }
 
 /*******************************************************************\
@@ -132,8 +132,8 @@ Function: heap_tpolyhedra_domaint::clear_aux_symbols
 \*******************************************************************/
 void heap_tpolyhedra_domaint::clear_aux_symbols()
 {
-  heap_domain.clear_aux_symbols();
-  polyhedra_domain.clear_aux_symbols();
+  domains[0]->clear_aux_symbols();
+  domains[1]->clear_aux_symbols();
 }
 
 /*******************************************************************\
@@ -150,8 +150,8 @@ Function: heap_tpolyhedra_domaint::eliminate_sympaths
 void heap_tpolyhedra_domaint::eliminate_sympaths(
   const std::vector<symbolic_patht> &sympaths)
 {
-  heap_domain.eliminate_sympaths(sympaths);
-  polyhedra_domain.eliminate_sympaths(sympaths);
+  domains[0]->eliminate_sympaths(sympaths);
+  domains[1]->eliminate_sympaths(sympaths);
 }
 
 /*******************************************************************\
@@ -167,8 +167,8 @@ Function: heap_tpolyhedra_domaint::undo_restriction
 \*******************************************************************/
 void heap_tpolyhedra_domaint::undo_restriction()
 {
-  heap_domain.undo_restriction();
-  polyhedra_domain.undo_restriction();
+  domains[0]->undo_restriction();
+  domains[1]->undo_restriction();
 }
 
 bool heap_tpolyhedra_domaint::edit_row(

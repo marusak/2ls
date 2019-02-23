@@ -29,13 +29,13 @@ public:
     strategy_solver_baset(_solver, SSA.ns),
     heap_tpolyhedra_domain(_heap_tpolyhedra_domain),
     heap_solver(
-      heap_tpolyhedra_domain.heap_domain,
+      static_cast<heap_domaint&>(*(heap_tpolyhedra_domain.domains[0])),
       _solver,
       SSA,
       precondition,
       message_handler,
       template_generator),
-    tpolyhedra_solver(heap_tpolyhedra_domain.polyhedra_domain, _solver, SSA.ns)
+    tpolyhedra_solver(static_cast<tpolyhedra_domaint&>(*(heap_tpolyhedra_domain.domains[1])), _solver, SSA.ns)
   {
     tpolyhedra_solver.set_message_handler(message_handler);
   }

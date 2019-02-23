@@ -16,34 +16,20 @@ Author: Viktor Malik
 class heap_tpolyhedra_domaint:public domaint
 {
 public:
-  enum polyhedra_kindt
-  {
-    INTERVAL, ZONES, OCTAGONS
-  };
-
-  heap_domaint heap_domain;
-  tpolyhedra_domaint polyhedra_domain;
   std::vector<valuet*> domain_values;
+  std::vector<domaint*> domains;
 
   heap_tpolyhedra_domaint(
     unsigned int _domain_number,
     replace_mapt &_renaming_map,
     const var_specst &var_specs,
     const local_SSAt &SSA,
-    const polyhedra_kindt polyhedra_kind,
+      std::vector<domaint*> _domains,
       std::vector<domaint::valuet*> _domain_values):
-    domaint(_domain_number, _renaming_map, SSA.ns),
-    heap_domain(_domain_number, _renaming_map, var_specs, SSA),
-    polyhedra_domain(_domain_number, _renaming_map, ns)
+    domaint(_domain_number, _renaming_map, SSA.ns)
   {
       domain_values=_domain_values;
-    if(polyhedra_kind==INTERVAL)
-      polyhedra_domain.add_interval_template(var_specs, ns);
-    else if(polyhedra_kind==ZONES)
-    {
-      polyhedra_domain.add_difference_template(var_specs, ns);
-      polyhedra_domain.add_interval_template(var_specs, ns);
-    }
+      domains=_domains;
   }
 
   class heap_tpolyhedra_valuet:public valuet
