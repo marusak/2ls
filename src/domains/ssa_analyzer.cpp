@@ -23,12 +23,13 @@ Author: Peter Schrammel
 #include "strategy_solver_binsearch2.h"
 #include "strategy_solver_binsearch3.h"
 #include "linrank_domain.h"
+#include "combination_domain.h"
 #include "equality_domain.h"
 #include "lexlinrank_domain.h"
 #include "predabs_domain.h"
 #include "template_generator_ranking.h"
 #include "ssa_analyzer.h"
-#include "strategy_solver_heap_tpolyhedra.h"
+#include "strategy_solver_combination.h"
 #include "strategy_solver_heap_tpolyhedra_sympath.h"
 #include "strategy_solver.h"
 
@@ -143,14 +144,32 @@ void ssa_analyzert::operator()(
     }
     else
     {
-      s_solver=new strategy_solver_heap_tpolyhedrat(
-        *static_cast<heap_tpolyhedra_domaint *>(domain),
+     std::vector<strategy_solver_baset*> solvers;
+     solvers.push_back(
+       new strategy_solvert(
+         *((*static_cast<combination_domaint *>(domain)).domains[0]),
+         solver,
+         SSA,
+         precondition,
+         get_message_handler(),
+         template_generator));
+     solvers.push_back(
+       new strategy_solver_binsearcht(
+         *static_cast<tpolyhedra_domaint *>(
+           (*static_cast<combination_domaint *>(domain)).domains[1]),
+       solver,
+       SSA.ns));
+
+      s_solver=new strategy_solver_combinationt(
+        *static_cast<combination_domaint *>(domain),
         solver,
         SSA,
         precondition,
         get_message_handler(),
+        solvers,
         template_generator);
-      result=new heap_tpolyhedra_domaint::heap_tpolyhedra_valuet();
+      result=new combination_domaint::combination_valuet(
+        static_cast<combination_domaint *>(domain)->domain_values);
     }
   }
   else

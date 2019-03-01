@@ -12,34 +12,63 @@ Author: Viktor Malik
 
 
 #include "domain.h"
-#include "heap_tpolyhedra_domain.h"
+#include "combination_domain.h"
+#include "tpolyhedra_domain.h"
+#include "heap_domain.h"
 
 class heap_tpolyhedra_sympath_domaint:public domaint
 {
 public:
-  heap_tpolyhedra_domaint heap_tpolyhedra_domain;
+  enum polyhedra_kindt
+  {
+    INTERVAL, ZONES, OCTAGONS
+  };
+
+  combination_domaint combination_domain;
 
   heap_tpolyhedra_sympath_domaint(
     unsigned int _domain_number,
     replace_mapt &_renaming_map,
     const var_specst &var_specs,
     const local_SSAt &SSA,
-    const heap_tpolyhedra_domaint::polyhedra_kindt polyhedra_kind):
+    const polyhedra_kindt polyhedra_kind):
     domaint(_domain_number, _renaming_map, SSA.ns),
-    heap_tpolyhedra_domain(
-      _domain_number, _renaming_map, var_specs, SSA, polyhedra_kind)
+    combination_domain(_domain_number, _renaming_map, var_specs, SSA)
   {
     exprt::operandst false_loop_guards;
     for(auto &g : SSA.loop_guards)
       false_loop_guards.push_back(not_exprt(g.first));
     no_loops_path=conjunction(false_loop_guards);
+
+    // Create domains
+    combination_domain.domains.push_back(
+      new heap_domaint(domain_number, renaming_map, var_specs, SSA));
+
+    combination_domain.domains.push_back(
+      new tpolyhedra_domaint(domain_number, renaming_map, SSA.ns));
+
+    tpolyhedra_domaint *phd=
+      static_cast<tpolyhedra_domaint*>(combination_domain.domains[1]);
+
+    if(polyhedra_kind==INTERVAL)
+      phd->add_interval_template(var_specs, ns);
+    else if(polyhedra_kind==ZONES)
+    {
+      phd->add_difference_template(var_specs, ns);
+      phd->add_interval_template(var_specs, ns);
+    }
+
+    combination_domain.domain_values.push_back(
+      new heap_domaint::heap_valuet());
+    combination_domain.domain_values.push_back(
+      new tpolyhedra_domaint::templ_valuet());
   }
 
   // Value is a map from expression (symbolic path) to an invariant in heap
   // tpolyhedra domain
   class heap_tpolyhedra_sympath_valuet:
     public valuet,
-    public std::map<exprt, heap_tpolyhedra_domaint::heap_tpolyhedra_valuet>
+    public std::map<exprt, combination_domaint::combination_valuet>
   {
   };
 

@@ -15,11 +15,12 @@ Author: Peter Schrammel
 #include <ssa/ssa_inliner.h>
 
 #include "template_generator_base.h"
+#include "domain.h"
 #include "equality_domain.h"
 #include "tpolyhedra_domain.h"
+#include "combination_domain.h"
 #include "predabs_domain.h"
 #include "heap_domain.h"
-#include "heap_tpolyhedra_domain.h"
 #include "heap_tpolyhedra_sympath_domain.h"
 
 #ifdef DEBUG
@@ -799,14 +800,24 @@ void template_generator_baset::instantiate_standard_domains(
   {
     filter_heap_interval_domain();
     auto polyhedra_kind=options.get_bool_option("heap-interval")
-                        ? heap_tpolyhedra_domaint::INTERVAL
-                        : heap_tpolyhedra_domaint::ZONES;
+                        ? heap_tpolyhedra_sympath_domaint::INTERVAL
+                        : heap_tpolyhedra_sympath_domaint::ZONES;
     if(options.get_bool_option("sympath"))
       domain_ptr=new heap_tpolyhedra_sympath_domaint(
         domain_number, renaming_map, var_specs, SSA, polyhedra_kind);
     else
-      domain_ptr=new heap_tpolyhedra_domaint(
-        domain_number, renaming_map, var_specs, SSA, polyhedra_kind);
+    {
+      domain_ptr=new combination_domaint(
+        domain_number, renaming_map, var_specs, SSA);
+      combination_domaint *tmp_ptr=
+        static_cast<combination_domaint *>(domain_ptr);
+      tmp_ptr->domains.push_back(
+        new heap_domaint(domain_number, renaming_map, var_specs, SSA));
+      tmp_ptr->domains.push_back(
+        new tpolyhedra_domaint(domain_number, renaming_map, SSA.ns));
+      tmp_ptr->domain_values.push_back(new heap_domaint::heap_valuet());
+      tmp_ptr->domain_values.push_back(new tpolyhedra_domaint::templ_valuet());
+    }
   }
 }
 

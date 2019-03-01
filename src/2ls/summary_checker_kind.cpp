@@ -6,7 +6,6 @@ Author: Peter Schrammel
 
 \*******************************************************************/
 
-#include <domains/heap_tpolyhedra_domain.h>
 #include "summary_checker_kind.h"
 
 /*******************************************************************\
