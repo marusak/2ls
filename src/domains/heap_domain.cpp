@@ -2042,3 +2042,13 @@ void heap_domaint::find_symbolic_path(
       symbolic_path[guard.first]=false;
   }
 }
+
+symbolic_patht heap_domaint::get_symbolic_path()
+{
+  return symbolic_path;
+}
+
+void heap_domaint::clear_symbolic_path()
+{
+  symbolic_path.clear();
+}
