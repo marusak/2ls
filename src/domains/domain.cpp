@@ -101,3 +101,34 @@ exprt domaint::make_permanent(valuet &value)
 {
   return true_exprt();
 }
+
+void domaint::clear_symbolic_path()
+{
+}
+
+void domaint::restrict_to_sympath(const symbolic_patht &sympath)
+{
+}
+
+/*******************************************************************\
+
+Function: heap_domaint::undo_restriction
+
+  Inputs:
+
+ Outputs:
+
+ Purpose: Undo last restriction (remove last conjunct from each aux_expr).
+
+\*******************************************************************/
+void domaint::undo_restriction()
+{
+}
+
+void domaint::eliminate_sympaths(const std::vector<symbolic_patht> &sympaths)
+{
+}
+
+void domaint::clear_aux_symbols()
+{
+}
