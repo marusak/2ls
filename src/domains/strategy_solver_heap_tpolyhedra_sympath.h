@@ -12,7 +12,8 @@ Author: Viktor Malik
 
 #include "strategy_solver_base.h"
 #include "heap_tpolyhedra_sympath_domain.h"
-#include "strategy_solver_heap_tpolyhedra.h"
+#include "strategy_solver_combination.h"
+#include "strategy_solver_binsearch.h"
 
 class strategy_solver_heap_tpolyhedra_sympatht:public strategy_solver_baset
 {
@@ -26,15 +27,26 @@ public:
     template_generator_baset &template_generator):
     strategy_solver_baset(_solver, SSA.ns),
     domain(_domain),
-    heap_tpolyhedra_solver(
-      domain.heap_tpolyhedra_domain,
-      _solver,
-      SSA,
-      precondition,
-      message_handler,
+    combination_solver(
+      domain.combination_domain, _solver, SSA, precondition, message_handler,
       template_generator)
   {
     build_loop_conds_map(SSA);
+
+    combination_solver.solvers.push_back(
+      new strategy_solvert(
+        *static_cast<heap_domaint *>(domain.combination_domain.domains[0]),
+        solver,
+        SSA,
+        precondition,
+        get_message_handler(),
+        template_generator));
+    combination_solver.solvers.push_back(
+      new strategy_solver_binsearcht(
+        *static_cast<tpolyhedra_domaint *>(
+          domain.combination_domain.domains[1]),
+        solver,
+        SSA.ns));
   }
 
   virtual bool iterate(invariantt &inv) override;
@@ -45,7 +57,7 @@ public:
 
 protected:
   heap_tpolyhedra_sympath_domaint &domain;
-  strategy_solver_heap_tpolyhedrat heap_tpolyhedra_solver;
+  strategy_solver_combinationt combination_solver;
 
   std::vector<symbolic_patht> visited_paths;
   bool new_path=true;
