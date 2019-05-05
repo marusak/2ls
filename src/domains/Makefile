@@ -19,6 +19,7 @@ include $(CBMC)/src/common
 CBMC ?= ../..
 
 CP_CXXFLAGS += $(TWOLSFLAGS)
+CP_CXXFLAGS += -g
 
 INCLUDES= -I $(CBMC)/src -I ..
 

@@ -46,17 +46,22 @@ void equality_domaint::solver_iter_init(valuet &value)
 
 bool equality_domaint::has_something_to_solve()
 {
+  std::cout<<todo_equs.size()<<std::endl;
   if(e_it!=todo_equs.end())
   {
     check_dis=false;
+    std::cout<<"FIRST\n";
     return true;
   }
+  std::cout<<todo_disequs.size()<<std::endl;
   if(todo_disequs.begin()!=todo_disequs.end())
   {
+    std::cout<<"SECOND\n";
     e_it=todo_disequs.begin();
     check_dis=true;
     return true;
   }
+  std::cout<<"DONE"<<std::endl;
   return false;
 }
 
@@ -88,6 +93,12 @@ void equality_domaint::post_edit()
 
 exprt equality_domaint::to_pre_constraints(valuet &_value)
 {
+  if (todo_equs.size() > 0)
+    e_it = todo_equs.begin();
+  else if (todo_disequs.size() > 0)
+    e_it = todo_disequs.begin();
+  else
+      return true_exprt();
   if(check_dis)
     return get_pre_disequ_constraint(*e_it);
   assert(*e_it<templ.size());

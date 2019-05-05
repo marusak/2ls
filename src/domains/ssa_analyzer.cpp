@@ -106,17 +106,6 @@ void ssa_analyzert::operator()(
       result=new lexlinrank_domaint::templ_valuet();
     }
   }
-  else if(template_generator.options.get_bool_option("equalities"))
-  {
-    s_solver=new strategy_solvert(
-      *static_cast<equality_domaint *>(domain),
-      solver,
-      SSA,
-      precondition,
-      get_message_handler(),
-      template_generator);
-      result=new equality_domaint::equ_valuet();
-  }
   else if(template_generator.options.get_bool_option("heap"))
   {
     s_solver=new strategy_solvert(
@@ -179,8 +168,56 @@ void ssa_analyzert::operator()(
   }
   else
   {
-    if(template_generator.options.get_bool_option("enum-solver"))
+    if(true)
     {
+        std::cout<<"NOTUSIIINGNGNGN"<<std::flush;
+      if(true)
+      {
+        std::cout<<"\nUUUUUUSING\n"<<std::flush;
+        s_solver=new strategy_solver_combinationt(
+          *static_cast<combination_domaint *>(domain),
+                solver,
+                SSA,
+                precondition,
+                get_message_handler(),
+                template_generator);
+
+        strategy_solver_combinationt *sss = static_cast<strategy_solver_combinationt *>(s_solver);
+     sss->solvers.push_back(
+       new strategy_solver_binsearcht(
+         *static_cast<tpolyhedra_domaint *>(
+           (*static_cast<combination_domaint *>(domain)).domains[0]),
+       solver,
+       SSA.ns));
+        /*
+        sss->solvers.push_back(
+            new strategy_solvert(
+            *static_cast<tpolyhedra_domaint *>(
+             (*static_cast<combination_domaint *>(domain)).domains[0]),
+            solver,
+            SSA,
+            precondition,
+            get_message_handler(),
+            template_generator)
+        );
+       */
+        sss->solvers.push_back(
+          new strategy_solvert(
+          *static_cast<equality_domaint *>(
+             (*static_cast<combination_domaint *>(domain)).domains[1]),
+          solver,
+          SSA,
+          precondition,
+          get_message_handler(),
+          template_generator)
+        );
+        std::vector<domaint::valuet*> domain_values;
+          domain_values.push_back(
+            new tpolyhedra_domaint::templ_valuet());
+          domain_values.push_back(
+            new equality_domaint::equ_valuet());
+          result=new combination_domaint::combination_valuet(domain_values);
+      } else {
       s_solver=new strategy_solvert(
         *static_cast<tpolyhedra_domaint *>(domain),
         solver,
@@ -188,7 +225,9 @@ void ssa_analyzert::operator()(
         precondition,
         get_message_handler(),
         template_generator);
+
       result=new tpolyhedra_domaint::templ_valuet();
+    }
     }
     else if(template_generator.options.get_bool_option("predabs-solver"))
     {

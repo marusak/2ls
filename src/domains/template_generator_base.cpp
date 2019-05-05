@@ -746,9 +746,22 @@ void template_generator_baset::instantiate_standard_domains(
   // get domain from command line options
   if(options.get_bool_option("equalities"))
   {
-    filter_equality_domain();
-    domain_ptr=
-      new equality_domaint(domain_number, renaming_map, var_specs, SSA.ns);
+        // TODO
+        filter_equality_domain();
+        filter_template_domain();
+
+        domain_ptr=new combination_domaint(
+            domain_number, renaming_map, var_specs, SSA);
+          combination_domaint *tmp_ptr=
+            static_cast<combination_domaint *>(domain_ptr);
+          tmp_ptr->domains.push_back(
+            new tpolyhedra_domaint(domain_number, renaming_map, SSA.ns));
+          tmp_ptr->domains.push_back(
+            new equality_domaint(domain_number, renaming_map, var_specs, SSA.ns));
+        tpolyhedra_domaint *phd=
+            static_cast<tpolyhedra_domaint*>(tmp_ptr->domains[0]);
+        phd->add_interval_template(var_specs, SSA.ns); // THIS??
+        std::cout<<"UUUUUUSING2\n";
   }
   else if(options.get_bool_option("heap"))
   {
